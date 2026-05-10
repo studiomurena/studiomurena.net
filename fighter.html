@@ -3,147 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Musical Fighters</title>
+    <title>Musical Fighters - Murena Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        body { background: #000; margin: 0; font-family: 'Press Start 2P', cursive; overflow: hidden; color: #fff; touch-action: none; }
-        
-        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: #000080; }
-        
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .cell { width: 60px; height: 60px; border: 3px solid #808080; background: #222; display: flex; align-items: center; justify-content: center; cursor: pointer; background-size: cover; image-rendering: pixelated; }
-        .cell.selected { border-color: #ffcc00; box-shadow: 0 0 10px #ffcc00; transform: scale(1.1); }
-        .cell.locked::after { content: "🔒"; font-size: 20px; }
 
-        canvas { width: 100vw; height: 100vh; image-rendering: pixelated; }
+        body { 
+            background: #000; margin: 0; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; height: 100vh; overflow: hidden; 
+            font-family: 'Press Start 2P', cursive; color: #fff; touch-action: none;
+        }
 
-        #controls { position: absolute; bottom: 20px; width: 100%; display: none; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 5; }
-        .btn { width: 60px; height: 60px; background: #c0c0c0; border: 3px solid #fff; border-right-color: #000; border-bottom-color: #000; color: #000; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        #header-bar {
+            width: 100%; background: #c0c0c0; border-bottom: 3px solid #000;
+            padding: 10px; display: flex; justify-content: space-between; align-items: center;
+            color: #000; font-size: 10px; box-sizing: border-box; z-index: 20;
+        }
+
+        .win-btn {
+            background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
+            padding: 5px 10px; text-decoration: none; color: #000; font-size: 9px;
+        }
+
+        #game-container {
+            position: relative; width: 100vw; height: calc(100vw * 9/16); 
+            max-width: 800px; max-height: 450px; background: #222; overflow: hidden;
+            border: 4px solid #c0c0c0;
+        }
+
+        canvas { width: 100%; height: 100%; image-rendering: pixelated; }
+
+        /* SELEZIONE EROI */
+        #selection-screen {
+            position: absolute; inset: 0; background: #000080; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+        
+        .cell {
+            width: 70px; height: 70px; background: #222; border: 3px solid #808080;
+            cursor: pointer; image-rendering: pixelated;
+            /* FIX SPRITE SELECTION: mostriamo solo il primo frame della sheet 5x5 */
+            background-size: 500% 500%; 
+            background-position: 0% 0%;
+        }
+        .cell.selected { border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00; }
+        .cell.locked { opacity: 0.4; pointer-events: none; }
+        .cell.locked::after { content: "🔒"; display: block; text-align: center; margin-top: 20px; }
+
+        /* CONTROLLI MOBILE */
+        #controls {
+            display: flex; justify-content: space-between; width: 100%; max-width: 800px;
+            padding: 20px; box-sizing: border-box; background: #000;
+        }
+        .joy-btn {
+            width: 60px; height: 60px; background: #c0c0c0; border: 4px solid;
+            border-color: #fff #808080 #808080 #fff; display: flex; 
+            align-items: center; justify-content: center; color: #000;
+        }
+        .joy-btn:active { background: #808080; border-color: #808080 #fff #fff #808080; }
     </style>
 </head>
 <body>
 
-<div id="ui-layer">
-    <h2 id="msg">SELECT FIGHTER</h2>
-    <div id="grid" class="grid"></div>
-    <div id="sub-msg" style="font-size: 8px;">CHOOSE YOUR DESTINY</div>
-    <button onclick="window.location.href='index.html'" style="margin-top:20px; background:#c0c0c0; border:2px solid #fff; font-family:inherit; padding:5px;">EXIT</button>
+<div id="header-bar">
+    <a href="index.html" class="win-btn">← DESKTOP</a>
+    <span id="top-msg">STUDIO MURENA: SELECT FIGHTER</span>
 </div>
 
-<canvas id="game"></canvas>
-
-<div id="controls">
-    <div style="display:flex; gap:10px;">
-        <div class="btn" id="l">◀</div>
-        <div class="btn" id="r">▶</div>
+<div id="game-container">
+    <div id="selection-screen">
+        <div id="grid" class="grid"></div>
+        <div id="char-name" style="margin-top: 20px; color: #ffcc00;">SELECT HERO</div>
     </div>
-    <div style="display:flex; gap:10px;">
-        <div class="btn" id="j">JUMP</div>
-        <div class="btn" id="a" style="background:#f00; color:#fff;">ATK</div>
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
+</div>
+
+<div id="controls" style="visibility: hidden;">
+    <div style="display: flex; gap: 10px;">
+        <div class="joy-btn" id="btn-l">◀</div>
+        <div class="joy-btn" id="btn-r">▶</div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <div class="joy-btn" id="btn-j">JUMP</div>
+        <div class="joy-btn" id="btn-a" style="background: #f00; color: #fff;">ATK</div>
     </div>
 </div>
 
 <script>
-    const canvas = document.getElementById('game');
+    const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 800; canvas.height = 450;
-
+    
+    // Configurazione Asset
     const roster = [
-        { id: 'carma', name: 'CARMA', l: false },
-        { id: 'ferraz', name: 'FERRAZ', l: false },
-        { id: 'nan', name: 'NAN', l: false },
-        { id: 'mauri', name: 'MAURI', l: false },
-        { id: 'falcon', name: 'FALCON', l: false },
-        { id: 'guest1', name: '???', l: true },
-        { id: 'guest2', name: '???', l: true },
-        { id: 'guest3', name: '???', l: true }
+        { id: 'carma', name: 'CARMA', locked: false },
+        { id: 'ferraz', name: 'FERRAZ', locked: false },
+        { id: 'nan', name: 'NAN', locked: false },
+        { id: 'mauri', name: 'MAURI', locked: false },
+        { id: 'falcon', name: 'FALCON', locked: false },
+        { id: 'guest1', name: '???', locked: true },
+        { id: 'guest2', name: '???', locked: true },
+        { id: 'guest3', name: '???', locked: true }
     ];
 
     const stages = [
-        { id: 0, name: 'MILANO', bg: 'assets/skyline1.png', pav: 'assets/pavimento-milano-baba.png' },
-        { id: 1, name: 'BOSCO', bg: 'assets/boschetto2.png', pav: 'assets/pavimento-boschetto.png' },
-        { id: 2, name: 'METRO', bg: 'assets/metro-baba3.png', pav: 'assets/pavimento-metro.png' }
+        { bg: 'assets/skyline1.png', pav: 'assets/pavimento-milano-baba.png' },
+        { bg: 'assets/boschetto2.png', pav: 'assets/pavimento-boschetto.png' },
+        { bg: 'assets/metro-baba3.png', pav: 'assets/pavimento-metro.png' }
     ];
 
-    let mode = "CHAR"; // CHAR, STAGE, FIGHT
-    let p1Char, stage;
-    let p1 = { x: 100, y: 300, hp: 100, s: 'idle', vy: 0, d: 1 };
-    let cpu = { x: 600, y: 300, hp: 100, s: 'idle', vy: 0, d: -1 };
+    const enemies = ['murena', 'baba', 'cop', 'copzombie'];
 
-    function initChars() {
-        const g = document.getElementById('grid'); g.innerHTML = '';
-        roster.forEach((c, i) => {
-            const d = document.createElement('div');
-            d.className = `cell ${c.l ? 'locked' : ''}`;
-            if(!c.l) d.style.backgroundImage = `url('assets/${c.id}2-idle.png')`;
-            d.onclick = () => { if(!c.l) { p1Char = c; initStages(); } };
-            g.appendChild(d);
-        });
-    }
+    let mode = "SELECT";
+    let p1Char = null;
+    let currentStage = stages[0];
+    let p1 = { x: 100, y: 300, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0 };
+    let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0 };
 
-    function initStages() {
-        mode = "STAGE"; document.getElementById('msg').innerText = "SELECT STAGE";
-        const g = document.getElementById('grid'); g.innerHTML = '';
-        stages.forEach(s => {
-            const d = document.createElement('div');
-            d.className = 'cell'; d.style.backgroundImage = `url('${s.bg}')`;
-            d.onclick = () => { stage = s; start(); };
-            g.appendChild(d);
-        });
-    }
+    // Griglia Selezione
+    const grid = document.getElementById('grid');
+    roster.forEach((c, i) => {
+        const d = document.createElement('div');
+        d.className = `cell ${c.locked ? 'locked' : ''}`;
+        if(!c.locked) d.style.backgroundImage = `url('assets/${c.id}2-idle.png')`;
+        d.onclick = () => {
+            p1Char = c;
+            document.getElementById('char-name').innerText = c.name;
+            startFight();
+        };
+        grid.appendChild(d);
+    });
 
-    function start() {
+    function startFight() {
         mode = "FIGHT";
-        document.getElementById('ui-layer').style.display = 'none';
-        document.getElementById('controls').style.display = 'flex';
-        cpu.id = ['murena','baba','cop','copzombie'][Math.floor(Math.random()*4)];
+        document.getElementById('selection-screen').style.display = 'none';
+        document.getElementById('controls').style.visibility = 'visible';
+        document.getElementById('top-msg').innerText = "FIGHT!";
+        currentStage = stages[Math.floor(Math.random()*stages.length)];
+        cpu.id = enemies[Math.floor(Math.random()*enemies.length)];
     }
 
-    const input = { l:0, r:0, j:0, a:0 };
-    function setup(id, k) {
+    // Input
+    const keys = { l: 0, r: 0, j: 0, a: 0 };
+    const setup = (id, k) => {
         const b = document.getElementById(id);
-        b.ontouchstart = (e) => { e.preventDefault(); input[k]=1; };
-        b.ontouchend = () => input[k]=0;
-    }
-    setup('l','l'); setup('r','r'); setup('j','j'); setup('a','a');
+        b.ontouchstart = (e) => { e.preventDefault(); keys[k] = 1; };
+        b.ontouchend = () => keys[k] = 0;
+        b.onmousedown = () => keys[k] = 1;
+        b.onmouseup = () => keys[k] = 0;
+    };
+    setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a');
 
-    function loop() {
-        if(mode === "FIGHT") {
-            if(input.l) { p1.x-=4; p1.s='walk'; p1.d=-1; }
-            else if(input.r) { p1.x+=4; p1.s='walk'; p1.d=1; }
-            else p1.s='idle';
-            if(input.j && p1.y>=300) p1.vy=-12;
-            if(input.a) p1.s='attack';
+    // Funzione Render Sprite (Taglia la sheet 5x5)
+    function drawFighter(f, charId) {
+        const img = new Image();
+        img.src = `assets/${charId}2-${f.state}.png`;
+        
+        if (!img.complete) return;
 
-            p1.y+=p1.vy; if(p1.y<300) p1.vy+=0.6; else { p1.y=300; p1.vy=0; }
-            
-            // Draw
-            ctx.clearRect(0,0,800,450);
-            const b = new Image(); b.src = stage.bg; ctx.drawImage(b, 0,0,800,450);
-            const p = new Image(); p.src = stage.pav; ctx.drawImage(p, 0,350,800,100);
-            
-            // Bars
-            ctx.fillStyle="red"; ctx.fillRect(50,20,300,20); ctx.fillRect(450,20,300,20);
-            ctx.fillStyle="yellow"; ctx.fillRect(50,20,p1.hp*3,20); ctx.fillRect(450+(300-cpu.hp*3),20,cpu.hp*3,20);
-            
-            render(p1, p1Char.id); render(cpu, cpu.id);
-            if(p1.hp<=0 || cpu.hp<=0) location.reload();
-        }
-        requestAnimationFrame(loop);
-    }
+        // Frame calculation per sheet 5x5
+        const frameW = img.width / 5;
+        const frameH = img.height / 5;
+        const sx = (f.frame % 5) * frameW;
+        const sy = Math.floor(f.frame / 5) * frameH;
 
-    function render(f, id) {
-        const img = new Image(); img.src = `assets/${id}2-${f.s}.png`;
         ctx.save();
-        if(f.d===-1) { ctx.translate(f.x+80, f.y); ctx.scale(-1,1); ctx.drawImage(img,0,0,80,100); }
-        else ctx.drawImage(img, f.x, f.y, 80, 100);
+        if (f.dir === -1) {
+            ctx.translate(f.x + 100, f.y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(img, sx, sy, frameW, frameH, 0, 0, 100, 100);
+        } else {
+            ctx.drawImage(img, sx, sy, frameW, frameH, f.x, f.y, 100, 100);
+        }
         ctx.restore();
-        // Semplice collisione
-        if(f===p1 && f.s==='attack' && Math.abs(p1.x-cpu.x)<60) cpu.hp-=0.5;
-        if(f===cpu && f.s==='attack' && Math.abs(p1.x-cpu.x)<60) p1.hp-=0.3;
+
+        // Animazione
+        if (Date.now() % 100 < 50) { // velocità animazione
+             f.frame = (f.frame + 1) % 25;
+        }
     }
 
-    initChars(); loop();
+    function update() {
+        if (mode !== "FIGHT") return;
+
+        // Player Logic
+        if (keys.l) { p1.x -= 5; p1.state = 'run'; p1.dir = -1; }
+        else if (keys.r) { p1.x += 5; p1.state = 'run'; p1.dir = 1; }
+        else { p1.state = 'idle'; }
+
+        if (keys.j && p1.y >= 300) p1.vy = -15;
+        if (keys.a) p1.state = 'attack';
+
+        p1.y += p1.vy;
+        if (p1.y < 300) p1.vy += 1; else { p1.y = 300; p1.vy = 0; }
+
+        // CPU AI Logic (Ora si muove!)
+        let dist = p1.x - cpu.x;
+        if (Math.abs(dist) > 60) {
+            cpu.x += (dist > 0 ? 3 : -3);
+            cpu.state = 'run';
+            cpu.dir = (dist > 0 ? 1 : -1);
+        } else {
+            cpu.state = 'idle';
+            if (Math.random() < 0.05) cpu.state = 'attack';
+        }
+        
+        cpu.y += cpu.vy;
+        if (cpu.y < 300) cpu.vy += 1; else { cpu.y = 300; cpu.vy = 0; }
+
+        // Collisioni Danni
+        if (p1.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) cpu.hp -= 0.5;
+        if (cpu.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) p1.hp -= 0.3;
+
+        if (p1.hp <= 0 || cpu.hp <= 0) {
+            alert(p1.hp <= 0 ? "GAME OVER" : "YOU WIN!");
+            location.reload();
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, 800, 450);
+
+        if (mode === "FIGHT") {
+            // Background (No stretch)
+            const bg = new Image(); bg.src = currentStage.bg;
+            const pav = new Image(); pav.src = currentStage.pav;
+            
+            if (bg.complete) ctx.drawImage(bg, 0, 0, 800, 350);
+            if (pav.complete) ctx.drawImage(pav, 0, 350, 800, 100);
+
+            // Barre Vita
+            ctx.fillStyle = "red"; ctx.fillRect(50, 20, 300, 20); ctx.fillRect(450, 20, 300, 20);
+            ctx.fillStyle = "yellow"; 
+            ctx.fillRect(50, 20, p1.hp * 3, 20); 
+            ctx.fillRect(450 + (300 - cpu.hp * 3), 20, cpu.hp * 3, 20);
+
+            drawFighter(p1, p1Char.id);
+            drawFighter(cpu, cpu.id);
+        }
+        requestAnimationFrame(draw);
+    }
+
+    setInterval(update, 1000/60);
+    draw();
 </script>
 </body>
 </html>
