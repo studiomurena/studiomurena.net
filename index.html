@@ -51,9 +51,10 @@
             position: relative; overflow: hidden;
         }
 
+        /* EFFETTO CRT ATTENUATO PER MAGGIORE LEGGIBILITÀ (0.04 invece di 0.1) */
         .ig-stories-poster::after {
             content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.04) 50%);
             background-size: 100% 4px; z-index: 1000; pointer-events: none;
         }
 
@@ -71,14 +72,15 @@
         #icon-jazzcore { top: 220px; left: 20px; }
         #icon-cestino { top: 320px; left: 20px; }
 
+        /* BARRE DEL TITOLO CON FONT PIÙ GRANDE */
         .title-bar {
-            background: var(--win-blue); color: white; padding: 2px 6px;
-            display: flex; justify-content: space-between; align-items: center; font-size: 11px; 
+            background: var(--win-blue); color: white; padding: 3px 8px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px; 
         }
         .drag-handle { cursor: move; }
         .btn-close {
             background: var(--win-gray); border: 2px solid; border-color: #fff #000 #000 #fff;
-            color: black; font-weight: bold; padding: 0 4px; font-size: 10px; cursor: pointer;
+            color: black; font-weight: bold; padding: 0 4px; font-size: 11px; cursor: pointer;
         }
 
         #dialup-window {
@@ -91,7 +93,7 @@
             display: none; position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; z-index: 50; flex-direction: column;
         }
-        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 11px; }
+        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
 
         .browser-content {
             background-color: var(--web-bg); 
@@ -100,10 +102,11 @@
         }
 
         /* --- SEZIONE ALTA (HEADER) --- */
+        /* LOGO PIÙ GRANDE */
         .main-title {
-            margin: 2px auto;
+            margin: 4px auto;
             width: 100%;
-            height: min(13vw, 8vh); 
+            height: min(22vw, 12vh); /* Altezza quasi raddoppiata */
             display: flex; justify-content: center; align-items: center;
             -webkit-mask-image: url('assets/studiomurenanet.png');
             mask-image: url('assets/studiomurenanet.png');
@@ -121,15 +124,15 @@
             background: #000; color: #00ff00; padding: 2px; border: 2px solid #555; width: 100%;
             overflow: hidden; white-space: nowrap; margin-bottom: 4px; box-shadow: inset 2px 2px 0 #000;
         }
-        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 12px; }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 14px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .huge-event-box {
             background: #000; color: #fff; padding: 4px; margin-bottom: 6px; width: 100%;
             text-align: center; border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
         }
-        .huge-event-box h2 { font-size: min(5vw, 20px); margin: 0; }
-        .huge-event-box h1 { font-size: min(8vw, 28px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
+        .huge-event-box h2 { font-size: min(6vw, 22px); margin: 0; }
+        .huge-event-box h1 { font-size: min(10vw, 32px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
 
         /* --- WORKSPACE (GRID PER POP-UP INCASTRATI) --- */
         .workspace {
@@ -153,9 +156,9 @@
         }
         .artist-item:active { border: 1px dotted #808080; background: #e0e0e0; }
 
-        /* MOTORE SPRITE 25 FRAME (5x5 GRID) */
+        /* SPRITE OSPITI INGRANDITE (da 40x40 a 52x52) */
         .sprite-25 {
-            width: 40px; height: 40px; margin-bottom: 2px;
+            width: 52px; height: 52px; margin-bottom: 2px;
             image-rendering: pixelated;
             background-color: transparent; 
             background-size: 500% 500%; 
@@ -163,27 +166,28 @@
             background-repeat: no-repeat;
         }
 
-        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 9px; font-weight: bold; line-height: 1.1; }
+        /* FONT OSPITI PIÙ GRANDE */
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 11px; font-weight: bold; line-height: 1.1; }
 
-        /* ICONE STATICHE E GIF CUSTOM */
-        .custom-icon { width: 32px; height: 32px; image-rendering: pixelated; object-fit: contain; }
+        /* ICONE STATICHE E GIF CUSTOM INGRANDITE */
+        .custom-icon { width: 40px; height: 40px; image-rendering: pixelated; object-fit: contain; margin-bottom: 2px; }
 
-        /* NUOVA ICONA PER ARTISTA ENCRYPTED (Garantisce bordo nero stile sprite) */
+        /* ICONA SEGRETA INGRANDITA */
         .fixed-artist-icon {
-            width: 40px; height: 40px; margin-bottom: 2px;
+            width: 52px; height: 52px; margin-bottom: 2px;
             border: 2px solid #000; background-color: #555;
             display: flex; justify-content: center; align-items: center;
         }
         .fixed-artist-icon img {
-            width: 28px; height: 28px;
+            width: 36px; height: 36px;
             image-rendering: pixelated; object-fit: contain;
         }
 
-        /* POP-UP PICCOLI SOTTO */
+        /* POP-UP PICCOLI SOTTO (Font in tutti aumentati a 11px) */
         /* ALERT CON EFFETTO GLITCH */
         #warning-window { grid-column: 1; z-index: 102; animation: glitch 4s infinite; }
         .warning-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .warning-text { font-size: 9px; font-weight: bold; line-height: 1.2; color: #800000; }
+        .warning-text { font-size: 11px; font-weight: bold; line-height: 1.2; color: #800000; }
         
         @keyframes glitch {
             0%   { transform: scale(1); filter: none; }
@@ -196,20 +200,20 @@
 
         #reveal-window { grid-column: 2; z-index: 106; }
         .reveal-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .reveal-text { font-size: 9px; font-weight: bold; line-height: 1.2; }
+        .reveal-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
 
         #network-window { grid-column: 1; z-index: 104; }
         .network-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .network-text { font-size: 9px; font-weight: bold; line-height: 1.2; }
+        .network-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
         
         #loading-window { grid-column: 2; z-index: 103; }
-        .loading-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; font-size: 9px; flex-grow: 1; text-align: center; gap: 4px; }
-        .loading-text { font-size: 9px; font-weight: bold; line-height: 1.2; }
+        .loading-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
+        .loading-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
         .progress-bar-container { width: 100%; height: 8px; margin: 4px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
 
-        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 2px 6px; margin-top: 4px; font-weight: bold; width: 80%; }
+        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 11px; cursor: pointer; padding: 3px 8px; margin-top: 6px; font-weight: bold; width: 85%; }
         .btn-mini:active { border-color: #808080 #fff #fff #808080; }
 
         /* --- TASKBAR --- */
@@ -220,18 +224,18 @@
         .start-btn {
             background: var(--win-gray); border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
             border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
-            padding: 2px 6px; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
+            padding: 2px 6px; font-size: 13px; display: flex; align-items: center; gap: 4px; cursor: pointer;
         }
         .start-btn:active { border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); }
         .task-slot {
             margin: 0 4px; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
             flex-grow: 1; height: 22px; display: flex; align-items: center;
-            padding-left: 6px; font-size: 10px; white-space: nowrap; overflow: hidden;
+            padding-left: 6px; font-size: 11px; white-space: nowrap; overflow: hidden;
             background-color: var(--win-light); font-weight: bold;
         }
         .clock {
             margin-left: auto; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
-            padding: 2px 6px; font-size: 10px;
+            padding: 2px 6px; font-size: 11px;
         }
     </style>
 </head>
@@ -340,7 +344,7 @@
                             <div class="title-bar drag-handle"><span>System.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
                             <div class="reveal-content win95-border-inset">
                                 <img src="assets/info.png" class="custom-icon" alt="Info">
-                                <div class="reveal-text">Decrypting remaining guest profiles...<br>ETA: SOON.<br>Stay tuned to this frequency.</div>
+                                <div class="reveal-text">Decrypting remaining guest profiles...<br>ETA: SOON.<br>Stay tuned to frequency.</div>
                                 <button class="btn-mini" onclick="closeWindow('reveal-window')">ACKNOWLEDGE</button>
                             </div>
                         </div>
@@ -348,7 +352,7 @@
                         <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                             <div class="title-bar drag-handle"><span>Network Interface</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
                             <div class="network-content win95-border-inset">
-                                <div class="sprite-25" style="background-image: url('assets/network.png'); width: 32px; height: 32px;"></div>
+                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 2px;"></div>
                                 <div class="network-text">Secure Connection Est.<br>Node: Magnolia.<br>Init sequence?</div>
                                 <button class="btn-mini" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">EXECUTE</button>
                             </div>
@@ -379,7 +383,7 @@
         let isGlobalDragging = false;
         let highestZIndex = 110;
 
-        // MOTORE ANIMAZIONE SPRITE 25-FRAME (5x5 GRID) IN JAVASCRIPT
+        // MOTORE ANIMAZIONE SPRITE 25-FRAME
         setInterval(() => {
             const sprites = document.querySelectorAll('.sprite-25');
             sprites.forEach(sprite => {
@@ -448,7 +452,6 @@
             element.style.zIndex = highestZIndex;
         }
 
-        // Applica Draggable
         makeDraggable(document.getElementById("icon-internet"), null);
         makeDraggable(document.getElementById("icon-murena"), null);
         makeDraggable(document.getElementById("icon-jazzcore"), null);
@@ -462,7 +465,7 @@
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
-        // CONNESSIONE: NASCONDE DESKTOP E APRE BROWSER (VELOCIZZATA)
+        // CONNESSIONE SPRINT
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
@@ -474,7 +477,6 @@
             taskbarItem.style.display = 'flex';
             taskbarItem.innerText = 'Dial-Up Connection';
             
-            // Tempi tagliati drasticamente (~60% più veloce)
             setTimeout(() => { dialupText.innerText = "Verifying credentials..."; }, 600);
             setTimeout(() => { dialupText.innerText = "Bypassing mainframe..."; }, 1200);
             setTimeout(() => { dialupText.innerText = "Connected at 56,000 bps."; }, 1800);
@@ -494,7 +496,6 @@
             document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
         }
 
-        // OROLOGIO
         function updateClock() {
             const now = new Date();
             let hours = now.getHours().toString().padStart(2, '0');
