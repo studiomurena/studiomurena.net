@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>studiomurena.net</title>
+    <style>
+        /* Font Pixel stile BIOS/DOS per i testi normali */
+        @import url('https://fonts.cdnfonts.com/css/vga-437');
+        /* Nuovo Font puramente Pixel Art per il titolo gigante */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        :root {
+            --teal: #008080;
+            --win-gray: #c0c0c0;
+            --win-blue: #000080;
+            --win-light: #ffffff;
+            --win-dark: #000000;
+            --win-border-light: #dfdfdf;
+            --win-border-dark: #808080;
+            --web-bg: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            height: 100vh; height: 100dvh;
+            background-color: #000;
+            font-family: 'VGA 437', monospace;
+            user-select: none;
+            overflow: hidden; 
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .win95-border {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
+            box-shadow: inset -1px -1px 0 var(--win-border-dark), inset 1px 1px 0 var(--win-border-light);
+        }
+
+        .win95-border-inset {
+            background-color: var(--win-light);
+            border-top: 2px solid var(--win-border-dark); border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
+            box-shadow: inset 1px 1px 0 var(--win-dark);
+        }
+
+        .ig-stories-poster {
+            height: 100%; width: 100vw; max-width: 600px;
+            background-color: var(--teal); display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+        }
+
+        .ig-stories-poster::after {
+            content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.04) 50%);
+            background-size: 100% 4px; z-index: 1000; pointer-events: none;
+        }
+
+        /* --- DESKTOP --- */
+        .desktop { flex-grow: 1; position: relative; z-index: 10; }
+        .desktop-icon {
+            position: absolute; width: 80px; text-align: center; color: white; font-size: 12px;
+            cursor: pointer; text-shadow: 1px 1px #000; padding: 5px; z-index: 20;
+        }
+        .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
+        .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
+
+        #icon-internet { top: 20px; left: 20px; }
+        #icon-murena { top: 120px; left: 20px; }
+        #icon-jazzcore { top: 220px; left: 20px; }
+        #icon-cestino { top: 320px; left: 20px; }
+        #icon-game { top: 420px; left: 20px; } 
+
+        .title-bar {
+            background: var(--win-blue); color: white; padding: 3px 8px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px; 
+        }
+        .drag-handle { cursor: move; }
+        .btn-close {
+            background: var(--win-gray); border: 2px solid; border-color: #fff #000 #000 #fff;
+            color: black; font-weight: bold; padding: 0 4px; font-size: 11px; cursor: pointer;
+        }
+
+        #dialup-window {
+            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 200;
+        }
+        .dialup-content { padding: 15px; text-align: center; }
+
+        /* --- BROWSER INTERNET --- */
+        #browser-window {
+            display: none; position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; z-index: 50; flex-direction: column;
+        }
+        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
+
+        .browser-content {
+            background-color: var(--web-bg); 
+            flex-grow: 1; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; padding: 4px;
+        }
+
+        /* --- SEZIONE ALTA (HEADER) --- */
+        .main-title {
+            flex-shrink: 0; 
+            margin: 12px auto; 
+            width: 100%; 
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Press Start 2P', monospace; 
+            font-size: 5.6vw; 
+            text-transform: lowercase; 
+            white-space: nowrap; 
+            letter-spacing: -1px;
+            animation: colorCycleText 2s infinite alternate;
+        }
+
+        @keyframes colorCycleText { 
+            0% { color: #000080; } 
+            50% { color: #008080; } 
+            100% { color: #000000; } 
+        }
+
+        .marquee-box {
+            flex-shrink: 0; background: #000; color: #00ff00; padding: 2px; border: 2px solid #555; width: 100%;
+            overflow: hidden; white-space: nowrap; margin-bottom: 4px; box-shadow: inset 2px 2px 0 #000;
+        }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 12px; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .huge-event-box {
+            flex-shrink: 0; background: #000; color: #fff; padding: 2px; margin-bottom: 4px; width: 100%;
+            text-align: center; border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
+        }
+        .huge-event-box h2 { font-size: min(5vw, 18px); margin: 0; }
+        .huge-event-box h1 { font-size: min(8vw, 26px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex-grow: 1; min-height: 0; display: grid; gap: 2px; width: 100%;
+            grid-template-columns: 1fr 1fr; grid-template-rows: auto auto minmax(0, 1fr); 
+        }
+
+        .popup { position: relative; box-shadow: 3px 3px 0 rgba(0,0,0,0.6); display: flex; flex-direction: column; }
+
+        /* GRIGLIA ARTISTI */
+        #artists-window { grid-column: 1 / -1; z-index: 105; }
+        .artist-grid {
+            background: var(--win-light); padding: 1px; flex-grow: 1;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+        }
+        .artist-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 1px; border: 1px dotted transparent; cursor: pointer; text-align: center;
+        }
+        .artist-item:active { border: 1px dotted #808080; background: #e0e0e0; }
+
+        .sprite-25 {
+            width: 48px; height: 48px; margin-bottom: 1px; image-rendering: pixelated;
+            background-color: transparent; background-size: 500% 500%; 
+            background-position: 0% 0%; background-repeat: no-repeat;
+        }
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
+
+        .custom-icon { width: 28px; height: 28px; image-rendering: pixelated; object-fit: contain; margin-bottom: 1px; }
+        .fixed-artist-icon {
+            width: 48px; height: 48px; margin-bottom: 1px; border: 2px solid #000; background-color: #555;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .fixed-artist-icon img { width: 32px; height: 32px; image-rendering: pixelated; object-fit: contain; }
+
+        /* POP-UP PICCOLI */
+        .mini-popup-content {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 2px; gap: 1px; flex-grow: 1; text-align: center;
+        }
+        .mini-popup-text { font-size: 9px; font-weight: bold; line-height: 1.1; }
+
+        #warning-window { grid-column: 1; z-index: 102; animation: glitch 4s infinite; }
+        .warning-text { color: #800000; }
+        @keyframes glitch {
+            0% { transform: scale(1); filter: none; } 95% { transform: scale(1); filter: none; }
+            96% { transform: scale(1.05) translate(2px, -2px); filter: hue-rotate(90deg) invert(1); }
+            97% { transform: scale(1) translate(-2px, 2px); filter: hue-rotate(-90deg); }
+            98% { transform: scale(1.02); filter: blur(1px); } 100% { transform: scale(1); filter: none; }
+        }
+
+        #reveal-window { grid-column: 2; z-index: 106; }
+        #network-window { grid-column: 1; z-index: 104; }
+        #loading-window { grid-column: 2; z-index: 103; }
+
+        .progress-bar-container { width: 90%; height: 6px; margin: 2px 0; }
+        .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
+        @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
+
+        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 1px 4px; margin-top: 1px; font-weight: bold; width: 85%; }
+        .btn-mini:active { border-color: #808080 #fff #fff #808080; }
+
+        /* --- FINESTRA GIOCO (MURENA SLOT) --- */
+        #game-window {
+            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; z-index: 400; background: var(--win-gray);
+        }
+        .game-content { padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        
+        .game-input-area { margin-bottom: 15px; width: 100%; }
+        .game-input-area input {
+            width: 80%; padding: 5px; font-family: 'VGA 437', monospace; font-size: 14px;
+            border: 2px solid; border-color: var(--win-border-dark) var(--win-light) var(--win-light) var(--win-border-dark);
+            margin-top: 5px; margin-bottom: 10px; background: #fff;
+        }
+
+        .slot-machine { display: none; gap: 5px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .slot-box {
+            width: 50px; height: 50px; background: var(--win-light);
+            border: 3px solid; border-color: var(--win-light) var(--win-border-dark) var(--win-border-dark) var(--win-light);
+            display: flex; justify-content: center; align-items: center; font-size: 28px;
+            cursor: pointer; user-select: none;
+        }
+        .slot-box.revealed { border-color: var(--win-border-dark) var(--win-light) var(--win-light) var(--win-border-dark); background: #eee; cursor: default; }
+
+        .game-msg { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: var(--win-blue); min-height: 20px;}
+        .btn-game { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 14px; cursor: pointer; padding: 5px 15px; font-weight: bold; }
+        .btn-game:active { border-color: #808080 #fff #fff #808080; }
+
+        /* --- TASKBAR --- */
+        .taskbar {
+            height: 35px; background: var(--win-gray); border-top: 2px solid var(--win-light);
+            display: flex; align-items: center; padding: 0 4px; flex-shrink: 0; z-index: 500; width: 100%;
+        }
+        .start-btn {
+            background: var(--win-gray); border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
+            padding: 2px 6px; font-size: 13px; display: flex; align-items: center; gap: 4px; cursor: pointer;
+        }
+        .start-btn:active { border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); }
+        .task-slot {
+            margin: 0 4px; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
+            flex-grow: 1; height: 22px; display: flex; align-items: center;
+            padding-left: 6px; font-size: 11px; white-space: nowrap; overflow: hidden;
+            background-color: var(--win-light); font-weight: bold;
+        }
+        .clock {
+            margin-left: auto; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
+            padding: 2px 6px; font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ig-stories-poster">
+        
+        <div class="desktop" id="desktop-area">
+            <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
+                <span class="icon-art">🌐</span><u>I</u>nternet
+            </div>
+            <div class="desktop-icon" id="icon-murena" onclick="if(!isGlobalDragging) alert('Directory access denied.')">
+                <span class="icon-art">📁</span>MURENA
+            </div>
+            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) alert('Insert Disc 2')">
+                <span class="icon-art">💿</span>JAZZCORE
+            </div>
+            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) alert('Recycle Bin is empty.')">
+                <span class="icon-art">🗑️</span>CESTINO
+            </div>
+            <div class="desktop-icon" id="icon-game" onclick="if(!isGlobalDragging) openGame()">
+                <span class="icon-art">🎰</span>MURENA_SLOT
+            </div>
+
+            <div id="dialup-window" class="win95-border popup" style="position:absolute;">
+                <div class="title-bar"><span>Connecting...</span></div>
+                <div class="dialup-content">
+                    <div style="font-size: 32px; margin-bottom: 5px;">☎️ 💻</div>
+                    <div id="dialup-text" style="font-size: 12px; font-weight: bold;">Dialing 555-MURENA...</div>
+                </div>
+            </div>
+
+            <div id="game-window" class="win95-border popup" style="position:absolute;">
+                <div class="title-bar drag-handle">
+                    <span>MURENA_SLOT.exe</span>
+                    <span class="btn-close" onclick="closeWindow('game-window')">X</span>
+                </div>
+                <div class="game-content win95-border-inset">
+                    
+                    <div id="game-phase-1" class="game-input-area">
+                        <div style="font-size: 36px; margin-bottom: 5px;">🎁</div>
+                        <div style="font-size: 12px; font-weight: bold;">FIND 5 MATCHING ITEMS TO WIN!</div>
+                        <div style="font-size: 10px; margin-top: 5px;">Enter your email to verify your ID:</div>
+                        <input type="email" id="player-email" placeholder="user@domain.com">
+                        <br>
+                        <button class="btn-game" onclick="startGame()">INITIATE SEQUENCE</button>
+                    </div>
+
+                    <div id="game-phase-2" style="display:none; width: 100%;">
+                        <div class="game-msg" id="game-message">Decrypting boxes... click to open!</div>
+                        <div class="slot-machine" id="slot-machine">
+                            <div class="slot-box" onclick="revealBox(0)" id="box-0">?</div>
+                            <div class="slot-box" onclick="revealBox(1)" id="box-1">?</div>
+                            <div class="slot-box" onclick="revealBox(2)" id="box-2">?</div>
+                            <div class="slot-box" onclick="revealBox(3)" id="box-3">?</div>
+                            <div class="slot-box" onclick="revealBox(4)" id="box-4">?</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="browser-window" class="win95-border">
+                <div class="title-bar" id="browser-title-bar">
+                    <span>studiomurena.net - Microsoft Internet Explorer</span>
+                    <span class="btn-close" onclick="closeBrowser()">X</span>
+                </div>
+                <div class="browser-toolbar">
+                    File &nbsp; Edit &nbsp; View &nbsp; Favorites &nbsp; Tools &nbsp; Help<br>
+                    <hr style="border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 2px 0;">
+                    Address: <b>http://www.studiomurena.net</b>
+                </div>
+                
+                <div class="browser-content">
+                    
+                    <div class="main-title">studiomurena.net</div>
+                    
+                    <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
+                    <div class="huge-event-box">
+                        <h2>CIRCOLO MAGNOLIA</h2>
+                        <h1>18 . 06 . 2026</h1>
+                    </div>
+
+                    <div class="workspace">
+                        
+                        <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Guest List Explorer</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
+                            <div class="artist-grid win95-border-inset">
+                                <div class="artist-item" onclick="alert('Arya module executed.')">
+                                    <div class="sprite-25" style="background-image: url('assets/arya-spritesheet.png');"></div>
+                                    <div class="artist-name">Arya.vars</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Fresh Mula stream connected.')">
+                                    <div class="sprite-25" style="background-image: url('assets/freshmula-spritesheet.png');"></div>
+                                    <div class="artist-name">FreshMula.flow</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Silent Bob protocol active.')">
+                                    <div class="sprite-25" style="background-image: url('assets/silentbob-spritesheet.png');"></div>
+                                    <div class="artist-name">SilentBob.dll</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Riccardo Sala waves loaded.')">
+                                    <div class="sprite-25" style="background-image: url('assets/riccardosala-spritesheet.png');"></div>
+                                    <div class="artist-name">RiccardoSala.jazz</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Jack The Smoker disk mounted.')">
+                                    <div class="sprite-25" style="background-image: url('assets/jackthesmoker-spritesheet.png');"></div>
+                                    <div class="artist-name">JackSmoker.iso</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Dutch Nazari script running.')">
+                                    <div class="sprite-25" style="background-image: url('assets/dutchnazari-spritesheet.png');"></div>
+                                    <div class="artist-name">DutchNazari.bat</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Daykoda binary initialized.')">
+                                    <div class="sprite-25" style="background-image: url('assets/daykoda-spritesheet.png');"></div>
+                                    <div class="artist-name">Daykoda.bin</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Carlo Corallo system online.')">
+                                    <div class="sprite-25" style="background-image: url('assets/carlocorallo-spritesheet.png');"></div>
+                                    <div class="artist-name">CarloCorallo.sys</div>
+                                </div>
+                                <div class="artist-item" style="background:#ddd;" onclick="alert('ERR_403: DECRYPTION FAILED.')">
+                                    <div class="fixed-artist-icon"><img src="assets/incognito.png" alt="Mystery"></div>
+                                    <div class="artist-name" style="color:red; text-decoration:none;">ENCRYPTED.raw</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>FATAL_ERR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/alert.png" class="custom-icon" alt="Warning">
+                                <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
+                                <button class="btn-mini" onclick="closeWindow('warning-window')">IGNORE</button>
+                            </div>
+                        </div>
+
+                        <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Sys.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/info.png" class="custom-icon" alt="Info">
+                                <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
+                                <button class="btn-mini" onclick="closeWindow('reveal-window')">ACKNOWLEDGE</button>
+                            </div>
+                        </div>
+
+                        <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
+                                <div class="mini-popup-text">Node: Magnolia.<br>Init seq?</div>
+                                <button class="btn-mini" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">EXECUTE</button>
+                            </div>
+                        </div>
+
+                        <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Process</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/loading.gif" class="custom-icon" alt="Loading...">
+                                <div class="mini-popup-text">Synching tempos...</div>
+                                <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="taskbar">
+            <div class="start-btn" onclick="alert('STUDIO MURENA 2026 - All Rights Reserved')">🪟 Start</div>
+            <div class="task-slot" id="taskbar-item" style="display:none;"></div>
+            <div class="clock" id="clock">18:06</div>
+        </div>
+
+    </div>
+
+    <script>
+        let isGlobalDragging = false;
+        let highestZIndex = 110;
+
+        // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
+        
+        let boxesRevealed = 0;
+        let playerEmail = "";
+        let currentWinningItem = "";
+        let currentWinningName = "";
+        let currentWinningIcon = "";
+        
+        const randomIcons = ["🐉", "🖼️", "💿", "📜", "🏷️"]; 
+
+        function openGame() {
+            document.getElementById('game-window').style.display = 'block';
+            bringToFront(document.getElementById('game-window'));
+        }
+
+        function startGame() {
+            const emailInput = document.getElementById('player-email').value;
+            if (!emailInput || !emailInput.includes('@')) {
+                alert("ERR: INSERIRE EMAIL VALIDA.");
+                return;
+            }
+            playerEmail = emailInput;
+            
+            document.getElementById('game-phase-1').style.display = 'none';
+            document.getElementById('game-phase-2').style.display = 'flex';
+            document.getElementById('slot-machine').style.display = 'none';
+            const msgBox = document.getElementById('game-message');
+            msgBox.innerText = "Connecting to Murena Server... Please wait.";
+            msgBox.style.color = "var(--win-blue)";
+
+            const urlConEmail = scriptURL + "?email=" + encodeURIComponent(playerEmail);
+
+            fetch(urlConEmail)
+                .then(response => response.json())
+                .then(data => {
+                    currentWinningItem = data.id;
+                    currentWinningName = data.nome;
+                    currentWinningIcon = data.icon;
+                    
+                    msgBox.innerText = "Access Granted! Decrypting boxes... click to open!";
+                    document.getElementById('slot-machine').style.display = 'flex';
+                })
+                .catch(error => {
+                    msgBox.innerText = "SYS_ERR: Server offline. Riprova più tardi.";
+                    msgBox.style.color = "red";
+                    setTimeout(() => {
+                        document.getElementById('game-phase-1').style.display = 'block';
+                        document.getElementById('game-phase-2').style.display = 'none';
+                    }, 4000);
+                });
+        }
+
+        function revealBox(index) {
+            const box = document.getElementById('box-' + index);
+            if (box.classList.contains('revealed')) return;
+            
+            let displayIcon = currentWinningIcon;
+            if (currentWinningItem === "lose") {
+                displayIcon = randomIcons[Math.floor(Math.random() * randomIcons.length)];
+            }
+
+            box.innerText = displayIcon;
+            box.classList.add('revealed');
+            boxesRevealed++;
+
+            if (boxesRevealed === 5) {
+                setTimeout(checkWin, 500);
+            }
+        }
+
+        function checkWin() {
+            const msgBox = document.getElementById('game-message');
+            if (currentWinningItem === "lose") {
+                msgBox.style.color = "red";
+                msgBox.innerText = "SISTEMA: NESSUN MATCH TROVATO. Ritenta!";
+            } else {
+                msgBox.style.color = "green";
+                msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail.`;
+            }
+            
+            setTimeout(() => {
+                boxesRevealed = 0;
+                document.getElementById('game-phase-1').style.display = 'block';
+                document.getElementById('game-phase-2').style.display = 'none';
+                document.getElementById('slot-machine').style.display = 'none';
+                document.getElementById('game-message').innerText = "Decrypting boxes... click to open!";
+                document.getElementById('game-message').style.color = "var(--win-blue)";
+                for(let i=0; i<5; i++) {
+                    const box = document.getElementById('box-'+i);
+                    box.innerText = "?";
+                    box.classList.remove('revealed');
+                }
+            }, 6000);
+        }
+
+        // --- SISTEMA INTERFACCIA WEB OS ---
+
+        setInterval(() => {
+            const sprites = document.querySelectorAll('.sprite-25');
+            sprites.forEach(sprite => {
+                let currentFrame = parseInt(sprite.getAttribute('data-frame')) || 0;
+                currentFrame = (currentFrame + 1) % 25; 
+                sprite.setAttribute('data-frame', currentFrame);
+                let col = currentFrame % 5; let row = Math.floor(currentFrame / 5);
+                sprite.style.backgroundPosition = `${col * 25}% ${row * 25}%`;
+            });
+        }, 120);
+
+        function makeDraggable(element, handleSelector) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let handle = handleSelector ? element.querySelector(handleSelector) : element;
+            if (!handle) return;
+            handle.onmousedown = dragMouseDown; handle.ontouchstart = dragTouchStart;
+
+            function dragMouseDown(e) {
+                e = e || window.event; pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+                bringToFront(element);
+            }
+            function elementDrag(e) {
+                e = e || window.event; e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
+                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
+                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
+
+            function dragTouchStart(e) {
+                e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
+                bringToFront(element);
+            }
+            function elementTouchDrag(e) {
+                e = e || window.event; if(e.cancelable) e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
+                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+            }
+            function closeTouchDragElement() { document.ontouchend = null; document.ontouchmove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
+        }
+
+        function bringToFront(element) { highestZIndex += 1; element.style.zIndex = highestZIndex; }
+
+        makeDraggable(document.getElementById("icon-internet"), null);
+        makeDraggable(document.getElementById("icon-murena"), null);
+        makeDraggable(document.getElementById("icon-jazzcore"), null);
+        makeDraggable(document.getElementById("icon-cestino"), null);
+        makeDraggable(document.getElementById("icon-game"), null);
+
+        makeDraggable(document.getElementById("artists-window"), ".drag-handle");
+        makeDraggable(document.getElementById("warning-window"), ".drag-handle");
+        makeDraggable(document.getElementById("loading-window"), ".drag-handle");
+        makeDraggable(document.getElementById("network-window"), ".drag-handle");
+        makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
+        makeDraggable(document.getElementById("game-window"), ".drag-handle");
+
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+        function startDialUp() {
+            const dialupWindow = document.getElementById('dialup-window');
+            const dialupText = document.getElementById('dialup-text');
+            const browserWindow = document.getElementById('browser-window');
+            const taskbarItem = document.getElementById('taskbar-item');
+            const desktopIcons = document.querySelectorAll('.desktop-icon');
+            
+            dialupWindow.style.display = 'block'; taskbarItem.style.display = 'flex'; taskbarItem.innerText = 'Dial-Up Connection';
+            
+            setTimeout(() => { dialupText.innerText = "Verifying credentials..."; }, 600);
+            setTimeout(() => { dialupText.innerText = "Bypassing mainframe..."; }, 1200);
+            setTimeout(() => { dialupText.innerText = "Connected at 56,000 bps."; }, 1800);
+            
+            setTimeout(() => {
+                dialupWindow.style.display = 'none'; browserWindow.style.display = 'flex';
+                taskbarItem.innerText = 'studiomurena.net - IE'; dialupText.innerText = "Dialing 555-MURENA...";
+                desktopIcons.forEach(icon => icon.style.display = 'none');
+            }, 2200);
+        }
+
+        function closeBrowser() {
+            document.getElementById('browser-window').style.display = 'none';
+            document.getElementById('taskbar-item').style.display = 'none';
+            document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
+        setInterval(updateClock, 1000); updateClock();
+    </script>
+</body>
+</html>
