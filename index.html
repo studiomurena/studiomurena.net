@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>studiomurena.net</title>
+    <style>
+        /* Font Pixel stile BIOS/DOS */
+        @import url('https://fonts.cdnfonts.com/css/vga-437');
+
+        :root {
+            --teal: #008080;
+            --win-gray: #c0c0c0;
+            --win-blue: #000080;
+            --win-light: #ffffff;
+            --win-dark: #000000;
+            --win-border-light: #dfdfdf;
+            --win-border-dark: #808080;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: var(--teal);
+            font-family: 'VGA 437', monospace;
+            user-select: none;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mixin per i bordi Windows 95 */
+        .win95-border {
+            background-color: var(--win-gray);
+            border-top: 2px solid var(--win-light);
+            border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark);
+            border-bottom: 2px solid var(--win-dark);
+            box-shadow: inset -1px -1px 0 var(--win-border-dark), inset 1px 1px 0 var(--win-border-light);
+        }
+
+        .win95-border-inset {
+            background-color: var(--win-light);
+            border-top: 2px solid var(--win-border-dark);
+            border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+            box-shadow: inset 1px 1px 0 var(--win-dark);
+        }
+
+        /* --- CONTENITORE PRINCIPALE --- */
+        .ig-stories-poster {
+            height: 100vh;
+            width: 100vw;
+            max-width: 600px; /* Limite per mobile/desktop */
+            background-color: var(--teal);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Effetto CRT */
+        .ig-stories-poster::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* --- DESKTOP (Livello 1) --- */
+        .desktop {
+            flex-grow: 1;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .desktop-icon {
+            width: 70px;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            text-shadow: 1px 1px #000;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(255,255,255,0.2);
+            border: 1px dotted white;
+        }
+
+        .icon-art {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* --- BROWSER INTERNET (Livello 2 - Inizialmente Nascosto) --- */
+        #browser-window {
+            display: none; /* Cambiato tramite JS */
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: calc(100% - 40px);
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            background: var(--win-blue);
+            color: white;
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .btn-close {
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: #fff #000 #000 #fff;
+            color: black;
+            font-weight: bold;
+            padding: 0 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .browser-toolbar {
+            padding: 5px;
+            border-bottom: 2px solid var(--win-border-dark);
+            font-size: 12px;
+        }
+
+        .browser-content {
+            background-color: var(--win-gray);
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 10px;
+        }
+
+        /* --- ELEMENTI INTERNI AL BROWSER --- */
+        .main-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #000;
+            margin: 10px 0;
+            text-transform: lowercase;
+            letter-spacing: -2px;
+        }
+
+        /* Marquee */
+        .marquee-box {
+            background: #000;
+            color: #ffcc00;
+            padding: 5px;
+            border: 2px solid #555;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-bottom: 15px;
+            box-shadow: inset 2px 2px 0 #000;
+        }
+
+        .marquee-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 10s linear infinite;
+            font-size: 16px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Finestre Pop-up generiche */
+        .popup {
+            position: absolute;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+        }
+
+        /* Finestra Artisti */
+        #artists-window {
+            top: 130px; left: 10px; width: calc(100% - 70px);
+            max-width: 320px; z-index: 60;
+        }
+
+        .artist-list {
+            background: var(--win-light);
+            padding: 2px;
+            height: 250px;
+            overflow-y: auto;
+        }
+
+        .artist-item {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .artist-avatar { font-size: 24px; margin-right: 10px; }
+        .artist-info { flex-grow: 1; line-height: 1.2; }
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 14px; cursor: pointer; }
+        .artist-desc { font-size: 10px; color: #555; }
+        
+        .btn-open {
+            font-family: inherit; font-size: 10px;
+            background: #90EE90; border: 2px solid;
+            border-color: #fff #000 #000 #fff;
+            cursor: pointer; padding: 2px 6px;
+        }
+
+        /* Warning Popup */
+        #warning-window {
+            top: 100px; right: -20px; width: 220px; z-index: 70;
+        }
+        .warning-content {
+            display: flex; align-items: center; padding: 15px; gap: 15px;
+        }
+        .warning-icon { font-size: 32px; }
+        .warning-text { font-size: 14px; font-weight: bold; }
+        
+        /* Loading Popup */
+        #loading-window {
+            top: 300px; right: 10px; width: 240px; z-index: 80;
+        }
+        .loading-content { padding: 15px; font-size: 12px;}
+        .progress-bar-container {
+            width: 100%; height: 15px; margin: 10px 0;
+        }
+        .progress-bar-fill {
+            height: 100%; background: var(--win-blue); width: 0%;
+            animation: loading 4s infinite;
+        }
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 45%; }
+            100% { width: 45%; }
+        }
+        
+        /* Network Popup */
+        #network-window {
+            bottom: 50px; left: 50px; width: 200px; z-index: 90;
+        }
+        .network-content { text-align: center; padding: 15px; font-size: 12px; }
+        .btn-yes {
+            margin-top: 10px; width: 60px; height: 25px;
+            cursor: pointer; font-family: inherit; font-weight: bold;
+        }
+
+        /* --- TASKBAR --- */
+        .taskbar {
+            height: 40px;
+            background: var(--win-gray);
+            border-top: 2px solid var(--win-light);
+            display: flex;
+            align-items: center;
+            padding: 0 6px;
+            z-index: 200;
+            position: absolute;
+            bottom: 0; width: 100%;
+            box-sizing: border-box;
+        }
+
+        .start-btn {
+            background: var(--win-gray);
+            border-top: 2px solid var(--win-light);
+            border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark);
+            border-bottom: 2px solid var(--win-dark);
+            padding: 4px 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .start-btn:active {
+            border-top: 2px solid var(--win-dark);
+            border-left: 2px solid var(--win-dark);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+        }
+
+        .clock {
+            margin-left: auto;
+            border-top: 2px solid var(--win-dark);
+            border-left: 2px solid var(--win-dark);
+            border-right: 2px solid var(--win-light);
+            border-bottom: 2px solid var(--win-light);
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ig-stories-poster">
+        
+        <div class="desktop">
+            <div class="desktop-icon" onclick="openBrowser()">
+                <span class="icon-art">🌐</span>
+                <u>I</u>nternet
+            </div>
+        </div>
+
+        <div id="browser-window" class="win95-border">
+            <div class="title-bar">
+                <span>studiomurena.net - Search Results</span>
+                <span class="btn-close" onclick="closeBrowser()">X</span>
+            </div>
+            <div class="browser-toolbar">
+                File &nbsp; Edit &nbsp; View &nbsp; Favorites &nbsp; Tools &nbsp; Help<br>
+                <hr style="border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 4px 0;">
+                Address: <b>http://www.studiomurena.net</b>
+            </div>
+            
+            <div class="browser-content">
+                
+                <div class="main-title">studiomurena.net</div>
+                
+                <div class="marquee-box">
+                    <span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span>
+                </div>
+
+                <div id="artists-window" class="win95-border popup">
+                    <div class="title-bar"><span>Found 6 results</span><span class="btn-close">_ □ X</span></div>
+                    <div class="artist-list win95-border-inset">
+                        <div class="artist-item">
+                            <div class="artist-avatar">👩🏽‍🎤</div>
+                            <div class="artist-info">
+                                <div class="artist-name">Arya.exe</div>
+                                <div class="artist-desc">Neo Soul / Vibes<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Arya is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item">
+                            <div class="artist-avatar">🕶️</div>
+                            <div class="artist-info">
+                                <div class="artist-name">FreshMula.zip</div>
+                                <div class="artist-desc">Trap / Flow<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item">
+                            <div class="artist-avatar">🧢</div>
+                            <div class="artist-info">
+                                <div class="artist-name">SilentBob.dll</div>
+                                <div class="artist-desc">Bars / Truth<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item">
+                            <div class="artist-avatar">🎧</div>
+                            <div class="artist-info">
+                                <div class="artist-name">Daykoda.wav</div>
+                                <div class="artist-desc">Producer / Hybrid<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item">
+                            <div class="artist-avatar">🔥</div>
+                            <div class="artist-info">
+                                <div class="artist-name">JackTheSmoker.iso</div>
+                                <div class="artist-desc">Boom Bap / Real<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item">
+                            <div class="artist-avatar">📝</div>
+                            <div class="artist-info">
+                                <div class="artist-name">DutchNazari.txt</div>
+                                <div class="artist-desc">Lyricist / Conscious<br>128KB</div>
+                            </div>
+                            <button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN ▶</button>
+                        </div>
+                        <div class="artist-item" style="background:#ddd;">
+                            <div class="artist-avatar">❓</div>
+                            <div class="artist-info">
+                                <div class="artist-name" style="color:red;">ENCRYPTED.bat</div>
+                                <div class="artist-desc">Classified / ???<br>UNKNWN</div>
+                            </div>
+                            <button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCKED</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="warning-window" class="win95-border popup">
+                    <div class="title-bar" style="background: var(--win-blue);"><span>WARNING: HOT_MUSIC.EXE</span><span class="btn-close">X</span></div>
+                    <div class="warning-content">
+                        <div class="warning-icon">⚠️</div>
+                        <div>
+                            <div class="warning-text">LIVE CONCERT<br>DETECTED</div>
+                            <button class="win95-border" style="margin-top: 10px; width: 100%; cursor:pointer; font-family:inherit;">OK</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="loading-window" class="win95-border popup">
+                    <div class="title-bar"><span>Loading...</span><span class="btn-close">X</span></div>
+                    <div class="loading-content">
+                        <div>Loading guest network...</div>
+                        <div class="progress-bar-container win95-border-inset">
+                            <div class="progress-bar-fill"></div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                            <div style="font-size: 24px;">🌍</div>
+                            <div>
+                                connecting artists...<br>
+                                building memories...<br>
+                                preparing something special...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="network-window" class="win95-border popup">
+                    <div class="title-bar"><span>studiomurena.net</span></div>
+                    <div class="network-content">
+                        <div style="font-size: 24px; float: left; margin-right: 10px;">ℹ️</div>
+                        <div style="text-align: left;">Are you ready<br>to join the network?</div>
+                        <button class="win95-border btn-yes" onclick="alert('Welcome to the journey!')">YES</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="taskbar">
+            <div class="start-btn">🪟 Start</div>
+            <div class="clock" id="clock">18:06</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Funzioni per aprire e chiudere il browser cliccando l'icona
+        function openBrowser() {
+            document.getElementById('browser-window').style.display = 'flex';
+        }
+
+        function closeBrowser() {
+            document.getElementById('browser-window').style.display = 'none';
+        }
+
+        // Script orologio real-time per la taskbar
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = hours + ':' + minutes;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
