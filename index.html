@@ -108,15 +108,14 @@
             margin: 12px auto; 
             width: 100%; 
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Press Start 2P', monospace; /* FONT PIXEL ART DEDICATO */
-            font-size: 5.6vw; /* Larghezza calcolata per occupare più spazio laterale possibile senza sbrodolare */
+            font-family: 'Press Start 2P', monospace; 
+            font-size: 5.6vw; 
             text-transform: lowercase; 
             white-space: nowrap; 
             letter-spacing: -1px;
             animation: colorCycleText 2s infinite alternate;
         }
 
-        /* Nuovo Keyframe che cambia il "color" del testo, non il background */
         @keyframes colorCycleText { 
             0% { color: #000080; } 
             50% { color: #008080; } 
@@ -426,20 +425,18 @@
         let isGlobalDragging = false;
         let highestZIndex = 110;
 
-        // --- MOTORE DEL GIOCO ---
+        // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
+        // IL TUO LINK GOOGLE:
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzmFyjDllwBDV0hKm7OhEUV3IZYuTPKFvNHEgEjKe_1kEPEjyAXGAGtsTNTO-mNWXYw/exec';
+        
         let boxesRevealed = 0;
         let playerEmail = "";
         let currentWinningItem = "";
+        let currentWinningName = "";
+        let currentWinningIcon = "";
         
-        // I premi.
-        const prizes = {
-            "ticket": { icon: "🐉", name: "2x BIGLIETTI GRATIS", chance: 0.02 }, 
-            "poster": { icon: "🖼️", name: "POSTER AUTOGRAFATO", chance: 0.05 }, 
-            "cd": { icon: "💿", name: "CD WADI", chance: 0.10 },                 
-            "scaletta": { icon: "📜", name: "SCALETTA FIRMATA", chance: 0.13 },   
-            "adesivo": { icon: "🏷️", name: "ADESIVO OMAGGIO", chance: 0.20 },     
-            "lose": { icon: "❌", name: "Niente, ritenta!", chance: 0.50 }        
-        };
+        // Icone usate per confondere l'utente se perde (Così non trova 5 simboli uguali)
+        const randomIcons = ["🐉", "🖼️", "💿", "📜", "🏷️"]; 
 
         function openGame() {
             document.getElementById('game-window').style.display = 'block';
@@ -453,31 +450,50 @@
                 return;
             }
             playerEmail = emailInput;
+            
+            // Nasconde Fase 1 e mostra loading
             document.getElementById('game-phase-1').style.display = 'none';
             document.getElementById('game-phase-2').style.display = 'flex';
-            document.getElementById('slot-machine').style.display = 'flex';
-            
-            let rand = Math.random();
-            let cumulative = 0;
-            currentWinningItem = "lose"; 
-            
-            for (let key in prizes) {
-                cumulative += prizes[key].chance;
-                if (rand <= cumulative) {
-                    currentWinningItem = key;
-                    break;
-                }
-            }
+            document.getElementById('slot-machine').style.display = 'none';
+            const msgBox = document.getElementById('game-message');
+            msgBox.innerText = "Connecting to Murena Server... Please wait.";
+            msgBox.style.color = "var(--win-blue)";
+
+            // Contatta Google Fogli segretamente
+            const formData = new URLSearchParams();
+            formData.append('email', playerEmail);
+
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    // Google ha risposto con l'esito
+                    currentWinningItem = data.id;
+                    currentWinningName = data.nome;
+                    currentWinningIcon = data.icon;
+                    
+                    // Mostra la griglia
+                    msgBox.innerText = "Access Granted! Decrypting boxes... click to open!";
+                    document.getElementById('slot-machine').style.display = 'flex';
+                })
+                .catch(error => {
+                    // Se qualcosa va storto con la connessione
+                    msgBox.innerText = "SYS_ERR: Server offline. Riprova più tardi.";
+                    msgBox.style.color = "red";
+                    setTimeout(() => {
+                        document.getElementById('game-phase-1').style.display = 'block';
+                        document.getElementById('game-phase-2').style.display = 'none';
+                    }, 4000);
+                });
         }
 
         function revealBox(index) {
             const box = document.getElementById('box-' + index);
             if (box.classList.contains('revealed')) return;
             
-            let displayIcon = prizes[currentWinningItem].icon;
+            // Se vince, esce sempre la stessa icona. Se perde, icone a caso.
+            let displayIcon = currentWinningIcon;
             if (currentWinningItem === "lose") {
-                const randomKeys = Object.keys(prizes);
-                displayIcon = prizes[randomKeys[Math.floor(Math.random() * randomKeys.length)]].icon;
+                displayIcon = randomIcons[Math.floor(Math.random() * randomIcons.length)];
             }
 
             box.innerText = displayIcon;
@@ -493,14 +509,13 @@
             const msgBox = document.getElementById('game-message');
             if (currentWinningItem === "lose") {
                 msgBox.style.color = "red";
-                msgBox.innerText = "SISTEMA: CONNESSIONE FALLITA. NESSUN MATCH TROVATO.";
+                msgBox.innerText = "SISTEMA: NESSUN MATCH TROVATO. Ritenta!";
             } else {
                 msgBox.style.color = "green";
-                msgBox.innerText = `JACKPOT! HAI VINTO: ${prizes[currentWinningItem].name}!\nInvio mail a ${playerEmail} in corso...`;
-                
-                console.log(`Simulazione: Invio mail a ${playerEmail} e studiomurena@gmail.com. Vinto: ${prizes[currentWinningItem].name}`);
+                msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail per i dettagli.`;
             }
             
+            // Reset automatico dopo 6 secondi
             setTimeout(() => {
                 boxesRevealed = 0;
                 document.getElementById('game-phase-1').style.display = 'block';
@@ -513,10 +528,12 @@
                     box.innerText = "?";
                     box.classList.remove('revealed');
                 }
-            }, 5000);
+            }, 6000);
         }
 
-        // MOTORE ANIMAZIONE SPRITE 25-FRAME
+        // --- SISTEMA INTERFACCIA WEB OS ---
+
+        // ANIMAZIONE SPRITE
         setInterval(() => {
             const sprites = document.querySelectorAll('.sprite-25');
             sprites.forEach(sprite => {
