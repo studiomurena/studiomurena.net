@@ -25,7 +25,7 @@
             background-color: #000;
             font-family: 'VGA 437', monospace;
             user-select: none;
-            overflow: hidden;
+            overflow: hidden; /* NESSUNO SCORRIMENTO ESTERNO */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,60 +33,46 @@
 
         .win95-border {
             background-color: var(--win-gray);
-            border-top: 2px solid var(--win-light);
-            border-left: 2px solid var(--win-light);
-            border-right: 2px solid var(--win-dark);
-            border-bottom: 2px solid var(--win-dark);
+            border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+            border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
             box-shadow: inset -1px -1px 0 var(--win-border-dark), inset 1px 1px 0 var(--win-border-light);
         }
 
         .win95-border-inset {
             background-color: var(--win-light);
-            border-top: 2px solid var(--win-border-dark);
-            border-left: 2px solid var(--win-border-dark);
-            border-right: 2px solid var(--win-light);
-            border-bottom: 2px solid var(--win-light);
+            border-top: 2px solid var(--win-border-dark); border-left: 2px solid var(--win-border-dark);
+            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
             box-shadow: inset 1px 1px 0 var(--win-dark);
         }
 
         .ig-stories-poster {
-            height: 100%;
-            width: 100vw;
-            max-width: 600px;
-            background-color: var(--teal);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            height: 100%; width: 100vw; max-width: 600px;
+            background-color: var(--teal); display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
 
+        /* Effetto CRT Schermo Vecchio */
         .ig-stories-poster::after {
-            content: " ";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 1000;
-            pointer-events: none;
+            background-size: 100% 4px; z-index: 1000; pointer-events: none;
         }
 
         /* --- DESKTOP --- */
         .desktop {
-            flex-grow: 1;
-            position: relative;
-            z-index: 10;
-            overflow: hidden;
+            flex-grow: 1; position: relative; z-index: 10; overflow: hidden;
         }
 
         .desktop-icon {
-            position: absolute; width: 80px; text-align: center;
-            color: white; font-size: 12px; cursor: pointer;
-            text-shadow: 1px 1px #000; padding: 5px; box-sizing: border-box; z-index: 20;
+            position: absolute; width: 80px; text-align: center; color: white; font-size: 12px;
+            cursor: pointer; text-shadow: 1px 1px #000; padding: 5px; box-sizing: border-box; z-index: 20;
         }
 
         .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
         .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
 
+        /* Posizioni icone */
         #icon-internet { top: 20px; left: 20px; }
         #icon-murena { top: 120px; left: 20px; }
         #icon-jazzcore { top: 220px; left: 20px; }
@@ -94,23 +80,17 @@
 
         .title-bar {
             background: var(--win-blue); color: white; padding: 4px 8px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 14px; 
+            display: flex; justify-content: space-between; align-items: center; font-size: 14px; 
         }
-
         .drag-handle { cursor: move; }
-
         .btn-close {
-            background: var(--win-gray); border: 2px solid;
-            border-color: #fff #000 #000 #fff; color: black;
-            font-weight: bold; padding: 0 4px; font-size: 12px; cursor: pointer;
+            background: var(--win-gray); border: 2px solid; border-color: #fff #000 #000 #fff;
+            color: black; font-weight: bold; padding: 0 4px; font-size: 12px; cursor: pointer;
         }
 
         #dialup-window {
-            display: none; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 300px; z-index: 200;
+            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; z-index: 200;
         }
-
         .dialup-content { padding: 20px; text-align: center; }
 
         /* --- BROWSER INTERNET --- */
@@ -118,121 +98,104 @@
             display: none; position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; z-index: 50; flex-direction: column;
         }
-
-        .browser-toolbar {
-            padding: 5px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px;
-        }
+        .browser-toolbar { padding: 5px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
 
         .browser-content {
-            background-color: var(--win-gray); flex-grow: 1; position: relative;
-            overflow-x: hidden; overflow-y: auto; padding: 10px;
+            background-color: var(--teal); /* Mantiene l'estetica scura/teal */
+            flex-grow: 1; position: relative;
+            overflow: hidden; /* NESSUN SCORRIMENTO INTERNO */
+            padding: 5px; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- SEZIONE ALTA PULITA E GIGANTE --- */
+        /* --- SEZIONE ALTA CONDENSATA --- */
         .main-title {
-            text-align: center; font-size: 46px; font-weight: bold; margin: 10px 0;
-            text-transform: lowercase; letter-spacing: -3px;
+            text-align: center; font-size: 38px; font-weight: bold; margin: 5px 0;
+            text-transform: lowercase; letter-spacing: -2px; color: #000;
             animation: colorCycle 2s infinite alternate;
         }
-
         @keyframes colorCycle {
             0% { color: #000080; text-shadow: 2px 2px 0px #fff; }
-            33% { color: #800080; text-shadow: -2px 2px 0px #fff; }
-            66% { color: #008080; text-shadow: 2px -2px 0px #fff; }
-            100% { color: #800000; text-shadow: -2px -2px 0px #fff; }
+            50% { color: #008080; text-shadow: 2px -2px 0px #fff; }
+            100% { color: #000000; text-shadow: -2px -2px 0px #fff; }
         }
 
         .marquee-box {
-            background: #000; color: #00ff00; padding: 8px; border: 2px solid #555;
-            overflow: hidden; white-space: nowrap; margin-bottom: 20px; box-shadow: inset 2px 2px 0 #000;
+            background: #000; color: #00ff00; padding: 4px; border: 2px solid #555; width: 95%; box-sizing: border-box;
+            overflow: hidden; white-space: nowrap; margin-bottom: 10px; box-shadow: inset 2px 2px 0 #000;
         }
-
-        .marquee-text {
-            display: inline-block; padding-left: 100%; animation: marquee 12s linear infinite; font-size: 18px;
-        }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 14px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .huge-event-box {
-            background: #000; color: #fff; padding: 20px; margin: 10px auto 30px auto;
-            width: 90%; text-align: center; border: 4px solid #fff; box-shadow: 8px 8px 0 var(--win-blue);
-            transform: rotate(-2deg); 
+            background: #000; color: #fff; padding: 10px; margin-bottom: 10px;
+            width: 95%; box-sizing: border-box; text-align: center; border: 4px solid #fff; box-shadow: 6px 6px 0 var(--win-blue);
+            transform: rotate(-1deg); 
         }
+        .huge-event-box h2 { font-size: 26px; margin: 0; }
+        .huge-event-box h1 { font-size: 40px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
 
-        .huge-event-box h1 { font-size: 46px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
-        .huge-event-box h2 { font-size: 32px; margin: 5px 0 0 0; }
-        .huge-event-box h3 { font-size: 18px; margin: 10px 0 0 0; color: #aaa; }
-
-        /* --- EASTER EGGS WEB 1.0 (Comandi per riaprire finestre) --- */
-        .web-1-layout {
-            display: flex; flex-wrap: wrap; justify-content: space-around; gap: 10px;
-            margin-bottom: 40px; text-align: center; font-size: 12px;
+        /* EASTER EGG / CONTROLLO POPUP COMPATTO */
+        .sys-control-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 95%; padding: 4px 8px; margin-bottom: 10px; box-sizing: border-box;
+            font-size: 10px; background: var(--win-gray);
         }
-        .web-box {
-            border: 2px dashed #808080; padding: 10px; width: 45%; background: #e0e0e0;
+        .sys-btns { display: flex; gap: 5px; }
+        .sys-btns button {
+            font-family: inherit; font-size: 9px; cursor: pointer; background: var(--win-light);
+            border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 4px; font-weight: bold;
         }
-        .retro-links a { color: blue; text-decoration: underline; cursor: pointer; display: block; margin: 6px 0; font-weight: bold; }
-        .hit-counter span { background: black; color: red; font-family: monospace; font-size: 20px; padding: 2px 6px; letter-spacing: 2px; border: inset 2px gray; }
-        .blink { animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+        .sys-btns button:active { border-color: #808080 #fff #fff #808080; }
 
-        /* --- FINESTRE POP-UP (Iniziano da metà in giù) --- */
-        .popup {
-            position: absolute; box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
-        }
+        /* --- FINESTRE POP-UP INCASTRATE SOTTO --- */
+        .popup { position: absolute; box-shadow: 4px 4px 0 rgba(0,0,0,0.7); }
 
-        /* Cartella Artisti (TUTTA VISIBILE) */
-        #artists-window { top: 480px; left: 5%; width: 90%; max-width: 400px; z-index: 60; }
-        .artist-list { background: var(--win-light); padding: 5px; height: auto; }
-        .artist-item { display: flex; align-items: center; padding: 8px; border-bottom: 2px dotted #ccc; }
-        .artist-avatar { font-size: 32px; margin-right: 15px; }
-        .artist-info { flex-grow: 1; line-height: 1.3; }
-        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .artist-desc { font-size: 12px; color: #555; }
-        .btn-open { font-family: inherit; font-size: 14px; background: #90EE90; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer; padding: 4px 10px; font-weight: bold; }
+        /* Cartella Artisti (PRIORITA' ASSOLUTA - Più in alto e in primo piano) */
+        #artists-window { top: 270px; left: 5%; width: 90%; z-index: 105; } /* Z-index alto di base */
+        .artist-list { background: var(--win-light); padding: 4px; height: auto; }
+        .artist-item { display: flex; align-items: center; padding: 4px; border-bottom: 1px dotted #ccc; }
+        .artist-avatar { font-size: 22px; margin-right: 10px; }
+        .artist-info { flex-grow: 1; line-height: 1.1; }
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .artist-desc { font-size: 10px; color: #555; }
+        .btn-open { font-family: inherit; font-size: 10px; background: #90EE90; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer; padding: 2px 6px; font-weight: bold; }
 
-        #warning-window { top: 700px; right: 5%; width: 260px; z-index: 70; }
-        .warning-content { display: flex; align-items: center; padding: 20px; gap: 15px; }
-        .warning-icon { font-size: 40px; }
-        .warning-text { font-size: 16px; font-weight: bold; }
+        /* Altri Popup incastrati dietro per creare disordine organizzato */
+        #warning-window { top: 240px; right: 5%; width: 220px; z-index: 102; }
+        .warning-content { display: flex; align-items: center; padding: 10px; gap: 10px; }
+        .warning-icon { font-size: 28px; }
+        .warning-text { font-size: 12px; font-weight: bold; }
         
-        #loading-window { top: 850px; left: 10%; width: 280px; z-index: 80; }
-        .loading-content { padding: 20px; font-size: 14px;}
-        .progress-bar-container { width: 100%; height: 20px; margin: 15px 0; }
+        #loading-window { top: 380px; left: 10%; width: 240px; z-index: 103; }
+        .loading-content { padding: 10px; font-size: 12px;}
+        .progress-bar-container { width: 100%; height: 15px; margin: 10px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
         
-        #network-window { top: 1000px; right: 10%; width: 250px; z-index: 90; }
-        .network-content { text-align: center; padding: 20px; font-size: 16px; }
-        .btn-yes { margin-top: 15px; width: 80px; height: 30px; font-size: 16px; cursor: pointer; font-family: inherit; font-weight: bold; }
+        #network-window { top: 460px; right: 10%; width: 200px; z-index: 104; }
+        .network-content { text-align: center; padding: 10px; font-size: 12px; }
+        .btn-yes { margin-top: 10px; width: 60px; height: 25px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: bold; }
 
         /* --- TASKBAR --- */
         .taskbar {
             height: 40px; background: var(--win-gray); border-top: 2px solid var(--win-light);
             display: flex; align-items: center; padding: 0 6px; flex-shrink: 0; z-index: 300; width: 100%; box-sizing: border-box;
         }
-
         .start-btn {
             background: var(--win-gray); border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
             border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
             padding: 4px 8px; font-size: 14px; display: flex; align-items: center; gap: 4px; cursor: pointer;
         }
-        
-        .start-btn:active {
-            border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
-            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
-        }
+        .start-btn:active { border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); }
 
         .task-slot {
-            margin: 0 8px; border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
-            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
+            margin: 0 8px; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
             flex-grow: 1; height: 26px; display: flex; align-items: center;
             padding-left: 8px; font-size: 12px; white-space: nowrap; overflow: hidden;
             background-color: var(--win-light); font-weight: bold;
         }
-
         .clock {
-            margin-left: auto; border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
-            border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
+            margin-left: auto; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
             padding: 4px 8px; font-size: 12px;
         }
     </style>
@@ -242,6 +205,7 @@
     <div class="ig-stories-poster">
         
         <div class="desktop" id="desktop-area">
+            
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
@@ -277,40 +241,33 @@
                 <div class="browser-content">
                     
                     <div class="main-title">studiomurena.net</div>
-                    <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; WE ARE BACK ONLINE</span></div>
+                    
+                    <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
 
                     <div class="huge-event-box">
                         <h2>CIRCOLO MAGNOLIA</h2>
                         <h1>18 . 06 . 2026</h1>
-                        <h3>A SPECIAL JOURNEY WITH FRIENDS</h3>
                     </div>
 
-                    <div class="web-1-layout">
-                        <div class="web-box hit-counter">
-                            YOU ARE VISITOR NO:<br>
-                            <span style="margin-top: 5px; display: inline-block;">00180626</span><br>
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1" alt="">
-                            <div class="blink" style="margin-top:5px; color:blue;">[ UNDER CONSTRUCTION 🚧 ]</div>
-                        </div>
-                        <div class="web-box retro-links">
-                            <b style="font-size:14px;">JAZZCORE SYSTEM CTL</b><br>
-                            <a onclick="showWindow('artists-window')">> OPEN GUEST LIST</a>
-                            <a onclick="showWindow('warning-window')">> EXECUTE HOT_MUSIC</a>
-                            <a onclick="showWindow('loading-window')">> CHECK NETWORK</a>
-                            <a onclick="showWindow('network-window')">> JOIN US</a>
+                    <div class="win95-border sys-control-bar">
+                        <div>VISITORS: <span style="background:black; color:red; padding:1px 4px; font-family:monospace; font-size:12px;">00180626</span></div>
+                        <div class="sys-btns">
+                            <button onclick="showWindow('artists-window')">GUESTS</button>
+                            <button onclick="showWindow('warning-window')">WARN</button>
+                            <button onclick="showWindow('loading-window')">NET</button>
                         </div>
                     </div>
 
                     <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>Found 6 results</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                         <div class="artist-list win95-border-inset">
-                            <div class="artist-item"><div class="artist-avatar">👩🏽‍🎤</div><div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div><button class="btn-open" onclick="alert('Arya is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🕶️</div><div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div><button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🧢</div><div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div><button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🎧</div><div class="artist-info"><div class="artist-name">Daykoda.wav</div><div class="artist-desc">Producer / Hybrid</div></div><button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🔥</div><div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div><button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item"><div class="artist-avatar">📝</div><div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Conscious</div></div><button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN ▶</button></div>
-                            <div class="artist-item" style="background:#ddd;"><div class="artist-avatar">❓</div><div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div><button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCKED</button></div>
+                            <div class="artist-item"><div class="artist-avatar">👩🏽‍🎤</div><div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div><button class="btn-open" onclick="alert('Arya is loading...')">OPEN</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🕶️</div><div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div><button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🧢</div><div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div><button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🎧</div><div class="artist-info"><div class="artist-name">Daykoda.wav</div><div class="artist-desc">Producer / Hybrid</div></div><button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🔥</div><div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div><button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN</button></div>
+                            <div class="artist-item"><div class="artist-avatar">📝</div><div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Conscious</div></div><button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN</button></div>
+                            <div class="artist-item" style="background:#ddd; border-bottom:none;"><div class="artist-avatar">❓</div><div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div><button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCK</button></div>
                         </div>
                     </div>
 
@@ -320,7 +277,7 @@
                             <div class="warning-icon">⚠️</div>
                             <div>
                                 <div class="warning-text">LIVE CONCERT<br>DETECTED</div>
-                                <button class="win95-border" style="margin-top: 10px; width: 100%; cursor:pointer; font-family:inherit; font-size:14px; padding:4px;" onclick="closeWindow('warning-window')">OK</button>
+                                <button class="win95-border" style="margin-top: 5px; width: 100%; cursor:pointer; font-family:inherit; font-size:10px; padding:2px;" onclick="closeWindow('warning-window')">OK</button>
                             </div>
                         </div>
                     </div>
@@ -330,9 +287,9 @@
                         <div class="loading-content">
                             <div>Loading guest network...</div>
                             <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
-                            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
-                                <div style="font-size: 32px;">🌍</div>
-                                <div style="line-height: 1.4;">connecting artists...<br>building memories...<br>preparing something special...</div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="font-size: 24px;">🌍</div>
+                                <div style="line-height: 1.2;">connecting artists...<br>building memories...</div>
                             </div>
                         </div>
                     </div>
@@ -340,14 +297,12 @@
                     <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>studiomurena.net</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
                         <div class="network-content">
-                            <div style="font-size: 32px; float: left; margin-right: 10px;">ℹ️</div>
-                            <div style="text-align: left;">Are you ready<br>to join the network?</div>
+                            <div style="font-size: 24px; float: left; margin-right: 5px;">ℹ️</div>
+                            <div style="text-align: left;">Ready to join<br>the network?</div>
                             <button class="win95-border btn-yes" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">YES</button>
                         </div>
                     </div>
                     
-                    <div style="height: 400px;"></div>
-
                 </div>
             </div>
         </div>
@@ -361,111 +316,77 @@
     </div>
 
     <script>
-        // MOTORE DI DRAG & DROP RISCRITTO DA ZERO (Perfetto per Mobile e Desktop)
         let isGlobalDragging = false;
-        let highestZIndex = 100;
+        let highestZIndex = 110;
 
+        // DRAG & DROP SENZA CONFLITTI
         function makeDraggable(element, handleSelector) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             let handle = handleSelector ? element.querySelector(handleSelector) : element;
             
             if (!handle) return;
-
             handle.onmousedown = dragMouseDown;
             handle.ontouchstart = dragTouchStart;
 
-            // -- Gestione Mouse (Desktop) --
             function dragMouseDown(e) {
-                e = e || window.event;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
+                e = e || window.event; pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
                 bringToFront(element);
             }
-
             function elementDrag(e) {
-                e = e || window.event;
-                e.preventDefault(); // Previene glitch di selezione testo
-                isGlobalDragging = true;
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                element.style.top = (element.offsetTop - pos2) + "px";
-                element.style.left = (element.offsetLeft - pos1) + "px";
+                e = e || window.event; e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px"; element.style.left = (element.offsetLeft - pos1) + "px";
             }
-
             function closeDragElement() {
-                document.onmouseup = null;
-                document.onmousemove = null;
-                // Piccolo ritardo per permettere all'onclick di leggere che stavamo trascinando
+                document.onmouseup = null; document.onmousemove = null;
                 setTimeout(() => { isGlobalDragging = false; }, 50);
             }
 
-            // -- Gestione Touch (Mobile) --
             function dragTouchStart(e) {
-                e = e || window.event;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                document.ontouchend = closeTouchDragElement;
-                document.ontouchmove = elementTouchDrag;
+                e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
                 bringToFront(element);
             }
-
             function elementTouchDrag(e) {
-                e = e || window.event;
-                if(e.cancelable) e.preventDefault(); // BLOCCA LO SCROLL DELLA PAGINA SU MOBILE MENTRE TRASCINI
-                isGlobalDragging = true;
-                pos1 = pos3 - e.touches[0].clientX;
-                pos2 = pos4 - e.touches[0].clientY;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                element.style.top = (element.offsetTop - pos2) + "px";
-                element.style.left = (element.offsetLeft - pos1) + "px";
+                e = e || window.event; if(e.cancelable) e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                element.style.top = (element.offsetTop - pos2) + "px"; element.style.left = (element.offsetLeft - pos1) + "px";
             }
-
             function closeTouchDragElement() {
-                document.ontouchend = null;
-                document.ontouchmove = null;
+                document.ontouchend = null; document.ontouchmove = null;
                 setTimeout(() => { isGlobalDragging = false; }, 50);
             }
         }
 
-        // Porta la finestra cliccata in primissimo piano
         function bringToFront(element) {
             highestZIndex += 1;
             element.style.zIndex = highestZIndex;
         }
 
-        // Rendi trascinabili le icone intere...
+        // Applica Draggable
         makeDraggable(document.getElementById("icon-internet"), null);
         makeDraggable(document.getElementById("icon-murena"), null);
         makeDraggable(document.getElementById("icon-jazzcore"), null);
         makeDraggable(document.getElementById("icon-cestino"), null);
 
-        // ...e rendi trascinabili le finestre SOLO dalla Title Bar (classe .drag-handle)
         makeDraggable(document.getElementById("artists-window"), ".drag-handle");
         makeDraggable(document.getElementById("warning-window"), ".drag-handle");
         makeDraggable(document.getElementById("loading-window"), ".drag-handle");
         makeDraggable(document.getElementById("network-window"), ".drag-handle");
 
-        // FUNZIONI CHIUDI E APRI FINESTRE
-        function closeWindow(id) { 
-            document.getElementById(id).style.display = 'none'; 
-        }
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
         function showWindow(id) { 
-            let win = document.getElementById(id);
-            win.style.display = 'block'; 
-            bringToFront(win);
+            let win = document.getElementById(id); win.style.display = 'block'; bringToFront(win);
         }
 
-        // LOGICA DIAL-UP (Si attiva solo se NON stavi trascinando l'icona)
+        // LOGICA CONNESSIONE: NASCONDE LE ICONE DEL DESKTOP QUANDO SI APRE IL BROWSER
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
             const browserWindow = document.getElementById('browser-window');
             const taskbarItem = document.getElementById('taskbar-item');
+            const desktopIcons = document.querySelectorAll('.desktop-icon'); // Seleziona tutte le icone
             
             dialupWindow.style.display = 'block';
             taskbarItem.style.display = 'flex';
@@ -479,13 +400,19 @@
                 dialupWindow.style.display = 'none';
                 browserWindow.style.display = 'flex';
                 taskbarItem.innerText = 'studiomurena.net - IE';
-                dialupText.innerText = "Dialing 555-MURENA..."; // Resetta per la prossima volta
+                dialupText.innerText = "Dialing 555-MURENA...";
+                
+                // NASCONDI LE ICONE DESKTOP
+                desktopIcons.forEach(icon => icon.style.display = 'none');
             }, 5500);
         }
 
         function closeBrowser() {
             document.getElementById('browser-window').style.display = 'none';
             document.getElementById('taskbar-item').style.display = 'none';
+            
+            // RIPRISTINA LE ICONE DESKTOP
+            document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
         }
 
         // OROLOGIO
@@ -495,8 +422,7 @@
             let minutes = now.getMinutes().toString().padStart(2, '0');
             document.getElementById('clock').innerText = hours + ':' + minutes;
         }
-        setInterval(updateClock, 1000); 
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
     </script>
 </body>
 </html>
