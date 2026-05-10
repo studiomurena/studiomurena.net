@@ -52,7 +52,6 @@
             overflow: hidden;
         }
 
-        /* Effetto CRT Schermo Vecchio */
         .ig-stories-poster::after {
             content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
@@ -72,7 +71,6 @@
         .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
         .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
 
-        /* Posizioni icone */
         #icon-internet { top: 20px; left: 20px; }
         #icon-murena { top: 120px; left: 20px; }
         #icon-jazzcore { top: 220px; left: 20px; }
@@ -80,12 +78,12 @@
 
         .title-bar {
             background: var(--win-blue); color: white; padding: 4px 8px;
-            display: flex; justify-content: space-between; align-items: center; font-size: 14px; 
+            display: flex; justify-content: space-between; align-items: center; font-size: 12px; 
         }
         .drag-handle { cursor: move; }
         .btn-close {
             background: var(--win-gray); border: 2px solid; border-color: #fff #000 #000 #fff;
-            color: black; font-weight: bold; padding: 0 4px; font-size: 12px; cursor: pointer;
+            color: black; font-weight: bold; padding: 0 4px; font-size: 10px; cursor: pointer;
         }
 
         #dialup-window {
@@ -101,43 +99,41 @@
         .browser-toolbar { padding: 5px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
 
         .browser-content {
-            background-color: var(--teal); /* Mantiene l'estetica scura/teal */
+            background-color: #ffffff; /* SFONDO BIANCO WEB 1.0 */
             flex-grow: 1; position: relative;
             overflow: hidden; /* NESSUN SCORRIMENTO INTERNO */
             padding: 5px; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- SEZIONE ALTA CONDENSATA --- */
+        /* --- SEZIONE ALTA CONDENSATA E ORDINATA --- */
         .main-title {
-            text-align: center; font-size: 38px; font-weight: bold; margin: 5px 0;
+            text-align: center; font-size: 36px; font-weight: bold; margin: 4px 0;
             text-transform: lowercase; letter-spacing: -2px; color: #000;
             animation: colorCycle 2s infinite alternate;
         }
         @keyframes colorCycle {
-            0% { color: #000080; text-shadow: 2px 2px 0px #fff; }
-            50% { color: #008080; text-shadow: 2px -2px 0px #fff; }
-            100% { color: #000000; text-shadow: -2px -2px 0px #fff; }
+            0% { color: #000080; }
+            50% { color: #008080; }
+            100% { color: #000000; }
         }
 
         .marquee-box {
             background: #000; color: #00ff00; padding: 4px; border: 2px solid #555; width: 95%; box-sizing: border-box;
-            overflow: hidden; white-space: nowrap; margin-bottom: 10px; box-shadow: inset 2px 2px 0 #000;
+            overflow: hidden; white-space: nowrap; margin-bottom: 8px; box-shadow: inset 2px 2px 0 #000;
         }
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 14px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .huge-event-box {
-            background: #000; color: #fff; padding: 10px; margin-bottom: 10px;
-            width: 95%; box-sizing: border-box; text-align: center; border: 4px solid #fff; box-shadow: 6px 6px 0 var(--win-blue);
-            transform: rotate(-1deg); 
+            background: #000; color: #fff; padding: 8px; margin-bottom: 8px;
+            width: 95%; box-sizing: border-box; text-align: center; border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
         }
-        .huge-event-box h2 { font-size: 26px; margin: 0; }
-        .huge-event-box h1 { font-size: 40px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
+        .huge-event-box h2 { font-size: 24px; margin: 0; }
+        .huge-event-box h1 { font-size: 36px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
 
-        /* EASTER EGG / CONTROLLO POPUP COMPATTO */
         .sys-control-bar {
             display: flex; justify-content: space-between; align-items: center;
-            width: 95%; padding: 4px 8px; margin-bottom: 10px; box-sizing: border-box;
+            width: 95%; padding: 4px 8px; margin-bottom: 5px; box-sizing: border-box;
             font-size: 10px; background: var(--win-gray);
         }
         .sys-btns { display: flex; gap: 5px; }
@@ -145,36 +141,54 @@
             font-family: inherit; font-size: 9px; cursor: pointer; background: var(--win-light);
             border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 4px; font-weight: bold;
         }
-        .sys-btns button:active { border-color: #808080 #fff #fff #808080; }
 
-        /* --- FINESTRE POP-UP INCASTRATE SOTTO --- */
+        /* --- FINESTRE POP-UP (Incastrate perfettamente senza sovrapporsi) --- */
         .popup { position: absolute; box-shadow: 4px 4px 0 rgba(0,0,0,0.7); }
 
-        /* Cartella Artisti (PRIORITA' ASSOLUTA - Più in alto e in primo piano) */
-        #artists-window { top: 270px; left: 5%; width: 90%; z-index: 105; } /* Z-index alto di base */
-        .artist-list { background: var(--win-light); padding: 4px; height: auto; }
-        .artist-item { display: flex; align-items: center; padding: 4px; border-bottom: 1px dotted #ccc; }
-        .artist-avatar { font-size: 22px; margin-right: 10px; }
-        .artist-info { flex-grow: 1; line-height: 1.1; }
-        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 14px; font-weight: bold; cursor: pointer; }
-        .artist-desc { font-size: 10px; color: #555; }
-        .btn-open { font-family: inherit; font-size: 10px; background: #90EE90; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer; padding: 2px 6px; font-weight: bold; }
-
-        /* Altri Popup incastrati dietro per creare disordine organizzato */
-        #warning-window { top: 240px; right: 5%; width: 220px; z-index: 102; }
-        .warning-content { display: flex; align-items: center; padding: 10px; gap: 10px; }
-        .warning-icon { font-size: 28px; }
-        .warning-text { font-size: 12px; font-weight: bold; }
+        /* Colonna di Sinistra: Artisti */
+        #artists-window { top: 215px; left: 2%; width: 55%; z-index: 105; }
+        .artist-list { background: var(--win-light); padding: 2px; height: auto; }
+        .artist-item { display: flex; align-items: center; padding: 3px; border-bottom: 1px dotted #ccc; }
         
-        #loading-window { top: 380px; left: 10%; width: 240px; z-index: 103; }
-        .loading-content { padding: 10px; font-size: 12px;}
-        .progress-bar-container { width: 100%; height: 15px; margin: 10px 0; }
+        /* SPRITE AVATAR CSS */
+        .sprite-avatar {
+            width: 28px;
+            height: 28px;
+            margin-right: 8px;
+            image-rendering: pixelated; /* Mantiene l'effetto pixel art */
+            /* Impostazioni Sprite Sheet: Cambia 'steps(4)' se hai un numero diverso di frame! */
+            background-size: 400% 100%; 
+            background-position: left center;
+            background-repeat: no-repeat;
+            animation: playSprite 0.8s steps(4) infinite;
+        }
+        @keyframes playSprite {
+            from { background-position: 0 0; }
+            to { background-position: -100% 0; }
+        }
+
+        /* Se non hai l'animazione, rimuovi l'animation da sprite-avatar e usa background-size: cover */
+        
+        .artist-info { flex-grow: 1; line-height: 1; }
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .artist-desc { font-size: 9px; color: #555; }
+        .btn-open { font-family: inherit; font-size: 9px; background: #90EE90; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer; padding: 2px 4px; font-weight: bold; }
+
+        /* Colonna di Destra: Warning, Loading, Network impilati */
+        #warning-window { top: 215px; right: 2%; width: 38%; z-index: 102; }
+        .warning-content { display: flex; flex-direction: column; align-items: center; padding: 5px; text-align: center; }
+        .warning-icon { font-size: 24px; margin-bottom: 2px; }
+        .warning-text { font-size: 10px; font-weight: bold; line-height: 1.1; }
+        
+        #loading-window { top: 325px; right: 2%; width: 38%; z-index: 103; }
+        .loading-content { padding: 5px; font-size: 10px; text-align: center; }
+        .progress-bar-container { width: 100%; height: 10px; margin: 5px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
         
-        #network-window { top: 460px; right: 10%; width: 200px; z-index: 104; }
-        .network-content { text-align: center; padding: 10px; font-size: 12px; }
-        .btn-yes { margin-top: 10px; width: 60px; height: 25px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: bold; }
+        #network-window { top: 415px; right: 2%; width: 38%; z-index: 104; }
+        .network-content { text-align: center; padding: 5px; font-size: 10px; }
+        .btn-yes { margin-top: 5px; width: 50px; height: 20px; font-size: 10px; cursor: pointer; font-family: inherit; font-weight: bold; }
 
         /* --- TASKBAR --- */
         .taskbar {
@@ -187,7 +201,6 @@
             padding: 4px 8px; font-size: 14px; display: flex; align-items: center; gap: 4px; cursor: pointer;
         }
         .start-btn:active { border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); }
-
         .task-slot {
             margin: 0 8px; border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark); border-style: solid; border-width: 2px;
             flex-grow: 1; height: 26px; display: flex; align-items: center;
@@ -241,7 +254,6 @@
                 <div class="browser-content">
                     
                     <div class="main-title">studiomurena.net</div>
-                    
                     <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
 
                     <div class="huge-event-box">
@@ -250,7 +262,7 @@
                     </div>
 
                     <div class="win95-border sys-control-bar">
-                        <div>VISITORS: <span style="background:black; color:red; padding:1px 4px; font-family:monospace; font-size:12px;">00180626</span></div>
+                        <div>VISITORS: <span style="background:black; color:red; padding:1px 4px; font-family:monospace; font-size:10px;">00180626</span></div>
                         <div class="sys-btns">
                             <button onclick="showWindow('artists-window')">GUESTS</button>
                             <button onclick="showWindow('warning-window')">WARN</button>
@@ -259,46 +271,81 @@
                     </div>
 
                     <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                        <div class="title-bar drag-handle"><span>Found 6 results</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
+                        <div class="title-bar drag-handle"><span>Guest List</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                         <div class="artist-list win95-border-inset">
-                            <div class="artist-item"><div class="artist-avatar">👩🏽‍🎤</div><div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div><button class="btn-open" onclick="alert('Arya is loading...')">OPEN</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🕶️</div><div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div><button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🧢</div><div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div><button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🎧</div><div class="artist-info"><div class="artist-name">Daykoda.wav</div><div class="artist-desc">Producer / Hybrid</div></div><button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN</button></div>
-                            <div class="artist-item"><div class="artist-avatar">🔥</div><div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div><button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN</button></div>
-                            <div class="artist-item"><div class="artist-avatar">📝</div><div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Conscious</div></div><button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN</button></div>
-                            <div class="artist-item" style="background:#ddd; border-bottom:none;"><div class="artist-avatar">❓</div><div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div><button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCK</button></div>
+                            
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('arya-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div>
+                                <button class="btn-open" onclick="alert('Arya is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('freshmula-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div>
+                                <button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('silentbob-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div>
+                                <button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('riccardosala-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">RiccardoSala.wav</div><div class="artist-desc">Sax / Jazzcore</div></div>
+                                <button class="btn-open" onclick="alert('Riccardo Sala is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('jackthesmoker-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div>
+                                <button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('dutchnazari-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Words</div></div>
+                                <button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('daykoda-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">Daykoda.bin</div><div class="artist-desc">Producer / Hybrid</div></div>
+                                <button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item">
+                                <div class="sprite-avatar" style="background-image: url('carlocorallo-spritesheet.png');"></div>
+                                <div class="artist-info"><div class="artist-name">CarloCorallo.sys</div><div class="artist-desc">Hip Hop / Soul</div></div>
+                                <button class="btn-open" onclick="alert('Carlo Corallo is loading...')">OPEN</button>
+                            </div>
+                            <div class="artist-item" style="background:#ddd; border-bottom:none;">
+                                <div class="sprite-avatar" style="background-image: none; background-color: #555; text-align:center; color:#fff; line-height:28px;">❓</div>
+                                <div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div>
+                                <button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCK</button>
+                            </div>
+
                         </div>
                     </div>
 
                     <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                        <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING: HOT_MUSIC.EXE</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
+                        <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
                         <div class="warning-content">
                             <div class="warning-icon">⚠️</div>
-                            <div>
-                                <div class="warning-text">LIVE CONCERT<br>DETECTED</div>
-                                <button class="win95-border" style="margin-top: 5px; width: 100%; cursor:pointer; font-family:inherit; font-size:10px; padding:2px;" onclick="closeWindow('warning-window')">OK</button>
-                            </div>
+                            <div class="warning-text">LIVE CONCERT<br>DETECTED</div>
+                            <button class="win95-border" style="margin-top: 5px; width: 100%; cursor:pointer; font-family:inherit; font-size:10px; padding:2px;" onclick="closeWindow('warning-window')">OK</button>
                         </div>
                     </div>
 
                     <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>Loading...</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
                         <div class="loading-content">
-                            <div>Loading guest network...</div>
+                            <div style="font-size: 16px;">🌍</div>
                             <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <div style="font-size: 24px;">🌍</div>
-                                <div style="line-height: 1.2;">connecting artists...<br>building memories...</div>
-                            </div>
+                            <div>connecting artists...</div>
                         </div>
                     </div>
 
                     <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                        <div class="title-bar drag-handle"><span>studiomurena.net</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
+                        <div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
                         <div class="network-content">
-                            <div style="font-size: 24px; float: left; margin-right: 5px;">ℹ️</div>
-                            <div style="text-align: left;">Ready to join<br>the network?</div>
+                            <div style="font-size: 16px; margin-bottom: 2px;">ℹ️</div>
+                            <div>Ready to join?</div>
                             <button class="win95-border btn-yes" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">YES</button>
                         </div>
                     </div>
@@ -364,7 +411,6 @@
             element.style.zIndex = highestZIndex;
         }
 
-        // Applica Draggable
         makeDraggable(document.getElementById("icon-internet"), null);
         makeDraggable(document.getElementById("icon-murena"), null);
         makeDraggable(document.getElementById("icon-jazzcore"), null);
@@ -380,13 +426,13 @@
             let win = document.getElementById(id); win.style.display = 'block'; bringToFront(win);
         }
 
-        // LOGICA CONNESSIONE: NASCONDE LE ICONE DEL DESKTOP QUANDO SI APRE IL BROWSER
+        // CONNESSIONE: NASCONDE LE ICONE DEL DESKTOP QUANDO SI APRE IL BROWSER
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
             const browserWindow = document.getElementById('browser-window');
             const taskbarItem = document.getElementById('taskbar-item');
-            const desktopIcons = document.querySelectorAll('.desktop-icon'); // Seleziona tutte le icone
+            const desktopIcons = document.querySelectorAll('.desktop-icon');
             
             dialupWindow.style.display = 'block';
             taskbarItem.style.display = 'flex';
