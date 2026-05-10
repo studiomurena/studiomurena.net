@@ -443,6 +443,7 @@
             bringToFront(document.getElementById('game-window'));
         }
 
+        // --- VERSIONE AGGIORNATA CON METODO GET PER EVITARE BLOCCHI CORS ---
         function startGame() {
             const emailInput = document.getElementById('player-email').value;
             if (!emailInput || !emailInput.includes('@')) {
@@ -459,11 +460,10 @@
             msgBox.innerText = "Connecting to Murena Server... Please wait.";
             msgBox.style.color = "var(--win-blue)";
 
-            // Contatta Google Fogli segretamente
-            const formData = new URLSearchParams();
-            formData.append('email', playerEmail);
+            // Contatta Google Fogli segretamente usando il metodo GET (Anti-blocco)
+            const urlConEmail = scriptURL + "?email=" + encodeURIComponent(playerEmail);
 
-            fetch(scriptURL, { method: 'POST', body: formData })
+            fetch(urlConEmail)
                 .then(response => response.json())
                 .then(data => {
                     // Google ha risposto con l'esito
@@ -512,7 +512,7 @@
                 msgBox.innerText = "SISTEMA: NESSUN MATCH TROVATO. Ritenta!";
             } else {
                 msgBox.style.color = "green";
-                msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail per i dettagli.`;
+                msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail.`;
             }
             
             // Reset automatico dopo 6 secondi
