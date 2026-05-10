@@ -95,8 +95,10 @@
         .title-bar {
             background: var(--win-blue); color: white; padding: 4px 8px;
             display: flex; justify-content: space-between; align-items: center;
-            font-size: 14px; cursor: move; /* Cursore per far capire che si sposta */
+            font-size: 14px; 
         }
+
+        .drag-handle { cursor: move; }
 
         .btn-close {
             background: var(--win-gray); border: 2px solid;
@@ -168,7 +170,7 @@
         .web-box {
             border: 2px dashed #808080; padding: 10px; width: 45%; background: #e0e0e0;
         }
-        .retro-links a { color: blue; text-decoration: underline; cursor: pointer; display: block; margin: 4px 0; font-weight: bold; }
+        .retro-links a { color: blue; text-decoration: underline; cursor: pointer; display: block; margin: 6px 0; font-weight: bold; }
         .hit-counter span { background: black; color: red; font-family: monospace; font-size: 20px; padding: 2px 6px; letter-spacing: 2px; border: inset 2px gray; }
         .blink { animation: blink 1s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
@@ -180,7 +182,7 @@
 
         /* Cartella Artisti (TUTTA VISIBILE) */
         #artists-window { top: 480px; left: 5%; width: 90%; max-width: 400px; z-index: 60; }
-        .artist-list { background: var(--win-light); padding: 5px; height: auto; /* Adatta all'altezza */ }
+        .artist-list { background: var(--win-light); padding: 5px; height: auto; }
         .artist-item { display: flex; align-items: center; padding: 8px; border-bottom: 2px dotted #ccc; }
         .artist-avatar { font-size: 32px; margin-right: 15px; }
         .artist-info { flex-grow: 1; line-height: 1.3; }
@@ -240,16 +242,16 @@
     <div class="ig-stories-poster">
         
         <div class="desktop" id="desktop-area">
-            <div class="desktop-icon" id="icon-internet" data-action="internet">
+            <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
-            <div class="desktop-icon" id="icon-murena">
+            <div class="desktop-icon" id="icon-murena" onclick="if(!isGlobalDragging) alert('Directory access denied.')">
                 <span class="icon-art">📁</span>MURENA
             </div>
-            <div class="desktop-icon" id="icon-jazzcore">
+            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) alert('Insert Disc 2')">
                 <span class="icon-art">💿</span>JAZZCORE
             </div>
-            <div class="desktop-icon" id="icon-cestino">
+            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) alert('Recycle Bin is empty.')">
                 <span class="icon-art">🗑️</span>CESTINO
             </div>
 
@@ -287,10 +289,11 @@
                         <div class="web-box hit-counter">
                             YOU ARE VISITOR NO:<br>
                             <span style="margin-top: 5px; display: inline-block;">00180626</span><br>
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1" alt=""> <div class="blink" style="margin-top:5px; color:blue;">[ UNDER CONSTRUCTION 🚧 ]</div>
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1" alt="">
+                            <div class="blink" style="margin-top:5px; color:blue;">[ UNDER CONSTRUCTION 🚧 ]</div>
                         </div>
                         <div class="web-box retro-links">
-                            <b>JAZZCORE SYSTEM CTL</b><br>
+                            <b style="font-size:14px;">JAZZCORE SYSTEM CTL</b><br>
                             <a onclick="showWindow('artists-window')">> OPEN GUEST LIST</a>
                             <a onclick="showWindow('warning-window')">> EXECUTE HOT_MUSIC</a>
                             <a onclick="showWindow('loading-window')">> CHECK NETWORK</a>
@@ -298,7 +301,7 @@
                         </div>
                     </div>
 
-                    <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                    <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>Found 6 results</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                         <div class="artist-list win95-border-inset">
                             <div class="artist-item"><div class="artist-avatar">👩🏽‍🎤</div><div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div><button class="btn-open" onclick="alert('Arya is loading...')">OPEN ▶</button></div>
@@ -311,7 +314,7 @@
                         </div>
                     </div>
 
-                    <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                    <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING: HOT_MUSIC.EXE</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
                         <div class="warning-content">
                             <div class="warning-icon">⚠️</div>
@@ -322,7 +325,7 @@
                         </div>
                     </div>
 
-                    <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                    <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>Loading...</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
                         <div class="loading-content">
                             <div>Loading guest network...</div>
@@ -334,7 +337,7 @@
                         </div>
                     </div>
 
-                    <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                    <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                         <div class="title-bar drag-handle"><span>studiomurena.net</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
                         <div class="network-content">
                             <div style="font-size: 32px; float: left; margin-right: 10px;">ℹ️</div>
@@ -358,102 +361,106 @@
     </div>
 
     <script>
-        // DRAG & DROP DESKTOP ICONE (Intero elemento)
-        function makeIconDraggable(elmnt) {
-            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            var hasMoved = false;
-
-            elmnt.onmousedown = dragMouseDown;
-            elmnt.ontouchstart = dragTouchStart;
-
-            function dragMouseDown(e) {
-                e = e || window.event; hasMoved = false; pos3 = e.clientX; pos4 = e.clientY;
-                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
-            }
-            function elementDrag(e) {
-                e = e || window.event; hasMoved = true;
-                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            }
-            function closeDragElement() {
-                document.onmouseup = null; document.onmousemove = null;
-                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') { startDialUp(); }
-            }
-            function dragTouchStart(e) {
-                e = e || window.event; hasMoved = false; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
-            }
-            function elementTouchDrag(e) {
-                e = e || window.event; hasMoved = true;
-                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-            }
-            function closeTouchDragElement() {
-                document.ontouchend = null; document.ontouchmove = null;
-                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') { startDialUp(); }
-            }
-        }
-
-        makeIconDraggable(document.getElementById("icon-internet"));
-        makeIconDraggable(document.getElementById("icon-murena"));
-        makeIconDraggable(document.getElementById("icon-jazzcore"));
-        makeIconDraggable(document.getElementById("icon-cestino"));
-
-        // DRAG & DROP FINESTRE POPUP (Solo tramite la Title Bar)
-        function makeWindowDraggable(winElement) {
-            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            var header = winElement.querySelector('.drag-handle');
-            if (header) {
-                header.onmousedown = dragMouseDown;
-                header.ontouchstart = dragTouchStart;
-            }
-
-            function dragMouseDown(e) {
-                e = e || window.event; pos3 = e.clientX; pos4 = e.clientY;
-                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
-                bringToFront(winElement);
-            }
-            function elementDrag(e) {
-                e = e || window.event; e.preventDefault();
-                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
-                winElement.style.top = (winElement.offsetTop - pos2) + "px"; winElement.style.left = (winElement.offsetLeft - pos1) + "px";
-            }
-            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
-
-            function dragTouchStart(e) {
-                e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
-                bringToFront(winElement);
-            }
-            function elementTouchDrag(e) {
-                e = e || window.event; 
-                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                winElement.style.top = (winElement.offsetTop - pos2) + "px"; winElement.style.left = (winElement.offsetLeft - pos1) + "px";
-            }
-            function closeTouchDragElement() { document.ontouchend = null; document.ontouchmove = null; }
-        }
-
-        makeWindowDraggable(document.getElementById("artists-window"));
-        makeWindowDraggable(document.getElementById("warning-window"));
-        makeWindowDraggable(document.getElementById("loading-window"));
-        makeWindowDraggable(document.getElementById("network-window"));
-
-        // Gestione Z-Index (Porta in primo piano la finestra cliccata)
+        // MOTORE DI DRAG & DROP RISCRITTO DA ZERO (Perfetto per Mobile e Desktop)
+        let isGlobalDragging = false;
         let highestZIndex = 100;
+
+        function makeDraggable(element, handleSelector) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let handle = handleSelector ? element.querySelector(handleSelector) : element;
+            
+            if (!handle) return;
+
+            handle.onmousedown = dragMouseDown;
+            handle.ontouchstart = dragTouchStart;
+
+            // -- Gestione Mouse (Desktop) --
+            function dragMouseDown(e) {
+                e = e || window.event;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                bringToFront(element);
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault(); // Previene glitch di selezione testo
+                isGlobalDragging = true;
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                // Piccolo ritardo per permettere all'onclick di leggere che stavamo trascinando
+                setTimeout(() => { isGlobalDragging = false; }, 50);
+            }
+
+            // -- Gestione Touch (Mobile) --
+            function dragTouchStart(e) {
+                e = e || window.event;
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement;
+                document.ontouchmove = elementTouchDrag;
+                bringToFront(element);
+            }
+
+            function elementTouchDrag(e) {
+                e = e || window.event;
+                if(e.cancelable) e.preventDefault(); // BLOCCA LO SCROLL DELLA PAGINA SU MOBILE MENTRE TRASCINI
+                isGlobalDragging = true;
+                pos1 = pos3 - e.touches[0].clientX;
+                pos2 = pos4 - e.touches[0].clientY;
+                pos3 = e.touches[0].clientX;
+                pos4 = e.touches[0].clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeTouchDragElement() {
+                document.ontouchend = null;
+                document.ontouchmove = null;
+                setTimeout(() => { isGlobalDragging = false; }, 50);
+            }
+        }
+
+        // Porta la finestra cliccata in primissimo piano
         function bringToFront(element) {
             highestZIndex += 1;
             element.style.zIndex = highestZIndex;
         }
 
-        // Funzioni per chiudere e mostrare i popup
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+        // Rendi trascinabili le icone intere...
+        makeDraggable(document.getElementById("icon-internet"), null);
+        makeDraggable(document.getElementById("icon-murena"), null);
+        makeDraggable(document.getElementById("icon-jazzcore"), null);
+        makeDraggable(document.getElementById("icon-cestino"), null);
+
+        // ...e rendi trascinabili le finestre SOLO dalla Title Bar (classe .drag-handle)
+        makeDraggable(document.getElementById("artists-window"), ".drag-handle");
+        makeDraggable(document.getElementById("warning-window"), ".drag-handle");
+        makeDraggable(document.getElementById("loading-window"), ".drag-handle");
+        makeDraggable(document.getElementById("network-window"), ".drag-handle");
+
+        // FUNZIONI CHIUDI E APRI FINESTRE
+        function closeWindow(id) { 
+            document.getElementById(id).style.display = 'none'; 
+        }
         function showWindow(id) { 
-            var win = document.getElementById(id);
+            let win = document.getElementById(id);
             win.style.display = 'block'; 
             bringToFront(win);
         }
 
-        // LOGICA DIAL-UP
+        // LOGICA DIAL-UP (Si attiva solo se NON stavi trascinando l'icona)
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
@@ -472,7 +479,7 @@
                 dialupWindow.style.display = 'none';
                 browserWindow.style.display = 'flex';
                 taskbarItem.innerText = 'studiomurena.net - IE';
-                dialupText.innerText = "Dialing 555-MURENA...";
+                dialupText.innerText = "Dialing 555-MURENA..."; // Resetta per la prossima volta
             }, 5500);
         }
 
@@ -484,4 +491,12 @@
         // OROLOGIO
         function updateClock() {
             const now = new Date();
-            let hours = now
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = hours + ':' + minutes;
+        }
+        setInterval(updateClock, 1000); 
+        updateClock();
+    </script>
+</body>
+</html>
