@@ -107,7 +107,7 @@
             flex-shrink: 0; 
             margin: 12px auto; 
             width: 100%; 
-            display: flex; justify(content): center; align-items: center;
+            display: flex; justify-content: center; align-items: center;
             font-family: 'Press Start 2P', monospace; 
             font-size: 5.6vw; 
             text-transform: lowercase; 
@@ -211,7 +211,6 @@
             margin-top: 5px; margin-bottom: 10px; background: #fff;
         }
 
-        /* Griglia delle 5 scatole */
         .slot-machine { display: none; gap: 5px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
         .slot-box {
             width: 50px; height: 50px; background: var(--win-light);
@@ -426,7 +425,6 @@
         let highestZIndex = 110;
 
         // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
-        // NUOVO LINK GOOGLE AGGIORNATO:
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
         
         let boxesRevealed = 0;
@@ -457,7 +455,6 @@
             msgBox.innerText = "Connecting to Murena Server... Please wait.";
             msgBox.style.color = "var(--win-blue)";
 
-            // Contatta Google Fogli usando il metodo GET (Anti-blocco)
             const urlConEmail = scriptURL + "?email=" + encodeURIComponent(playerEmail);
 
             fetch(urlConEmail)
