@@ -21,7 +21,7 @@
         body {
             margin: 0;
             height: 100vh;
-            height: 100dvh; /* Migliore per schermi mobile */
+            height: 100dvh;
             background-color: #000;
             font-family: 'VGA 437', monospace;
             user-select: none;
@@ -31,7 +31,6 @@
             align-items: center;
         }
 
-        /* Mixin per i bordi Windows 95 */
         .win95-border {
             background-color: var(--win-gray);
             border-top: 2px solid var(--win-light);
@@ -50,7 +49,6 @@
             box-shadow: inset 1px 1px 0 var(--win-dark);
         }
 
-        /* --- CONTENITORE PRINCIPALE --- */
         .ig-stories-poster {
             height: 100%;
             width: 100vw;
@@ -62,7 +60,6 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
-        /* Effetto CRT Base */
         .ig-stories-poster::after {
             content: " ";
             position: absolute;
@@ -75,114 +72,64 @@
 
         /* --- DESKTOP --- */
         .desktop {
-            flex-grow: 1; /* Prende tutto lo spazio tranne la taskbar */
+            flex-grow: 1;
             position: relative;
             z-index: 10;
             overflow: hidden;
         }
 
-        /* Icone Desktop Posizionate in modo Assoluto per il Drag */
         .desktop-icon {
-            position: absolute;
-            width: 80px;
-            text-align: center;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            text-shadow: 1px 1px #000;
-            padding: 5px;
-            box-sizing: border-box;
-            z-index: 20;
+            position: absolute; width: 80px; text-align: center;
+            color: white; font-size: 12px; cursor: pointer;
+            text-shadow: 1px 1px #000; padding: 5px; box-sizing: border-box; z-index: 20;
         }
 
-        .desktop-icon:active {
-            background: rgba(255,255,255,0.2);
-            border: 1px dotted white;
-        }
+        .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
+        .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
 
-        .icon-art {
-            font-size: 36px;
-            display: block;
-            margin-bottom: 5px;
-            pointer-events: none; /* Cruciale per evitare glitch col drag */
-        }
-
-        /* Posizioni Iniziali Icone */
         #icon-internet { top: 20px; left: 20px; }
         #icon-murena { top: 120px; left: 20px; }
         #icon-jazzcore { top: 220px; left: 20px; }
         #icon-cestino { top: 320px; left: 20px; }
 
-        /* --- FINESTRE DI SISTEMA --- */
         .title-bar {
-            background: var(--win-blue);
-            color: white;
-            padding: 4px 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
+            background: var(--win-blue); color: white; padding: 4px 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 14px; cursor: move; /* Cursore per far capire che si sposta */
         }
 
         .btn-close {
-            background: var(--win-gray);
-            border: 2px solid;
-            border-color: #fff #000 #000 #fff;
-            color: black;
-            font-weight: bold;
-            padding: 0 4px;
-            font-size: 12px;
-            cursor: pointer;
+            background: var(--win-gray); border: 2px solid;
+            border-color: #fff #000 #000 #fff; color: black;
+            font-weight: bold; padding: 0 4px; font-size: 12px; cursor: pointer;
         }
 
-        /* --- FINESTRA DI DIAL-UP (MODEM) --- */
         #dialup-window {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            z-index: 200;
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 300px; z-index: 200;
         }
 
-        .dialup-content {
-            padding: 20px;
-            text-align: center;
-        }
+        .dialup-content { padding: 20px; text-align: center; }
 
         /* --- BROWSER INTERNET --- */
         #browser-window {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; 
-            width: 100%; height: 100%; /* Occupa tutto il .desktop */
-            z-index: 50;
-            flex-direction: column;
+            display: none; position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; z-index: 50; flex-direction: column;
         }
 
         .browser-toolbar {
-            padding: 5px;
-            border-bottom: 2px solid var(--win-border-dark);
-            font-size: 12px;
+            padding: 5px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px;
         }
 
         .browser-content {
-            background-color: var(--win-gray);
-            flex-grow: 1;
-            position: relative;
-            overflow-x: hidden;
-            overflow-y: auto;
-            padding: 10px;
+            background-color: var(--win-gray); flex-grow: 1; position: relative;
+            overflow-x: hidden; overflow-y: auto; padding: 10px;
         }
 
-        /* --- ELEMENTI INTERNI AL BROWSER --- */
+        /* --- SEZIONE ALTA PULITA E GIGANTE --- */
         .main-title {
-            text-align: center;
-            font-size: 46px; 
-            font-weight: bold;
-            margin: 10px 0;
-            text-transform: lowercase;
-            letter-spacing: -3px;
+            text-align: center; font-size: 46px; font-weight: bold; margin: 10px 0;
+            text-transform: lowercase; letter-spacing: -3px;
             animation: colorCycle 2s infinite alternate;
         }
 
@@ -194,48 +141,46 @@
         }
 
         .marquee-box {
-            background: #000; color: #00ff00;
-            padding: 8px; border: 2px solid #555;
-            overflow: hidden; white-space: nowrap;
-            margin-bottom: 20px; box-shadow: inset 2px 2px 0 #000;
+            background: #000; color: #00ff00; padding: 8px; border: 2px solid #555;
+            overflow: hidden; white-space: nowrap; margin-bottom: 20px; box-shadow: inset 2px 2px 0 #000;
         }
 
         .marquee-text {
-            display: inline-block; padding-left: 100%;
-            animation: marquee 12s linear infinite; font-size: 18px;
+            display: inline-block; padding-left: 100%; animation: marquee 12s linear infinite; font-size: 18px;
         }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .huge-event-box {
-            background: #000; color: #fff;
-            padding: 20px; margin: 20px auto;
-            width: 90%; text-align: center;
-            border: 4px solid #fff; box-shadow: 8px 8px 0 var(--win-blue);
+            background: #000; color: #fff; padding: 20px; margin: 10px auto 30px auto;
+            width: 90%; text-align: center; border: 4px solid #fff; box-shadow: 8px 8px 0 var(--win-blue);
             transform: rotate(-2deg); 
         }
 
-        .huge-event-box h1 { font-size: 42px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
-        .huge-event-box h2 { font-size: 28px; margin: 5px 0 0 0; }
+        .huge-event-box h1 { font-size: 46px; margin: 0; color: #ffcc00; letter-spacing: -2px; }
+        .huge-event-box h2 { font-size: 32px; margin: 5px 0 0 0; }
         .huge-event-box h3 { font-size: 18px; margin: 10px 0 0 0; color: #aaa; }
 
-        .fake-ad {
-            background: blue; color: yellow; text-align: center; padding: 10px;
-            border: 2px dashed yellow; font-size: 20px; animation: blink 0.5s infinite;
-            margin: 20px auto; width: 80%; cursor: pointer;
+        /* --- EASTER EGGS WEB 1.0 (Comandi per riaprire finestre) --- */
+        .web-1-layout {
+            display: flex; flex-wrap: wrap; justify-content: space-around; gap: 10px;
+            margin-bottom: 40px; text-align: center; font-size: 12px;
         }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .web-box {
+            border: 2px dashed #808080; padding: 10px; width: 45%; background: #e0e0e0;
+        }
+        .retro-links a { color: blue; text-decoration: underline; cursor: pointer; display: block; margin: 4px 0; font-weight: bold; }
+        .hit-counter span { background: black; color: red; font-family: monospace; font-size: 20px; padding: 2px 6px; letter-spacing: 2px; border: inset 2px gray; }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
 
+        /* --- FINESTRE POP-UP (Iniziano da metà in giù) --- */
         .popup {
-            position: absolute;
-            box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
+            position: absolute; box-shadow: 6px 6px 0 rgba(0,0,0,0.6);
         }
 
-        #artists-window { top: 380px; left: 5%; width: 90%; max-width: 400px; z-index: 60; }
-        .artist-list { background: var(--win-light); padding: 5px; height: 280px; overflow-y: auto; }
+        /* Cartella Artisti (TUTTA VISIBILE) */
+        #artists-window { top: 480px; left: 5%; width: 90%; max-width: 400px; z-index: 60; }
+        .artist-list { background: var(--win-light); padding: 5px; height: auto; /* Adatta all'altezza */ }
         .artist-item { display: flex; align-items: center; padding: 8px; border-bottom: 2px dotted #ccc; }
         .artist-avatar { font-size: 32px; margin-right: 15px; }
         .artist-info { flex-grow: 1; line-height: 1.3; }
@@ -243,38 +188,29 @@
         .artist-desc { font-size: 12px; color: #555; }
         .btn-open { font-family: inherit; font-size: 14px; background: #90EE90; border: 2px solid; border-color: #fff #000 #000 #fff; cursor: pointer; padding: 4px 10px; font-weight: bold; }
 
-        #warning-window { top: 200px; right: 10px; width: 260px; z-index: 70; }
+        #warning-window { top: 700px; right: 5%; width: 260px; z-index: 70; }
         .warning-content { display: flex; align-items: center; padding: 20px; gap: 15px; }
         .warning-icon { font-size: 40px; }
         .warning-text { font-size: 16px; font-weight: bold; }
         
-        #loading-window { top: 600px; right: 20px; width: 280px; z-index: 80; }
+        #loading-window { top: 850px; left: 10%; width: 280px; z-index: 80; }
         .loading-content { padding: 20px; font-size: 14px;}
         .progress-bar-container { width: 100%; height: 20px; margin: 15px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
         
-        #network-window { top: 750px; left: 20px; width: 250px; z-index: 90; }
+        #network-window { top: 1000px; right: 10%; width: 250px; z-index: 90; }
         .network-content { text-align: center; padding: 20px; font-size: 16px; }
         .btn-yes { margin-top: 15px; width: 80px; height: 30px; font-size: 16px; cursor: pointer; font-family: inherit; font-weight: bold; }
 
-        /* --- TASKBAR (RIPRISTINATA CORRETTAMENTE) --- */
+        /* --- TASKBAR --- */
         .taskbar {
-            height: 40px; 
-            background: var(--win-gray);
-            border-top: 2px solid var(--win-light);
-            display: flex; 
-            align-items: center; 
-            padding: 0 6px;
-            flex-shrink: 0; /* Impedisce che si rimpicciolisca */
-            z-index: 300; 
-            width: 100%; 
-            box-sizing: border-box;
+            height: 40px; background: var(--win-gray); border-top: 2px solid var(--win-light);
+            display: flex; align-items: center; padding: 0 6px; flex-shrink: 0; z-index: 300; width: 100%; box-sizing: border-box;
         }
 
         .start-btn {
-            background: var(--win-gray);
-            border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
+            background: var(--win-gray); border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
             border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
             padding: 4px 8px; font-size: 14px; display: flex; align-items: center; gap: 4px; cursor: pointer;
         }
@@ -284,15 +220,12 @@
             border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
         }
 
-        /* Slot per la cartella aperta in basso */
         .task-slot {
-            margin: 0 8px;
-            border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
+            margin: 0 8px; border-top: 2px solid var(--win-dark); border-left: 2px solid var(--win-dark);
             border-right: 2px solid var(--win-light); border-bottom: 2px solid var(--win-light);
             flex-grow: 1; height: 26px; display: flex; align-items: center;
             padding-left: 8px; font-size: 12px; white-space: nowrap; overflow: hidden;
-            background-color: var(--win-light); /* Per simulare che sia premuto/aperto */
-            font-weight: bold;
+            background-color: var(--win-light); font-weight: bold;
         }
 
         .clock {
@@ -308,26 +241,20 @@
         
         <div class="desktop" id="desktop-area">
             <div class="desktop-icon" id="icon-internet" data-action="internet">
-                <span class="icon-art">🌐</span>
-                <u>I</u>nternet
+                <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
             <div class="desktop-icon" id="icon-murena">
-                <span class="icon-art">📁</span>
-                MURENA
+                <span class="icon-art">📁</span>MURENA
             </div>
             <div class="desktop-icon" id="icon-jazzcore">
-                <span class="icon-art">💿</span>
-                JAZZCORE
+                <span class="icon-art">💿</span>JAZZCORE
             </div>
             <div class="desktop-icon" id="icon-cestino">
-                <span class="icon-art">🗑️</span>
-                CESTINO
+                <span class="icon-art">🗑️</span>CESTINO
             </div>
 
             <div id="dialup-window" class="win95-border popup">
-                <div class="title-bar">
-                    <span>Connecting to studiomurena.net...</span>
-                </div>
+                <div class="title-bar"><span>Connecting to studiomurena.net...</span></div>
                 <div class="dialup-content">
                     <div style="font-size: 40px; margin-bottom: 10px;">☎️ 💻</div>
                     <div id="dialup-text" style="font-size: 14px; font-weight: bold;">Dialing 555-MURENA...</div>
@@ -335,7 +262,7 @@
             </div>
 
             <div id="browser-window" class="win95-border">
-                <div class="title-bar">
+                <div class="title-bar" id="browser-title-bar">
                     <span>studiomurena.net - Microsoft Internet Explorer</span>
                     <span class="btn-close" onclick="closeBrowser()">X</span>
                 </div>
@@ -348,10 +275,7 @@
                 <div class="browser-content">
                     
                     <div class="main-title">studiomurena.net</div>
-                    
-                    <div class="marquee-box">
-                        <span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; WE ARE BACK ONLINE</span>
-                    </div>
+                    <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; WE ARE BACK ONLINE</span></div>
 
                     <div class="huge-event-box">
                         <h2>CIRCOLO MAGNOLIA</h2>
@@ -359,97 +283,74 @@
                         <h3>A SPECIAL JOURNEY WITH FRIENDS</h3>
                     </div>
 
-                    <div class="fake-ad" onclick="alert('GOTCHA! See you at the show.')">
-                        > > > CLICK HERE FOR BACKSTAGE PASS < < <
-                    </div>
-
-                    <div id="artists-window" class="win95-border popup">
-                        <div class="title-bar"><span>Found 6 results</span><span class="btn-close">_ □ X</span></div>
-                        <div class="artist-list win95-border-inset">
-                            <div class="artist-item">
-                                <div class="artist-avatar">👩🏽‍🎤</div>
-                                <div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div>
-                                <button class="btn-open" onclick="alert('Arya is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item">
-                                <div class="artist-avatar">🕶️</div>
-                                <div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div>
-                                <button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item">
-                                <div class="artist-avatar">🧢</div>
-                                <div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div>
-                                <button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item">
-                                <div class="artist-avatar">🎧</div>
-                                <div class="artist-info"><div class="artist-name">Daykoda.wav</div><div class="artist-desc">Producer / Hybrid</div></div>
-                                <button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item">
-                                <div class="artist-avatar">🔥</div>
-                                <div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div>
-                                <button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item">
-                                <div class="artist-avatar">📝</div>
-                                <div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Conscious</div></div>
-                                <button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN ▶</button>
-                            </div>
-                            <div class="artist-item" style="background:#ddd;">
-                                <div class="artist-avatar">❓</div>
-                                <div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div>
-                                <button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCKED</button>
-                            </div>
+                    <div class="web-1-layout">
+                        <div class="web-box hit-counter">
+                            YOU ARE VISITOR NO:<br>
+                            <span style="margin-top: 5px; display: inline-block;">00180626</span><br>
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1" alt=""> <div class="blink" style="margin-top:5px; color:blue;">[ UNDER CONSTRUCTION 🚧 ]</div>
+                        </div>
+                        <div class="web-box retro-links">
+                            <b>JAZZCORE SYSTEM CTL</b><br>
+                            <a onclick="showWindow('artists-window')">> OPEN GUEST LIST</a>
+                            <a onclick="showWindow('warning-window')">> EXECUTE HOT_MUSIC</a>
+                            <a onclick="showWindow('loading-window')">> CHECK NETWORK</a>
+                            <a onclick="showWindow('network-window')">> JOIN US</a>
                         </div>
                     </div>
 
-                    <div id="warning-window" class="win95-border popup">
-                        <div class="title-bar" style="background: var(--win-blue);"><span>WARNING: HOT_MUSIC.EXE</span><span class="btn-close">X</span></div>
+                    <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                        <div class="title-bar drag-handle"><span>Found 6 results</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
+                        <div class="artist-list win95-border-inset">
+                            <div class="artist-item"><div class="artist-avatar">👩🏽‍🎤</div><div class="artist-info"><div class="artist-name">Arya.exe</div><div class="artist-desc">Neo Soul / Vibes</div></div><button class="btn-open" onclick="alert('Arya is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🕶️</div><div class="artist-info"><div class="artist-name">FreshMula.zip</div><div class="artist-desc">Trap / Flow</div></div><button class="btn-open" onclick="alert('Fresh Mula is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🧢</div><div class="artist-info"><div class="artist-name">SilentBob.dll</div><div class="artist-desc">Bars / Truth</div></div><button class="btn-open" onclick="alert('Silent Bob is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🎧</div><div class="artist-info"><div class="artist-name">Daykoda.wav</div><div class="artist-desc">Producer / Hybrid</div></div><button class="btn-open" onclick="alert('Daykoda is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item"><div class="artist-avatar">🔥</div><div class="artist-info"><div class="artist-name">JackTheSmoker.iso</div><div class="artist-desc">Boom Bap / Real</div></div><button class="btn-open" onclick="alert('Jack The Smoker is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item"><div class="artist-avatar">📝</div><div class="artist-info"><div class="artist-name">DutchNazari.txt</div><div class="artist-desc">Lyricist / Conscious</div></div><button class="btn-open" onclick="alert('Dutch Nazari is loading...')">OPEN ▶</button></div>
+                            <div class="artist-item" style="background:#ddd;"><div class="artist-avatar">❓</div><div class="artist-info"><div class="artist-name" style="color:red;">ENCRYPTED.bat</div><div class="artist-desc">Classified / ???</div></div><button class="btn-open" style="background:gray;" onclick="alert('ACCESS DENIED. Stay tuned.')">LOCKED</button></div>
+                        </div>
+                    </div>
+
+                    <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                        <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING: HOT_MUSIC.EXE</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
                         <div class="warning-content">
                             <div class="warning-icon">⚠️</div>
                             <div>
                                 <div class="warning-text">LIVE CONCERT<br>DETECTED</div>
-                                <button class="win95-border" style="margin-top: 10px; width: 100%; cursor:pointer; font-family:inherit; font-size:14px; padding:4px;">OK</button>
+                                <button class="win95-border" style="margin-top: 10px; width: 100%; cursor:pointer; font-family:inherit; font-size:14px; padding:4px;" onclick="closeWindow('warning-window')">OK</button>
                             </div>
                         </div>
                     </div>
 
-                    <div id="loading-window" class="win95-border popup">
-                        <div class="title-bar"><span>Loading...</span><span class="btn-close">X</span></div>
+                    <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                        <div class="title-bar drag-handle"><span>Loading...</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
                         <div class="loading-content">
                             <div>Loading guest network...</div>
-                            <div class="progress-bar-container win95-border-inset">
-                                <div class="progress-bar-fill"></div>
-                            </div>
+                            <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
                             <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
                                 <div style="font-size: 32px;">🌍</div>
-                                <div style="line-height: 1.4;">
-                                    connecting artists...<br>
-                                    building memories...<br>
-                                    preparing something special...
-                                </div>
+                                <div style="line-height: 1.4;">connecting artists...<br>building memories...<br>preparing something special...</div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="network-window" class="win95-border popup">
-                        <div class="title-bar"><span>studiomurena.net</span></div>
+                    <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)">
+                        <div class="title-bar drag-handle"><span>studiomurena.net</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
                         <div class="network-content">
                             <div style="font-size: 32px; float: left; margin-right: 10px;">ℹ️</div>
                             <div style="text-align: left;">Are you ready<br>to join the network?</div>
-                            <button class="win95-border btn-yes" onclick="alert('Welcome to the journey!')">YES</button>
+                            <button class="win95-border btn-yes" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">YES</button>
                         </div>
                     </div>
                     
-                    <div style="height: 300px;"></div>
+                    <div style="height: 400px;"></div>
 
                 </div>
             </div>
         </div>
 
         <div class="taskbar">
-            <div class="start-btn">🪟 Start</div>
+            <div class="start-btn" onclick="alert('STUDIO MURENA 2026 - All Rights Reserved')">🪟 Start</div>
             <div class="task-slot" id="taskbar-item" style="display:none;"></div>
             <div class="clock" id="clock">18:06</div>
         </div>
@@ -457,8 +358,8 @@
     </div>
 
     <script>
-        // FUNZIONE TRASCINAMENTO OTTIMIZZATA (Distinguere Click da Drag)
-        function makeDraggable(elmnt) {
+        // DRAG & DROP DESKTOP ICONE (Intero elemento)
+        function makeIconDraggable(elmnt) {
             var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             var hasMoved = false;
 
@@ -466,77 +367,99 @@
             elmnt.ontouchstart = dragTouchStart;
 
             function dragMouseDown(e) {
-                e = e || window.event;
-                hasMoved = false; // Resetta il controllo movimento
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
+                e = e || window.event; hasMoved = false; pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
             }
-
             function elementDrag(e) {
-                e = e || window.event;
-                hasMoved = true; // Se il mouse si muove, è un drag!
-                pos1 = pos3 - e.clientX;
-                pos2 = pos4 - e.clientY;
-                pos3 = e.clientX;
-                pos4 = e.clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                e = e || window.event; hasMoved = true;
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             }
-
-            function closeDragElement(e) {
-                document.onmouseup = null;
-                document.onmousemove = null;
-                // Se non si è mosso, aziona il click!
-                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') {
-                    startDialUp();
-                }
+            function closeDragElement() {
+                document.onmouseup = null; document.onmousemove = null;
+                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') { startDialUp(); }
             }
-
             function dragTouchStart(e) {
-                e = e || window.event;
-                hasMoved = false;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                document.ontouchend = closeTouchDragElement;
-                document.ontouchmove = elementTouchDrag;
+                e = e || window.event; hasMoved = false; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
             }
-
             function elementTouchDrag(e) {
-                e = e || window.event;
-                hasMoved = true;
-                pos1 = pos3 - e.touches[0].clientX;
-                pos2 = pos4 - e.touches[0].clientY;
-                pos3 = e.touches[0].clientX;
-                pos4 = e.touches[0].clientY;
-                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                e = e || window.event; hasMoved = true;
+                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
             }
-
-            function closeTouchDragElement(e) {
-                document.ontouchend = null;
-                document.ontouchmove = null;
-                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') {
-                    startDialUp();
-                }
+            function closeTouchDragElement() {
+                document.ontouchend = null; document.ontouchmove = null;
+                if (!hasMoved && elmnt.getAttribute('data-action') === 'internet') { startDialUp(); }
             }
         }
 
-        // Applica a tutte le icone
-        makeDraggable(document.getElementById("icon-internet"));
-        makeDraggable(document.getElementById("icon-murena"));
-        makeDraggable(document.getElementById("icon-jazzcore"));
-        makeDraggable(document.getElementById("icon-cestino"));
+        makeIconDraggable(document.getElementById("icon-internet"));
+        makeIconDraggable(document.getElementById("icon-murena"));
+        makeIconDraggable(document.getElementById("icon-jazzcore"));
+        makeIconDraggable(document.getElementById("icon-cestino"));
 
-        // LOGICA DIAL-UP E BARRA APPLICAZIONI
+        // DRAG & DROP FINESTRE POPUP (Solo tramite la Title Bar)
+        function makeWindowDraggable(winElement) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            var header = winElement.querySelector('.drag-handle');
+            if (header) {
+                header.onmousedown = dragMouseDown;
+                header.ontouchstart = dragTouchStart;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event; pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+                bringToFront(winElement);
+            }
+            function elementDrag(e) {
+                e = e || window.event; e.preventDefault();
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
+                winElement.style.top = (winElement.offsetTop - pos2) + "px"; winElement.style.left = (winElement.offsetLeft - pos1) + "px";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; }
+
+            function dragTouchStart(e) {
+                e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
+                bringToFront(winElement);
+            }
+            function elementTouchDrag(e) {
+                e = e || window.event; 
+                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                winElement.style.top = (winElement.offsetTop - pos2) + "px"; winElement.style.left = (winElement.offsetLeft - pos1) + "px";
+            }
+            function closeTouchDragElement() { document.ontouchend = null; document.ontouchmove = null; }
+        }
+
+        makeWindowDraggable(document.getElementById("artists-window"));
+        makeWindowDraggable(document.getElementById("warning-window"));
+        makeWindowDraggable(document.getElementById("loading-window"));
+        makeWindowDraggable(document.getElementById("network-window"));
+
+        // Gestione Z-Index (Porta in primo piano la finestra cliccata)
+        let highestZIndex = 100;
+        function bringToFront(element) {
+            highestZIndex += 1;
+            element.style.zIndex = highestZIndex;
+        }
+
+        // Funzioni per chiudere e mostrare i popup
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+        function showWindow(id) { 
+            var win = document.getElementById(id);
+            win.style.display = 'block'; 
+            bringToFront(win);
+        }
+
+        // LOGICA DIAL-UP
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
             const browserWindow = document.getElementById('browser-window');
             const taskbarItem = document.getElementById('taskbar-item');
             
-            // Mostra la finestra e lo slot nella barra
             dialupWindow.style.display = 'block';
             taskbarItem.style.display = 'flex';
             taskbarItem.innerText = 'Dial-Up Connection';
@@ -548,9 +471,8 @@
             setTimeout(() => {
                 dialupWindow.style.display = 'none';
                 browserWindow.style.display = 'flex';
-                // Aggiorna lo slot nella barra all'apertura del browser
                 taskbarItem.innerText = 'studiomurena.net - IE';
-                dialupText.innerText = "Dialing 555-MURENA..."; // Resetta
+                dialupText.innerText = "Dialing 555-MURENA...";
             }, 5500);
         }
 
@@ -559,15 +481,7 @@
             document.getElementById('taskbar-item').style.display = 'none';
         }
 
-        // OROLOGIO TASKBAR
+        // OROLOGIO
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours().toString().padStart(2, '0');
-            let minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').innerText = hours + ':' + minutes;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
-</body>
-</html>
+            let hours = now
