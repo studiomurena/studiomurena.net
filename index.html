@@ -51,7 +51,6 @@
             position: relative; overflow: hidden;
         }
 
-        /* EFFETTO CRT ATTENUATO PER MAGGIORE LEGGIBILITÀ (0.04 invece di 0.1) */
         .ig-stories-poster::after {
             content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.04) 50%);
@@ -72,15 +71,14 @@
         #icon-jazzcore { top: 220px; left: 20px; }
         #icon-cestino { top: 320px; left: 20px; }
 
-        /* BARRE DEL TITOLO CON FONT PIÙ GRANDE */
         .title-bar {
-            background: var(--win-blue); color: white; padding: 3px 8px;
-            display: flex; justify-content: space-between; align-items: center; font-size: 13px; 
+            background: var(--win-blue); color: white; padding: 2px 6px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 11px; 
         }
         .drag-handle { cursor: move; }
         .btn-close {
             background: var(--win-gray); border: 2px solid; border-color: #fff #000 #000 #fff;
-            color: black; font-weight: bold; padding: 0 4px; font-size: 11px; cursor: pointer;
+            color: black; font-weight: bold; padding: 0 4px; font-size: 10px; cursor: pointer;
         }
 
         #dialup-window {
@@ -93,7 +91,7 @@
             display: none; position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; z-index: 50; flex-direction: column;
         }
-        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
+        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 11px; }
 
         .browser-content {
             background-color: var(--web-bg); 
@@ -101,12 +99,12 @@
             display: flex; flex-direction: column; padding: 4px;
         }
 
-        /* --- SEZIONE ALTA (HEADER) --- */
-        /* LOGO PIÙ GRANDE */
+        /* --- SEZIONE ALTA (HEADER) PROTETTA DALLO SCHIACCIAMENTO --- */
         .main-title {
+            flex-shrink: 0; /* IMPEDISCE AL LOGO DI SPARIRE */
             margin: 4px auto;
             width: 100%;
-            height: min(22vw, 12vh); /* Altezza quasi raddoppiata */
+            height: min(40vw, 15vh); /* LOGO MOLTO PIU' GRANDE */
             display: flex; justify-content: center; align-items: center;
             -webkit-mask-image: url('assets/studiomurenanet.png');
             mask-image: url('assets/studiomurenanet.png');
@@ -121,24 +119,28 @@
         @keyframes colorCycle { 0% { background-color: #000080; } 50% { background-color: #008080; } 100% { background-color: #000000; } }
 
         .marquee-box {
+            flex-shrink: 0; /* IMPEDISCE DI SPARIRE */
             background: #000; color: #00ff00; padding: 2px; border: 2px solid #555; width: 100%;
             overflow: hidden; white-space: nowrap; margin-bottom: 4px; box-shadow: inset 2px 2px 0 #000;
         }
-        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 14px; }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 12px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         .huge-event-box {
-            background: #000; color: #fff; padding: 4px; margin-bottom: 6px; width: 100%;
+            flex-shrink: 0; /* IMPEDISCE DI SPARIRE */
+            background: #000; color: #fff; padding: 2px; margin-bottom: 4px; width: 100%;
             text-align: center; border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
         }
-        .huge-event-box h2 { font-size: min(6vw, 22px); margin: 0; }
-        .huge-event-box h1 { font-size: min(10vw, 32px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
+        .huge-event-box h2 { font-size: min(5vw, 18px); margin: 0; }
+        .huge-event-box h1 { font-size: min(8vw, 26px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
 
         /* --- WORKSPACE (GRID PER POP-UP INCASTRATI) --- */
         .workspace {
-            flex-grow: 1; display: grid; gap: 4px; width: 100%;
+            flex-grow: 1; 
+            min-height: 0; /* Fondamentale per far rimpicciolire la griglia e non schiacciare il logo */
+            display: grid; gap: 2px; width: 100%;
             grid-template-columns: 1fr 1fr; 
-            grid-template-rows: auto auto auto; 
+            grid-template-rows: auto auto minmax(0, 1fr); 
         }
 
         .popup { position: relative; box-shadow: 3px 3px 0 rgba(0,0,0,0.6); display: flex; flex-direction: column; }
@@ -146,19 +148,19 @@
         /* 1. GRIGLIA ARTISTI */
         #artists-window { grid-column: 1 / -1; z-index: 105; }
         .artist-grid {
-            background: var(--win-light); padding: 2px; flex-grow: 1;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+            background: var(--win-light); padding: 1px; flex-grow: 1;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
         }
 
         .artist-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 2px; border: 1px dotted transparent; cursor: pointer; text-align: center;
+            padding: 1px; border: 1px dotted transparent; cursor: pointer; text-align: center;
         }
         .artist-item:active { border: 1px dotted #808080; background: #e0e0e0; }
 
-        /* SPRITE OSPITI INGRANDITE (da 40x40 a 52x52) */
+        /* SPRITE OSPITI (48x48) */
         .sprite-25 {
-            width: 52px; height: 52px; margin-bottom: 2px;
+            width: 48px; height: 48px; margin-bottom: 1px;
             image-rendering: pixelated;
             background-color: transparent; 
             background-size: 500% 500%; 
@@ -166,28 +168,32 @@
             background-repeat: no-repeat;
         }
 
-        /* FONT OSPITI PIÙ GRANDE */
-        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 11px; font-weight: bold; line-height: 1.1; }
+        .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
 
-        /* ICONE STATICHE E GIF CUSTOM INGRANDITE */
-        .custom-icon { width: 40px; height: 40px; image-rendering: pixelated; object-fit: contain; margin-bottom: 2px; }
+        /* ICONE STATICHE E GIF CUSTOM (Schiacciate per i pop-up bassi) */
+        .custom-icon { width: 28px; height: 28px; image-rendering: pixelated; object-fit: contain; margin-bottom: 1px; }
 
-        /* ICONA SEGRETA INGRANDITA */
+        /* ICONA SEGRETA */
         .fixed-artist-icon {
-            width: 52px; height: 52px; margin-bottom: 2px;
+            width: 48px; height: 48px; margin-bottom: 1px;
             border: 2px solid #000; background-color: #555;
             display: flex; justify-content: center; align-items: center;
         }
         .fixed-artist-icon img {
-            width: 36px; height: 36px;
+            width: 32px; height: 32px;
             image-rendering: pixelated; object-fit: contain;
         }
 
-        /* POP-UP PICCOLI SOTTO (Font in tutti aumentati a 11px) */
+        /* POP-UP PICCOLI (COMPRESSI ALL'OSSO VERTICALMENTE) */
+        .mini-popup-content {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            padding: 2px; gap: 1px; flex-grow: 1; text-align: center;
+        }
+        .mini-popup-text { font-size: 9px; font-weight: bold; line-height: 1.1; }
+
         /* ALERT CON EFFETTO GLITCH */
         #warning-window { grid-column: 1; z-index: 102; animation: glitch 4s infinite; }
-        .warning-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .warning-text { font-size: 11px; font-weight: bold; line-height: 1.2; color: #800000; }
+        .warning-text { color: #800000; }
         
         @keyframes glitch {
             0%   { transform: scale(1); filter: none; }
@@ -199,21 +205,14 @@
         }
 
         #reveal-window { grid-column: 2; z-index: 106; }
-        .reveal-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .reveal-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
-
         #network-window { grid-column: 1; z-index: 104; }
-        .network-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .network-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
-        
         #loading-window { grid-column: 2; z-index: 103; }
-        .loading-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; gap: 4px; flex-grow: 1; text-align: center; }
-        .loading-text { font-size: 11px; font-weight: bold; line-height: 1.2; }
-        .progress-bar-container { width: 100%; height: 8px; margin: 4px 0; }
+
+        .progress-bar-container { width: 90%; height: 6px; margin: 2px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
 
-        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 11px; cursor: pointer; padding: 3px 8px; margin-top: 6px; font-weight: bold; width: 85%; }
+        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 1px 4px; margin-top: 1px; font-weight: bold; width: 85%; }
         .btn-mini:active { border-color: #808080 #fff #fff #808080; }
 
         /* --- TASKBAR --- */
@@ -288,7 +287,7 @@
                     <div class="workspace">
                         
                         <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>Guest List Explorer</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
+                            <div class="title-bar drag-handle"><span>Guest List</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                             <div class="artist-grid win95-border-inset">
                                 
                                 <div class="artist-item" onclick="alert('Arya module executed.')">
@@ -332,37 +331,37 @@
                         </div>
 
                         <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>FATAL_ERROR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
-                            <div class="warning-content win95-border-inset">
+                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>FATAL_ERR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/alert.png" class="custom-icon" alt="Warning">
-                                <div class="warning-text">CRITICAL OVERLOAD:<br>LIVE CONCERT DETECTED.<br>PROCEED WITH CAUTION.</div>
+                                <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
                                 <button class="btn-mini" onclick="closeWindow('warning-window')">IGNORE</button>
                             </div>
                         </div>
 
                         <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>System.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
-                            <div class="reveal-content win95-border-inset">
+                            <div class="title-bar drag-handle"><span>Sys.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/info.png" class="custom-icon" alt="Info">
-                                <div class="reveal-text">Decrypting remaining guest profiles...<br>ETA: SOON.<br>Stay tuned to frequency.</div>
+                                <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
                                 <button class="btn-mini" onclick="closeWindow('reveal-window')">ACKNOWLEDGE</button>
                             </div>
                         </div>
 
                         <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>Network Interface</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
-                            <div class="network-content win95-border-inset">
-                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 2px;"></div>
-                                <div class="network-text">Secure Connection Est.<br>Node: Magnolia.<br>Init sequence?</div>
+                            <div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
+                                <div class="mini-popup-text">Node: Magnolia.<br>Init sequence?</div>
                                 <button class="btn-mini" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">EXECUTE</button>
                             </div>
                         </div>
 
                         <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>SysProcess.exe</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
-                            <div class="loading-content win95-border-inset">
+                            <div class="title-bar drag-handle"><span>Process</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/loading.gif" class="custom-icon" alt="Loading...">
-                                <div class="loading-text">Allocating memory for memories...<br>Synching tempos...</div>
+                                <div class="mini-popup-text">Synching tempos...</div>
                                 <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
                             </div>
                         </div>
