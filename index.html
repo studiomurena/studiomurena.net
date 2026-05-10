@@ -100,14 +100,11 @@
         }
 
         /* --- SEZIONE ALTA (HEADER) --- */
-        /* TECNICA AVANZATA: CSS Masking per applicare l'animazione colore a una PNG */
         .main-title {
             margin: 2px auto;
             width: 100%;
-            height: min(13vw, 8vh); /* Mantiene la responsive height originaria del font size */
+            height: min(13vw, 8vh); 
             display: flex; justify-content: center; align-items: center;
-            
-            /* CSS Masking: Carica la PNG e usala come stencil */
             -webkit-mask-image: url('assets/studiomurenanet.png');
             mask-image: url('assets/studiomurenanet.png');
             -webkit-mask-size: contain;
@@ -116,12 +113,8 @@
             mask-repeat: no-repeat;
             -webkit-mask-position: center;
             mask-position: center;
-
-            /* Applica l'animazione colore al BACKGROUND visto attraverso la maschera */
             animation: colorCycle 2s infinite alternate;
         }
-
-        /* Update Keyframes per animare il background-color, non il testo color */
         @keyframes colorCycle { 0% { background-color: #000080; } 50% { background-color: #008080; } 100% { background-color: #000000; } }
 
         .marquee-box {
@@ -172,8 +165,19 @@
 
         .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 9px; font-weight: bold; line-height: 1.1; }
 
-        /* ICONE STATICHE CUSTOM (per Warning e Info) */
+        /* ICONE STATICHE E GIF CUSTOM */
         .custom-icon { width: 32px; height: 32px; image-rendering: pixelated; object-fit: contain; }
+
+        /* NUOVA ICONA PER ARTISTA ENCRYPTED (Garantisce bordo nero stile sprite) */
+        .fixed-artist-icon {
+            width: 40px; height: 40px; margin-bottom: 2px;
+            border: 2px solid #000; background-color: #555;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .fixed-artist-icon img {
+            width: 28px; height: 28px;
+            image-rendering: pixelated; object-fit: contain;
+        }
 
         /* POP-UP PICCOLI SOTTO */
         /* ALERT CON EFFETTO GLITCH */
@@ -200,11 +204,12 @@
         
         #loading-window { grid-column: 2; z-index: 103; }
         .loading-content { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px; font-size: 9px; flex-grow: 1; text-align: center; gap: 4px; }
+        .loading-text { font-size: 9px; font-weight: bold; line-height: 1.2; }
         .progress-bar-container { width: 100%; height: 8px; margin: 4px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
 
-        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 1px 4px; margin-top: 2px; font-weight: bold; width: 80%; }
+        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 2px 6px; margin-top: 4px; font-weight: bold; width: 80%; }
         .btn-mini:active { border-color: #808080 #fff #fff #808080; }
 
         /* --- TASKBAR --- */
@@ -270,7 +275,6 @@
                 <div class="browser-content">
                     
                     <div class="main-title"></div>
-                    
                     <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
                     <div class="huge-event-box">
                         <h2>CIRCOLO MAGNOLIA</h2>
@@ -316,7 +320,7 @@
                                     <div class="artist-name">CarloCorallo.sys</div>
                                 </div>
                                 <div class="artist-item" style="background:#ddd;" onclick="alert('ERR_403: DECRYPTION FAILED.')">
-                                    <div class="sprite-25" style="background-image: none; background-color: #555; text-align:center; color:#fff; line-height:40px; font-size:20px; border:2px solid #000; animation:none;">❓</div>
+                                    <div class="fixed-artist-icon"><img src="assets/incognito.png" alt="Mystery"></div>
                                     <div class="artist-name" style="color:red; text-decoration:none;">ENCRYPTED.raw</div>
                                 </div>
 
@@ -444,6 +448,7 @@
             element.style.zIndex = highestZIndex;
         }
 
+        // Applica Draggable
         makeDraggable(document.getElementById("icon-internet"), null);
         makeDraggable(document.getElementById("icon-murena"), null);
         makeDraggable(document.getElementById("icon-jazzcore"), null);
@@ -457,6 +462,7 @@
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
+        // CONNESSIONE: NASCONDE DESKTOP E APRE BROWSER (VELOCIZZATA)
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
             const dialupText = document.getElementById('dialup-text');
@@ -468,9 +474,10 @@
             taskbarItem.style.display = 'flex';
             taskbarItem.innerText = 'Dial-Up Connection';
             
-            setTimeout(() => { dialupText.innerText = "Verifying credentials..."; }, 1500);
-            setTimeout(() => { dialupText.innerText = "Bypassing mainframe..."; }, 3000);
-            setTimeout(() => { dialupText.innerText = "Connected at 56,000 bps."; }, 4500);
+            // Tempi tagliati drasticamente (~60% più veloce)
+            setTimeout(() => { dialupText.innerText = "Verifying credentials..."; }, 600);
+            setTimeout(() => { dialupText.innerText = "Bypassing mainframe..."; }, 1200);
+            setTimeout(() => { dialupText.innerText = "Connected at 56,000 bps."; }, 1800);
             
             setTimeout(() => {
                 dialupWindow.style.display = 'none';
@@ -478,7 +485,7 @@
                 taskbarItem.innerText = 'studiomurena.net - IE';
                 dialupText.innerText = "Dialing 555-MURENA...";
                 desktopIcons.forEach(icon => icon.style.display = 'none');
-            }, 5500);
+            }, 2200);
         }
 
         function closeBrowser() {
@@ -487,6 +494,7 @@
             document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
         }
 
+        // OROLOGIO
         function updateClock() {
             const now = new Date();
             let hours = now.getHours().toString().padStart(2, '0');
