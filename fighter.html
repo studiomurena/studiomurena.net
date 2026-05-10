@@ -3,134 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>studiomurena.net</title>
+    <title>Musical Fighters</title>
     <style>
-        @import url('https://fonts.cdnfonts.com/css/vga-437');
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        body { background: #000; margin: 0; font-family: 'Press Start 2P', cursive; overflow: hidden; color: #fff; touch-action: none; }
+        
+        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: #000080; }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .cell { width: 60px; height: 60px; border: 3px solid #808080; background: #222; display: flex; align-items: center; justify-content: center; cursor: pointer; background-size: cover; image-rendering: pixelated; }
+        .cell.selected { border-color: #ffcc00; box-shadow: 0 0 10px #ffcc00; transform: scale(1.1); }
+        .cell.locked::after { content: "🔒"; font-size: 20px; }
 
-        :root {
-            --teal: #008080; --win-gray: #c0c0c0; --win-blue: #000080;
-            --win-light: #ffffff; --win-dark: #000000;
-        }
+        canvas { width: 100vw; height: 100vh; image-rendering: pixelated; }
 
-        * { box-sizing: border-box; }
-        body {
-            margin: 0; background-color: #000; font-family: 'VGA 437', monospace;
-            overflow: hidden; display: flex; justify-content: center; align-items: center;
-        }
-
-        .win95-border {
-            background-color: var(--win-gray);
-            border-top: 2px solid var(--win-light); border-left: 2px solid var(--win-light);
-            border-right: 2px solid var(--win-dark); border-bottom: 2px solid var(--win-dark);
-            box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
-        }
-
-        .ig-stories-poster {
-            height: 100vh; width: 100vw; max-width: 600px;
-            background-color: var(--teal); display: flex; flex-direction: column;
-            position: relative; overflow: hidden;
-        }
-
-        /* DESKTOP */
-        .desktop { flex-grow: 1; position: relative; z-index: 10; }
-        .desktop-icon {
-            position: absolute; width: 80px; text-align: center; color: white; font-size: 11px;
-            cursor: pointer; text-shadow: 1px 1px #000; padding: 5px;
-        }
-        .icon-art { font-size: 32px; display: block; margin-bottom: 5px; }
-
-        #icon-internet { top: 20px; left: 20px; }
-        #icon-game { top: 110px; left: 20px; }
-        #icon-fighter { top: 20px; left: 110px; }
-
-        /* HEADER BROWSER */
-        .main-title {
-            margin: 15px auto; font-family: 'Press Start 2P', monospace;
-            font-size: 5vw; text-align: center; text-transform: lowercase;
-            animation: colorCycle 2s infinite alternate;
-        }
-        @keyframes colorCycle { 0% { color: #000080; } 100% { color: #00ffff; } }
-
-        /* TASKBAR */
-        .taskbar {
-            height: 35px; background: var(--win-gray); border-top: 2px solid var(--win-light);
-            display: flex; align-items: center; padding: 0 5px; z-index: 100;
-        }
-        .start-btn { border: 2px solid; border-color: #fff #000 #000 #fff; padding: 2px 6px; font-weight: bold; }
-
-        /* SLOT WINDOW */
-        #game-window {
-            display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; z-index: 200; padding: 10px;
-        }
-        .title-bar { background: var(--win-blue); color: #fff; padding: 3px 8px; display: flex; justify-content: space-between; }
-        .slot-grid { display: flex; gap: 5px; justify-content: center; margin: 15px 0; }
-        .box { width: 50px; height: 50px; background: #fff; border: 2px solid #000; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        #controls { position: absolute; bottom: 20px; width: 100%; display: none; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 5; }
+        .btn { width: 60px; height: 60px; background: #c0c0c0; border: 3px solid #fff; border-right-color: #000; border-bottom-color: #000; color: #000; display: flex; align-items: center; justify-content: center; font-size: 10px; }
     </style>
 </head>
 <body>
 
-<div class="ig-stories-poster">
-    <div class="desktop">
-        <div class="main-title">studiomurena.net</div>
+<div id="ui-layer">
+    <h2 id="msg">SELECT FIGHTER</h2>
+    <div id="grid" class="grid"></div>
+    <div id="sub-msg" style="font-size: 8px;">CHOOSE YOUR DESTINY</div>
+    <button onclick="window.location.href='index.html'" style="margin-top:20px; background:#c0c0c0; border:2px solid #fff; font-family:inherit; padding:5px;">EXIT</button>
+</div>
 
-        <div class="desktop-icon" id="icon-internet" onclick="alert('IE 4.0: Connection Error')">
-            <span class="icon-art">🌐</span>Internet
-        </div>
-        <div class="desktop-icon" id="icon-game" onclick="document.getElementById('game-window').style.display='block'">
-            <span class="icon-art">🎰</span>SLOT
-        </div>
-        <div class="desktop-icon" id="icon-fighter" onclick="window.location.href='fighter.html'">
-            <span class="icon-art">👊</span>FIGHTER
-        </div>
+<canvas id="game"></canvas>
 
-        <div id="game-window" class="win95-border">
-            <div class="title-bar"><span>MurenaSlot.exe</span><span onclick="this.parentElement.parentElement.style.display='none'">[X]</span></div>
-            <div style="padding: 10px; text-align: center;">
-                <input type="email" id="email" placeholder="tua@email.com" style="width: 80%; margin-bottom: 10px;">
-                <button onclick="playSlot()" class="start-btn">GIOCA</button>
-                <div id="slot-msg" style="font-size: 10px; margin-top: 10px;">Inserisci email per iniziare</div>
-                <div class="slot-grid" id="grid">
-                    <div class="box">?</div><div class="box">?</div><div class="box">?</div><div class="box">?</div><div class="box">?</div>
-                </div>
-            </div>
-        </div>
+<div id="controls">
+    <div style="display:flex; gap:10px;">
+        <div class="btn" id="l">◀</div>
+        <div class="btn" id="r">▶</div>
     </div>
-
-    <div class="taskbar">
-        <div class="start-btn">Start</div>
-        <div style="margin-left: auto; font-size: 12px;" id="clock">18:06</div>
+    <div style="display:flex; gap:10px;">
+        <div class="btn" id="j">JUMP</div>
+        <div class="btn" id="a" style="background:#f00; color:#fff;">ATK</div>
     </div>
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
-    
-    async function playSlot() {
-        const mail = document.getElementById('email').value;
-        if(!mail.includes('@')) return alert('Email non valida');
-        document.getElementById('slot-msg').innerText = "Connessione al server...";
-        
-        try {
-            const res = await fetch(scriptURL + "?email=" + encodeURIComponent(mail));
-            const data = await res.json();
-            document.getElementById('slot-msg').innerText = "Match trovato! Clicca i box.";
-            const boxes = document.querySelectorAll('.box');
-            boxes.forEach((b, i) => {
-                b.onclick = () => {
-                    b.innerText = data.id === 'lose' ? ["❌","💀","🎲"][Math.floor(Math.random()*3)] : data.icon;
-                    b.style.backgroundColor = "#eee";
-                };
-            });
-        } catch(e) { alert("Errore server"); }
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800; canvas.height = 450;
+
+    const roster = [
+        { id: 'carma', name: 'CARMA', l: false },
+        { id: 'ferraz', name: 'FERRAZ', l: false },
+        { id: 'nan', name: 'NAN', l: false },
+        { id: 'mauri', name: 'MAURI', l: false },
+        { id: 'falcon', name: 'FALCON', l: false },
+        { id: 'guest1', name: '???', l: true },
+        { id: 'guest2', name: '???', l: true },
+        { id: 'guest3', name: '???', l: true }
+    ];
+
+    const stages = [
+        { id: 0, name: 'MILANO', bg: 'assets/skyline1.png', pav: 'assets/pavimento-milano-baba.png' },
+        { id: 1, name: 'BOSCO', bg: 'assets/boschetto2.png', pav: 'assets/pavimento-boschetto.png' },
+        { id: 2, name: 'METRO', bg: 'assets/metro-baba3.png', pav: 'assets/pavimento-metro.png' }
+    ];
+
+    let mode = "CHAR"; // CHAR, STAGE, FIGHT
+    let p1Char, stage;
+    let p1 = { x: 100, y: 300, hp: 100, s: 'idle', vy: 0, d: 1 };
+    let cpu = { x: 600, y: 300, hp: 100, s: 'idle', vy: 0, d: -1 };
+
+    function initChars() {
+        const g = document.getElementById('grid'); g.innerHTML = '';
+        roster.forEach((c, i) => {
+            const d = document.createElement('div');
+            d.className = `cell ${c.l ? 'locked' : ''}`;
+            if(!c.l) d.style.backgroundImage = `url('assets/${c.id}2-idle.png')`;
+            d.onclick = () => { if(!c.l) { p1Char = c; initStages(); } };
+            g.appendChild(d);
+        });
     }
 
-    setInterval(() => {
-        const n = new Date();
-        document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0');
-    }, 1000);
-</script>
+    function initStages() {
+        mode = "STAGE"; document.getElementById('msg').innerText = "SELECT STAGE";
+        const g = document.getElementById('grid'); g.innerHTML = '';
+        stages.forEach(s => {
+            const d = document.createElement('div');
+            d.className = 'cell'; d.style.backgroundImage = `url('${s.bg}')`;
+            d.onclick = () => { stage = s; start(); };
+            g.appendChild(d);
+        });
+    }
 
+    function start() {
+        mode = "FIGHT";
+        document.getElementById('ui-layer').style.display = 'none';
+        document.getElementById('controls').style.display = 'flex';
+        cpu.id = ['murena','baba','cop','copzombie'][Math.floor(Math.random()*4)];
+    }
+
+    const input = { l:0, r:0, j:0, a:0 };
+    function setup(id, k) {
+        const b = document.getElementById(id);
+        b.ontouchstart = (e) => { e.preventDefault(); input[k]=1; };
+        b.ontouchend = () => input[k]=0;
+    }
+    setup('l','l'); setup('r','r'); setup('j','j'); setup('a','a');
+
+    function loop() {
+        if(mode === "FIGHT") {
+            if(input.l) { p1.x-=4; p1.s='walk'; p1.d=-1; }
+            else if(input.r) { p1.x+=4; p1.s='walk'; p1.d=1; }
+            else p1.s='idle';
+            if(input.j && p1.y>=300) p1.vy=-12;
+            if(input.a) p1.s='attack';
+
+            p1.y+=p1.vy; if(p1.y<300) p1.vy+=0.6; else { p1.y=300; p1.vy=0; }
+            
+            // Draw
+            ctx.clearRect(0,0,800,450);
+            const b = new Image(); b.src = stage.bg; ctx.drawImage(b, 0,0,800,450);
+            const p = new Image(); p.src = stage.pav; ctx.drawImage(p, 0,350,800,100);
+            
+            // Bars
+            ctx.fillStyle="red"; ctx.fillRect(50,20,300,20); ctx.fillRect(450,20,300,20);
+            ctx.fillStyle="yellow"; ctx.fillRect(50,20,p1.hp*3,20); ctx.fillRect(450+(300-cpu.hp*3),20,cpu.hp*3,20);
+            
+            render(p1, p1Char.id); render(cpu, cpu.id);
+            if(p1.hp<=0 || cpu.hp<=0) location.reload();
+        }
+        requestAnimationFrame(loop);
+    }
+
+    function render(f, id) {
+        const img = new Image(); img.src = `assets/${id}2-${f.s}.png`;
+        ctx.save();
+        if(f.d===-1) { ctx.translate(f.x+80, f.y); ctx.scale(-1,1); ctx.drawImage(img,0,0,80,100); }
+        else ctx.drawImage(img, f.x, f.y, 80, 100);
+        ctx.restore();
+        // Semplice collisione
+        if(f===p1 && f.s==='attack' && Math.abs(p1.x-cpu.x)<60) cpu.hp-=0.5;
+        if(f===cpu && f.s==='attack' && Math.abs(p1.x-cpu.x)<60) p1.hp-=0.3;
+    }
+
+    initChars(); loop();
+</script>
 </body>
 </html>
