@@ -107,7 +107,7 @@
             flex-shrink: 0; 
             margin: 12px auto; 
             width: 100%; 
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify(content): center; align-items: center;
             font-family: 'Press Start 2P', monospace; 
             font-size: 5.6vw; 
             text-transform: lowercase; 
@@ -426,8 +426,8 @@
         let highestZIndex = 110;
 
         // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
-        // IL TUO LINK GOOGLE:
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzmFyjDllwBDV0hKm7OhEUV3IZYuTPKFvNHEgEjKe_1kEPEjyAXGAGtsTNTO-mNWXYw/exec';
+        // NUOVO LINK GOOGLE AGGIORNATO:
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
         
         let boxesRevealed = 0;
         let playerEmail = "";
@@ -435,7 +435,6 @@
         let currentWinningName = "";
         let currentWinningIcon = "";
         
-        // Icone usate per confondere l'utente se perde (Così non trova 5 simboli uguali)
         const randomIcons = ["🐉", "🖼️", "💿", "📜", "🏷️"]; 
 
         function openGame() {
@@ -443,7 +442,6 @@
             bringToFront(document.getElementById('game-window'));
         }
 
-        // --- VERSIONE AGGIORNATA CON METODO GET PER EVITARE BLOCCHI CORS ---
         function startGame() {
             const emailInput = document.getElementById('player-email').value;
             if (!emailInput || !emailInput.includes('@')) {
@@ -452,7 +450,6 @@
             }
             playerEmail = emailInput;
             
-            // Nasconde Fase 1 e mostra loading
             document.getElementById('game-phase-1').style.display = 'none';
             document.getElementById('game-phase-2').style.display = 'flex';
             document.getElementById('slot-machine').style.display = 'none';
@@ -460,23 +457,20 @@
             msgBox.innerText = "Connecting to Murena Server... Please wait.";
             msgBox.style.color = "var(--win-blue)";
 
-            // Contatta Google Fogli segretamente usando il metodo GET (Anti-blocco)
+            // Contatta Google Fogli usando il metodo GET (Anti-blocco)
             const urlConEmail = scriptURL + "?email=" + encodeURIComponent(playerEmail);
 
             fetch(urlConEmail)
                 .then(response => response.json())
                 .then(data => {
-                    // Google ha risposto con l'esito
                     currentWinningItem = data.id;
                     currentWinningName = data.nome;
                     currentWinningIcon = data.icon;
                     
-                    // Mostra la griglia
                     msgBox.innerText = "Access Granted! Decrypting boxes... click to open!";
                     document.getElementById('slot-machine').style.display = 'flex';
                 })
                 .catch(error => {
-                    // Se qualcosa va storto con la connessione
                     msgBox.innerText = "SYS_ERR: Server offline. Riprova più tardi.";
                     msgBox.style.color = "red";
                     setTimeout(() => {
@@ -490,7 +484,6 @@
             const box = document.getElementById('box-' + index);
             if (box.classList.contains('revealed')) return;
             
-            // Se vince, esce sempre la stessa icona. Se perde, icone a caso.
             let displayIcon = currentWinningIcon;
             if (currentWinningItem === "lose") {
                 displayIcon = randomIcons[Math.floor(Math.random() * randomIcons.length)];
@@ -515,7 +508,6 @@
                 msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail.`;
             }
             
-            // Reset automatico dopo 6 secondi
             setTimeout(() => {
                 boxesRevealed = 0;
                 document.getElementById('game-phase-1').style.display = 'block';
@@ -533,7 +525,6 @@
 
         // --- SISTEMA INTERFACCIA WEB OS ---
 
-        // ANIMAZIONE SPRITE
         setInterval(() => {
             const sprites = document.querySelectorAll('.sprite-25');
             sprites.forEach(sprite => {
@@ -545,7 +536,6 @@
             });
         }, 120);
 
-        // DRAG E DROP
         function makeDraggable(element, handleSelector) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             let handle = handleSelector ? element.querySelector(handleSelector) : element;
