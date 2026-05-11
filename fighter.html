@@ -40,27 +40,18 @@
             transition: background 0.3s;
         }
 
-        /* 1. Mappa Italia 8-Bit (Eroi) */
-        .bg-italy {
-            background-color: #000080;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='rgba(255,255,255,0.15)' d='M20,10 h20 v10 h5 v5 h10 v15 h5 v15 h5 v10 h-5 v10 h-10 v-5 h-10 v-5 h-5 v-10 h-5 v-10 h5 v-10 h-5 v-5 h-5 v-10 z M65,75 h10 v10 h-10 z'/%3E%3C/svg%3E");
-            background-size: contain; background-repeat: no-repeat; background-position: center;
+        /* SFONDI PERSONALIZZATI */
+        .bg-select-ch { 
+            background: url('assets/select-ch.png') no-repeat center center; 
+            background-size: cover; background-color: #000080;
         }
-
-        /* 2. Rosso Infuocato (Avversari) */
-        .bg-fire {
-            background: linear-gradient(to bottom, #500000 0%, #aa0000 40%, #ff4500 80%, #ffcc00 100%);
+        .bg-select-en { 
+            background: url('assets/select-en.png') no-repeat center center; 
+            background-size: cover; background-color: #500000;
         }
-
-        /* 3. Nero Stellato (Stage) */
-        .bg-stars {
-            background-color: #000;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
-            background-size: 50px 50px, 90px 90px, 130px 130px;
-            background-position: 0 0, 40px 60px, 100px 30px;
+        .bg-select-am { 
+            background: url('assets/select-am.png') no-repeat center center; 
+            background-size: cover; background-color: #000;
         }
 
         /* GRIGLIA CENTRATA */
@@ -70,7 +61,7 @@
         }
         
         .cell {
-            width: 70px; height: 70px; background: #222; border: 3px solid #808080;
+            width: 70px; height: 70px; background-color: #222; border: 3px solid #808080;
             cursor: pointer; image-rendering: pixelated;
             /* FIX SPRITE SELECTION: mostriamo solo il primo frame della sheet 5x5 */
             background-size: 500% 500%; 
@@ -100,7 +91,7 @@
 </div>
 
 <div id="game-container">
-    <div id="selection-screen" class="bg-italy">
+    <div id="selection-screen" class="bg-select-ch">
         <div id="grid" class="grid"></div>
         <div id="char-name" style="margin-top: 20px; color: #ffcc00; text-shadow: 2px 2px #000;">SELECT HERO</div>
     </div>
@@ -123,7 +114,7 @@
     const ctx = canvas.getContext('2d');
     
     // ----------------------------------------------------
-    // ASSETS REALI DAL REPOSITORY
+    // ASSETS
     // ----------------------------------------------------
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA' },
@@ -156,7 +147,8 @@
     let currentStage = null;
 
     let p1 = { x: 100, y: 300, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0 };
-    let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0 };
+    // Aggiunto attackTimer alla CPU per rallentare i suoi attacchi
+    let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, attackTimer: 0 };
 
     // ----------------------------------------------------
     // LOGICA DI SELEZIONE MULTIPLA
@@ -170,8 +162,8 @@
         grid.innerHTML = '';
 
         if (selectState === 0) {
-            // STEP 1: EROE (Mappa Italia 8-bit)
-            screen.className = 'bg-italy';
+            // STEP 1: EROE
+            screen.className = 'bg-select-ch';
             title.innerText = 'SELECT HERO';
             title.style.color = '#ffcc00';
             topMsg.innerText = 'STUDIO MURENA: SELECT HERO';
@@ -185,8 +177,8 @@
             });
         } 
         else if (selectState === 1) {
-            // STEP 2: AVVERSARIO (Rosso Fuoco)
-            screen.className = 'bg-fire';
+            // STEP 2: AVVERSARIO
+            screen.className = 'bg-select-en';
             title.innerText = 'SELECT OPPONENT';
             title.style.color = '#fff';
             topMsg.innerText = 'STUDIO MURENA: SELECT OPPONENT';
@@ -200,8 +192,8 @@
             });
         } 
         else if (selectState === 2) {
-            // STEP 3: STAGE (Cielo Stellato)
-            screen.className = 'bg-stars';
+            // STEP 3: STAGE
+            screen.className = 'bg-select-am';
             title.innerText = 'SELECT STAGE';
             title.style.color = '#00ffff';
             topMsg.innerText = 'STUDIO MURENA: SELECT STAGE';
@@ -210,7 +202,7 @@
                 const d = document.createElement('div');
                 d.className = 'cell';
                 d.style.backgroundImage = `url('${s.bg}')`;
-                d.style.backgroundSize = 'cover'; // Rimuove il focus 500% tipico delle spritesheet
+                d.style.backgroundSize = 'cover'; 
                 d.style.backgroundPosition = 'center';
                 d.style.borderColor = '#00ffff';
                 d.onclick = () => { currentStage = s; startFight(); };
@@ -219,7 +211,6 @@
         }
     }
 
-    // Inizializza subito la prima schermata
     loadSelectionScreen();
 
     function startFight() {
@@ -282,14 +273,25 @@
         if (p1.y < 300) p1.vy += 1; else { p1.y = 300; p1.vy = 0; }
 
         // CPU AI Logic
-        let dist = p1.x - cpu.x;
-        if (Math.abs(dist) > 60) {
-            cpu.x += (dist > 0 ? 3 : -3);
-            cpu.state = 'run';
-            cpu.dir = (dist > 0 ? 1 : -1);
+        if (cpu.attackTimer > 0) {
+            // Se la CPU sta attaccando, mantieni lo stato per far vedere l'animazione
+            cpu.attackTimer--;
+            cpu.state = 'attack';
         } else {
-            cpu.state = 'idle';
-            if (Math.random() < 0.05) cpu.state = 'attack';
+            // Logica di movimento standard
+            let dist = p1.x - cpu.x;
+            if (Math.abs(dist) > 60) {
+                cpu.x += (dist > 0 ? 3 : -3);
+                cpu.state = 'run';
+                cpu.dir = (dist > 0 ? 1 : -1);
+            } else {
+                cpu.state = 'idle';
+                // Decide di attaccare con una certa probabilità
+                if (Math.random() < 0.05) {
+                    cpu.state = 'attack';
+                    cpu.attackTimer = 30; // Mantiene l'attacco per 30 frame (mezzo secondo)
+                }
+            }
         }
         
         cpu.y += cpu.vy;
