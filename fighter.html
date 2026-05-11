@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Musical Fighters - Murena Edition</title>
     
-    <!-- PRECARICAMENTO SFONDI -->
+    <!-- PRECARICAMENTO SFONDI SELEZIONI -->
     <link rel="preload" as="image" href="assets/bkg1.png">
     <link rel="preload" as="image" href="assets/bkg2.png">
     <link rel="preload" as="image" href="assets/bkg3.png">
@@ -86,7 +86,6 @@
         .joy-btn:active { background: #808080; border-color: #808080 #fff #fff #808080; }
         .joy-btn.red { background: #d00; color: #fff; }
         .joy-btn.blue { background: #00d; color: #fff; }
-        .joy-btn.small { height: 40px; width: 50px; font-size: 8px; }
     </style>
 </head>
 <body>
@@ -98,23 +97,19 @@
 </div>
 
 <div id="game-container">
-    <!-- Selezione -->
     <div id="selection-screen" class="bg-select-ch">
         <div id="grid" class="grid"></div>
         <div id="char-name" style="margin-top: 20px; color: #ffcc00; text-shadow: 2px 2px #000;">SELECT HERO</div>
     </div>
     
-    <!-- Testo dei Round -->
     <div id="round-msg">ROUND 1</div>
 
-    <!-- Menù di Pausa -->
     <div id="pause-screen" class="overlay">
         <h1>PAUSED</h1>
         <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="togglePause()">RESUME</button>
         <button class="win-btn" style="font-size: 14px; padding: 10px; margin-top: 10px;" onclick="location.reload()">QUIT</button>
     </div>
 
-    <!-- Schermata di Fine Partita -->
     <div id="end-screen" class="overlay">
         <h1 id="end-title">YOU WIN!</h1>
         <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
@@ -123,7 +118,6 @@
     <canvas id="gameCanvas" width="800" height="450"></canvas>
 </div>
 
-<!-- Controlli In-Game -->
 <div id="controls" style="visibility: hidden;">
     <div style="display: flex; gap: 5px; align-items: flex-end;">
         <div class="joy-btn" id="btn-l">◀</div>
@@ -167,29 +161,26 @@
         { spriteId: 'franken', name: 'FRANKEN' }
     ];
 
+    // NOMI CORRETTI CON LA "C"
     const stages = [
-        { name: 'BAR', bg: 'assets/bakg-bar.png' },
-        { name: 'METRO', bg: 'assets/bakg-metro.png' },
-        { name: 'GUERRIERI', bg: 'assets/bakg-guerrieri.png' }
+        { name: 'BAR', bg: 'assets/backg-bar.png' },
+        { name: 'METRO', bg: 'assets/backg-metro.png' },
+        { name: 'GUERRIERI', bg: 'assets/backg-guerrieri.png' }
     ];
 
-    // VARIABILI GLOBALI E FISICA AUMENTATA
+    // VARIABILI GLOBALI
     let selectState = 0; 
-    let mode = "SELECT"; // SELECT, FIGHT, PAUSE, ROUND_OVER, END
+    let mode = "SELECT"; 
     let p1Char = null; let cpuChar = null; let currentStage = null;
 
-    // SISTEMA ROUND E TIMER
     let matchTimer = 99;
     let framesCounter = 0;
     let currentRound = 1;
     let p1Wins = 0;
     let cpuWins = 0;
 
-    // Dimensione Sprite Renderizzata (ora gigantesca!)
     const SPRITE_SIZE = 200;
 
-    // STATI GIOCATORI (hp: 100 max)
-    // x iniziale adattato per la nuova larghezza
     let p1 = { x: 100, y: 350, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
     let cpu = { x: 500, y: 350, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
 
@@ -204,7 +195,6 @@
     };
     setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a'); setup('btn-d', 'd');
 
-    // TASTIERA PC
     window.onkeydown = (e) => {
         if(e.code === 'ArrowLeft') keys.l = 1; if(e.code === 'ArrowRight') keys.r = 1;
         if(e.code === 'ArrowUp') keys.j = 1; if(e.code === 'Space') keys.a = 1;
@@ -303,7 +293,6 @@
         if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
         if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
 
-        // Offset Y e Larghezza aggiornati per disegnare il lottatore a 200x200 pixel
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
             ctx.drawImage(finalImg, sx, sy, frameW, frameH, 0, -SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
@@ -326,16 +315,21 @@
         f.y += f.vy;
         if (f.y < 350) f.vy += 1; else { f.y = 350; f.vy = 0; }
 
-        // Muri invalicabili calcolati sulla nuova stazza di 200px
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
 
         if (f.state === 'hurt' || f.state === 'dodge' || f.state === 'attack') return;
 
         if (isPlayer) {
+            let enemyDist = cpu.x - f.x;
+
             if (keys.l) { f.x -= 5; f.state = 'run'; f.dir = -1; }
             else if (keys.r) { f.x += 5; f.state = 'run'; f.dir = 1; }
-            else f.state = 'idle';
+            else { 
+                f.state = 'idle'; 
+                // AUTO-TURN: Quando sei fermo, guardi sempre l'avversario
+                f.dir = enemyDist > 0 ? 1 : -1; 
+            }
 
             if (keys.j && f.y >= 350) f.vy = -15;
             
@@ -345,7 +339,6 @@
             let dist = p1.x - f.x;
             f.dir = dist > 0 ? 1 : -1;
             
-            // L'IA ora sta più lontana prima di attaccare a causa delle proporzioni
             if (Math.abs(dist) > 130) {
                 f.x += f.dir * 3; f.state = 'run';
             } else {
@@ -358,14 +351,18 @@
     }
 
     function checkHitbox(attacker, defender) {
-        // Hitbox allargate in virtù dello zoom x2
         if (attacker.state === 'attack' && attacker.timer === 15) { 
-            if (Math.abs(attacker.x - defender.x) < 140 && Math.abs(attacker.y - defender.y) < 100) {
+            // Calcoliamo la posizione relativa in base alla direzione dell'attaccante
+            let relativeDist = (defender.x - attacker.x) * attacker.dir;
+
+            // Hitbox direzionale: colpisce solo in avanti (fino a 140px) e poco dietro (max 50px sovrapposti)
+            if (relativeDist > -50 && relativeDist < 140 && Math.abs(attacker.y - defender.y) < 100) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
                     defender.state = 'hurt';
                     defender.timer = 20; 
                     defender.hp -= 15; 
-                    defender.x -= attacker.dir * 20; // Doppio Knockback
+                    // Il difensore viene spinto VIA nella direzione dell'attacco
+                    defender.x += attacker.dir * 20; 
                     return true;
                 }
             }
