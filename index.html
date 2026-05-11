@@ -73,7 +73,7 @@
         #icon-jazzcore { top: 220px; left: 20px; }
         #icon-cestino { top: 320px; left: 20px; }
         #icon-game { top: 420px; left: 20px; } 
-        #icon-fighter { top: 20px; left: 120px; } /* NUOVA ICONA */
+        #icon-fighter { top: 20px; left: 120px; } /* NUOVA ICONA FIGHTER */
 
         .title-bar {
             background: var(--win-blue); color: white; padding: 3px 8px;
@@ -95,15 +95,15 @@
             display: none; position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; z-index: 50; flex-direction: column;
         }
-        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; background: var(--win-gray); }
+        .browser-toolbar { padding: 4px; border-bottom: 2px solid var(--win-border-dark); font-size: 12px; }
 
         .browser-content {
             background-color: var(--web-bg); 
-            flex-grow: 1; position: relative; overflow-x: hidden; overflow-y: auto;
+            flex-grow: 1; position: relative; overflow: hidden;
             display: flex; flex-direction: column; padding: 4px;
         }
 
-        /* --- SEZIONE ALTA (HEADER SITO) --- */
+        /* --- SEZIONE ALTA (HEADER) --- */
         .main-title {
             flex-shrink: 0; 
             margin: 12px auto; 
@@ -256,7 +256,7 @@
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
-            <div class="desktop-icon" id="icon-murena" onclick="if(!isGlobalDragging) alert('Access Denied.')">
+            <div class="desktop-icon" id="icon-murena" onclick="if(!isGlobalDragging) alert('Directory access denied.')">
                 <span class="icon-art">📁</span>MURENA
             </div>
             <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) alert('Insert Disc 2')">
@@ -265,11 +265,11 @@
             <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) alert('Recycle Bin is empty.')">
                 <span class="icon-art">🗑️</span>CESTINO
             </div>
-            <div class="desktop-icon" id="icon-game" onclick="if(!isGlobalDragging) openSlot()">
-                <span class="icon-art">🎰</span>SLOT
+            <div class="desktop-icon" id="icon-game" onclick="if(!isGlobalDragging) openGame()">
+                <span class="icon-art">🎰</span>MURENA_SLOT
             </div>
             <div class="desktop-icon" id="icon-fighter" onclick="if(!isGlobalDragging) window.location.href='fighter.html'">
-                <span class="icon-art">👊</span>FIGHTER
+                <span class="icon-art">🕹️</span>FIGHTER
             </div>
 
             <div id="dialup-window" class="win95-border popup" style="position:absolute;">
@@ -282,19 +282,22 @@
 
             <div id="game-window" class="win95-border popup" style="position:absolute;">
                 <div class="title-bar drag-handle">
-                    <span>MurenaSlot.exe</span>
+                    <span>MURENA_SLOT.exe</span>
                     <span class="btn-close" onclick="closeWindow('game-window')">X</span>
                 </div>
                 <div class="game-content win95-border-inset">
+                    
                     <div id="game-phase-1" class="game-input-area">
                         <div style="font-size: 36px; margin-bottom: 5px;">🎁</div>
-                        <div style="font-size: 12px; font-weight: bold;">FIND 5 MATCHING ITEMS!</div>
+                        <div style="font-size: 12px; font-weight: bold;">FIND 5 MATCHING ITEMS TO WIN!</div>
+                        <div style="font-size: 10px; margin-top: 5px;">Enter your email to verify your ID:</div>
                         <input type="email" id="player-email" placeholder="user@domain.com">
                         <br>
-                        <button class="btn-game" onclick="startGame()">INITIATE</button>
+                        <button class="btn-game" onclick="startGame()">INITIATE SEQUENCE</button>
                     </div>
+
                     <div id="game-phase-2" style="display:none; width: 100%;">
-                        <div class="game-msg" id="game-message">Decrypting boxes...</div>
+                        <div class="game-msg" id="game-message">Decrypting boxes... click to open!</div>
                         <div class="slot-machine" id="slot-machine">
                             <div class="slot-box" onclick="revealBox(0)" id="box-0">?</div>
                             <div class="slot-box" onclick="revealBox(1)" id="box-1">?</div>
@@ -303,142 +306,319 @@
                             <div class="slot-box" onclick="revealBox(4)" id="box-4">?</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
             <div id="browser-window" class="win95-border">
                 <div class="title-bar" id="browser-title-bar">
-                    <span>studiomurena.net - Internet Explorer</span>
+                    <span>studiomurena.net - Microsoft Internet Explorer</span>
                     <span class="btn-close" onclick="closeBrowser()">X</span>
                 </div>
                 <div class="browser-toolbar">
-                    File &nbsp; Edit &nbsp; View &nbsp; Help<br>
+                    File &nbsp; Edit &nbsp; View &nbsp; Favorites &nbsp; Tools &nbsp; Help<br>
                     <hr style="border-top: 1px solid #808080; border-bottom: 1px solid #fff; margin: 2px 0;">
                     Address: <b>http://www.studiomurena.net</b>
                 </div>
+                
                 <div class="browser-content">
+                    
                     <div class="main-title">studiomurena.net</div>
-                    <div class="marquee-box"><span class="marquee-text">MILANO MAGNOLIA 18.06.2026 /// SPECIAL JOURNEY WITH FRIENDS ///</span></div>
+                    
+                    <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
                     <div class="huge-event-box">
                         <h2>CIRCOLO MAGNOLIA</h2>
                         <h1>18 . 06 . 2026</h1>
                     </div>
 
                     <div class="workspace">
+                        
                         <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                             <div class="title-bar drag-handle"><span>Guest List Explorer</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                             <div class="artist-grid win95-border-inset">
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/arya-spritesheet.png');"></div><div class="artist-name">Arya.vars</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/freshmula-spritesheet.png');"></div><div class="artist-name">FreshMula.flow</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/silentbob-spritesheet.png');"></div><div class="artist-name">SilentBob.dll</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/riccardosala-spritesheet.png');"></div><div class="artist-name">RiccardoSala.jazz</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/jackthesmoker-spritesheet.png');"></div><div class="artist-name">JackSmoker.iso</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/dutchnazari-spritesheet.png');"></div><div class="artist-name">DutchNazari.bat</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/daykoda-spritesheet.png');"></div><div class="artist-name">Daykoda.bin</div></div>
-                                <div class="artist-item"><div class="sprite-25" style="background-image: url('assets/carlocorallo-spritesheet.png');"></div><div class="artist-name">CarloCorallo.sys</div></div>
-                                <div class="artist-item" style="background:#ddd;"><div class="fixed-artist-icon"><img src="assets/incognito.png"></div><div class="artist-name" style="color:red;">ENCRYPTED.raw</div></div>
+                                <div class="artist-item" onclick="alert('Arya module executed.')">
+                                    <div class="sprite-25" style="background-image: url('assets/arya-spritesheet.png');"></div>
+                                    <div class="artist-name">Arya.vars</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Fresh Mula stream connected.')">
+                                    <div class="sprite-25" style="background-image: url('assets/freshmula-spritesheet.png');"></div>
+                                    <div class="artist-name">FreshMula.flow</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Silent Bob protocol active.')">
+                                    <div class="sprite-25" style="background-image: url('assets/silentbob-spritesheet.png');"></div>
+                                    <div class="artist-name">SilentBob.dll</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Riccardo Sala waves loaded.')">
+                                    <div class="sprite-25" style="background-image: url('assets/riccardosala-spritesheet.png');"></div>
+                                    <div class="artist-name">RiccardoSala.jazz</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Jack The Smoker disk mounted.')">
+                                    <div class="sprite-25" style="background-image: url('assets/jackthesmoker-spritesheet.png');"></div>
+                                    <div class="artist-name">JackSmoker.iso</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Dutch Nazari script running.')">
+                                    <div class="sprite-25" style="background-image: url('assets/dutchnazari-spritesheet.png');"></div>
+                                    <div class="artist-name">DutchNazari.bat</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Daykoda binary initialized.')">
+                                    <div class="sprite-25" style="background-image: url('assets/daykoda-spritesheet.png');"></div>
+                                    <div class="artist-name">Daykoda.bin</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Carlo Corallo system online.')">
+                                    <div class="sprite-25" style="background-image: url('assets/carlocorallo-spritesheet.png');"></div>
+                                    <div class="artist-name">CarloCorallo.sys</div>
+                                </div>
+                                <div class="artist-item" style="background:#ddd;" onclick="alert('ERR_403: DECRYPTION FAILED.')">
+                                    <div class="fixed-artist-icon"><img src="assets/incognito.png" alt="Mystery"></div>
+                                    <div class="artist-name" style="color:red; text-decoration:none;">ENCRYPTED.raw</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)"><div class="title-bar drag-handle"><span>FATAL_ERR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div><div class="mini-popup-content win95-border-inset"><img src="assets/alert.png" class="custom-icon"><div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div><button class="btn-mini" onclick="closeWindow('warning-window')">IGNORE</button></div></div>
-                        <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)"><div class="title-bar drag-handle"><span>Sys.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div><div class="mini-popup-content win95-border-inset"><img src="assets/info.png" class="custom-icon"><div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div></div></div>
-                        <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)"><div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div><div class="mini-popup-content win95-border-inset"><div class="sprite-25 custom-icon" style="background-image: url('assets/network.png');"></div><div class="mini-popup-text">Node: Magnolia.</div></div></div>
-                        <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)"><div class="title-bar drag-handle"><span>Process</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div><div class="mini-popup-content win95-border-inset"><img src="assets/loading.gif" class="custom-icon"><div class="mini-popup-text">Synching...</div><div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div></div></div>
+                        <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>FATAL_ERR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/alert.png" class="custom-icon" alt="Warning">
+                                <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
+                                <button class="btn-mini" onclick="closeWindow('warning-window')">IGNORE</button>
+                            </div>
+                        </div>
+
+                        <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Sys.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/info.png" class="custom-icon" alt="Info">
+                                <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
+                                <button class="btn-mini" onclick="closeWindow('reveal-window')">ACKNOWLEDGE</button>
+                            </div>
+                        </div>
+
+                        <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
+                                <div class="mini-popup-text">Node: Magnolia.<br>Init seq?</div>
+                                <button class="btn-mini" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">EXECUTE</button>
+                            </div>
+                        </div>
+
+                        <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>Process</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset">
+                                <img src="assets/loading.gif" class="custom-icon" alt="Loading...">
+                                <div class="mini-popup-text">Synching tempos...</div>
+                                <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="taskbar">
-            <div class="start-btn" onclick="alert('Studio Murena 2026')">🪟 Start</div>
+            <div class="start-btn" onclick="alert('STUDIO MURENA 2026 - All Rights Reserved')">🪟 Start</div>
             <div class="task-slot" id="taskbar-item" style="display:none;"></div>
             <div class="clock" id="clock">18:06</div>
         </div>
+
     </div>
 
     <script>
         let isGlobalDragging = false;
         let highestZIndex = 110;
+
+        // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
         
-        // SLOT MACHINE
-        let boxesRevealed = 0; let playerEmail = ""; let currentWin = null;
+        let boxesRevealed = 0;
+        let playerEmail = "";
+        let currentWinningItem = "";
+        let currentWinningName = "";
+        let currentWinningIcon = "";
+        
         const randomIcons = ["🐉", "🖼️", "💿", "📜", "🏷️"]; 
 
-        function openSlot() { document.getElementById('game-window').style.display = 'block'; bringToFront(document.getElementById('game-window')); }
-        
-        function startGame() {
-            const mail = document.getElementById('player-email').value;
-            if(!mail.includes('@')) return alert("ERR: Invalid Email");
-            playerEmail = mail;
-            document.getElementById('slot-phase-1').style.display = 'none';
-            document.getElementById('slot-phase-2').style.display = 'block';
-            document.getElementById('slot-machine').style.display = 'none';
-            document.getElementById('game-message').innerText = "Connecting...";
-
-            fetch(scriptURL + "?email=" + encodeURIComponent(mail))
-                .then(r => r.json()).then(data => {
-                    currentWin = data;
-                    document.getElementById('game-message').innerText = "Access Granted! Click boxes.";
-                    document.getElementById('slot-machine').style.display = 'flex';
-                }).catch(() => alert("Server offline"));
+        function openGame() {
+            document.getElementById('game-window').style.display = 'block';
+            bringToFront(document.getElementById('game-window'));
         }
 
-        function revealBox(i) {
-            const b = document.getElementById('box-'+i);
-            if(b.classList.contains('revealed')) return;
-            b.innerText = currentWin.id === 'lose' ? randomIcons[Math.floor(Math.random()*5)] : currentWin.icon;
-            b.classList.add('revealed');
-            if(++boxesRevealed === 5) {
-                document.getElementById('game-message').innerText = currentWin.id === 'lose' ? "NO MATCH FOUND." : "WIN: " + currentWin.nome;
-                setTimeout(() => location.reload(), 5000);
+        function startGame() {
+            const emailInput = document.getElementById('player-email').value;
+            if (!emailInput || !emailInput.includes('@')) {
+                alert("ERR: INSERIRE EMAIL VALIDA.");
+                return;
+            }
+            playerEmail = emailInput;
+            
+            document.getElementById('game-phase-1').style.display = 'none';
+            document.getElementById('game-phase-2').style.display = 'flex';
+            document.getElementById('slot-machine').style.display = 'none';
+            const msgBox = document.getElementById('game-message');
+            msgBox.innerText = "Connecting to Murena Server... Please wait.";
+            msgBox.style.color = "var(--win-blue)";
+
+            const urlConEmail = scriptURL + "?email=" + encodeURIComponent(playerEmail);
+
+            fetch(urlConEmail)
+                .then(response => response.json())
+                .then(data => {
+                    currentWinningItem = data.id;
+                    currentWinningName = data.nome;
+                    currentWinningIcon = data.icon;
+                    
+                    msgBox.innerText = "Access Granted! Decrypting boxes... click to open!";
+                    document.getElementById('slot-machine').style.display = 'flex';
+                })
+                .catch(error => {
+                    msgBox.innerText = "SYS_ERR: Server offline. Riprova più tardi.";
+                    msgBox.style.color = "red";
+                    setTimeout(() => {
+                        document.getElementById('game-phase-1').style.display = 'block';
+                        document.getElementById('game-phase-2').style.display = 'none';
+                    }, 4000);
+                });
+        }
+
+        function revealBox(index) {
+            const box = document.getElementById('box-' + index);
+            if (box.classList.contains('revealed')) return;
+            
+            let displayIcon = currentWinningIcon;
+            if (currentWinningItem === "lose") {
+                displayIcon = randomIcons[Math.floor(Math.random() * randomIcons.length)];
+            }
+
+            box.innerText = displayIcon;
+            box.classList.add('revealed');
+            boxesRevealed++;
+
+            if (boxesRevealed === 5) {
+                setTimeout(checkWin, 500);
             }
         }
 
-        // ANIMAZIONE SPRITE
+        function checkWin() {
+            const msgBox = document.getElementById('game-message');
+            if (currentWinningItem === "lose") {
+                msgBox.style.color = "red";
+                msgBox.innerText = "SISTEMA: NESSUN MATCH TROVATO. Ritenta!";
+            } else {
+                msgBox.style.color = "green";
+                msgBox.innerText = `JACKPOT! HAI VINTO:\n${currentWinningName}!\nControlla la mail.`;
+            }
+            
+            setTimeout(() => {
+                boxesRevealed = 0;
+                document.getElementById('game-phase-1').style.display = 'block';
+                document.getElementById('game-phase-2').style.display = 'none';
+                document.getElementById('slot-machine').style.display = 'none';
+                document.getElementById('game-message').innerText = "Decrypting boxes... click to open!";
+                document.getElementById('game-message').style.color = "var(--win-blue)";
+                for(let i=0; i<5; i++) {
+                    const box = document.getElementById('box-'+i);
+                    box.innerText = "?";
+                    box.classList.remove('revealed');
+                }
+            }, 6000);
+        }
+
+        // --- SISTEMA INTERFACCIA WEB OS ---
+
         setInterval(() => {
-            document.querySelectorAll('.sprite-25').forEach(s => {
-                let f = (parseInt(s.getAttribute('data-frame')||0) + 1) % 25;
-                s.setAttribute('data-frame', f);
-                s.style.backgroundPosition = `${(f%5)*25}% ${Math.floor(f/5)*25}%`;
+            const sprites = document.querySelectorAll('.sprite-25');
+            sprites.forEach(sprite => {
+                let currentFrame = parseInt(sprite.getAttribute('data-frame')) || 0;
+                currentFrame = (currentFrame + 1) % 25; 
+                sprite.setAttribute('data-frame', currentFrame);
+                let col = currentFrame % 5; let row = Math.floor(currentFrame / 5);
+                sprite.style.backgroundPosition = `${col * 25}% ${row * 25}%`;
             });
         }, 120);
 
-        // DRAG ENGINE (TOUCH + MOUSE)
-        function makeDraggable(el, handleSelector) {
-            let p1=0, p2=0, p3=0, p4=0;
-            let h = handleSelector ? el.querySelector(handleSelector) : el;
-            h.onmousedown = dragStart; h.ontouchstart = dragStart;
-            function dragStart(e) {
-                e = e.touches ? e.touches[0] : e; p3 = e.clientX; p4 = e.clientY;
-                document.onmouseup = document.ontouchend = () => { document.onmousemove = document.ontouchmove = null; setTimeout(()=>isGlobalDragging=false, 50); };
-                document.onmousemove = document.ontouchmove = (e) => {
-                    isGlobalDragging = true; e = e.touches ? e.touches[0] : e;
-                    p1 = p3 - e.clientX; p2 = p4 - e.clientY; p3 = e.clientX; p4 = e.clientY;
-                    el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px";
-                };
-                bringToFront(el);
+        function makeDraggable(element, handleSelector) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let handle = handleSelector ? element.querySelector(handleSelector) : element;
+            if (!handle) return;
+            handle.onmousedown = dragMouseDown; handle.ontouchstart = dragTouchStart;
+
+            function dragMouseDown(e) {
+                e = e || window.event; pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement; document.onmousemove = elementDrag;
+                bringToFront(element);
             }
+            function elementDrag(e) {
+                e = e || window.event; e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
+                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
+                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+            }
+            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
+
+            function dragTouchStart(e) {
+                e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                document.ontouchend = closeTouchDragElement; document.ontouchmove = elementTouchDrag;
+                bringToFront(element);
+            }
+            function elementTouchDrag(e) {
+                e = e || window.event; if(e.cancelable) e.preventDefault(); isGlobalDragging = true;
+                pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
+                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
+                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+            }
+            function closeTouchDragElement() { document.ontouchend = null; document.ontouchmove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
         }
 
-        function bringToFront(el) { el.style.zIndex = ++highestZIndex; }
-        ["internet", "murena", "jazzcore", "cestino", "game", "fighter"].forEach(id => makeDraggable(document.getElementById("icon-"+id)));
-        ["artists-window", "warning-window", "loading-window", "network-window", "reveal-window", "game-window"].forEach(id => makeDraggable(document.getElementById(id), ".drag-handle"));
+        function bringToFront(element) { highestZIndex += 1; element.style.zIndex = highestZIndex; }
+
+        makeDraggable(document.getElementById("icon-internet"), null);
+        makeDraggable(document.getElementById("icon-murena"), null);
+        makeDraggable(document.getElementById("icon-jazzcore"), null);
+        makeDraggable(document.getElementById("icon-cestino"), null);
+        makeDraggable(document.getElementById("icon-game"), null);
+        makeDraggable(document.getElementById("icon-fighter"), null); 
+
+        makeDraggable(document.getElementById("artists-window"), ".drag-handle");
+        makeDraggable(document.getElementById("warning-window"), ".drag-handle");
+        makeDraggable(document.getElementById("loading-window"), ".drag-handle");
+        makeDraggable(document.getElementById("network-window"), ".drag-handle");
+        makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
+        makeDraggable(document.getElementById("game-window"), ".drag-handle");
+
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
         function startDialUp() {
-            const dw = document.getElementById('dialup-window');
-            dw.style.display = 'block';
+            const dialupWindow = document.getElementById('dialup-window');
+            const dialupText = document.getElementById('dialup-text');
+            const browserWindow = document.getElementById('browser-window');
+            const taskbarItem = document.getElementById('taskbar-item');
+            const desktopIcons = document.querySelectorAll('.desktop-icon');
+            
+            dialupWindow.style.display = 'block'; taskbarItem.style.display = 'flex'; taskbarItem.innerText = 'Dial-Up Connection';
+            
+            setTimeout(() => { dialupText.innerText = "Verifying credentials..."; }, 600);
+            setTimeout(() => { dialupText.innerText = "Bypassing mainframe..."; }, 1200);
+            setTimeout(() => { dialupText.innerText = "Connected at 56,000 bps."; }, 1800);
+            
             setTimeout(() => {
-                dw.style.display = 'none'; document.getElementById('browser-window').style.display = 'flex';
-                document.querySelectorAll('.desktop-icon').forEach(i => i.style.display = 'none');
-            }, 2500);
+                dialupWindow.style.display = 'none'; browserWindow.style.display = 'flex';
+                taskbarItem.innerText = 'studiomurena.net - IE'; dialupText.innerText = "Dialing 555-MURENA...";
+                desktopIcons.forEach(icon => icon.style.display = 'none');
+            }, 2200);
         }
-        function closeBrowser() { document.getElementById('browser-window').style.display = 'none'; document.querySelectorAll('.desktop-icon').forEach(i => i.style.display = 'block'); }
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-        
-        setInterval(() => {
-            const n = new Date(); document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
-        }, 1000);
+
+        function closeBrowser() {
+            document.getElementById('browser-window').style.display = 'none';
+            document.getElementById('taskbar-item').style.display = 'none';
+            document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        }
+        setInterval(updateClock, 1000); updateClock();
     </script>
 </body>
 </html>
