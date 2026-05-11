@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Musical Fighters - Murena Edition</title>
     
-    <!-- PRECARICAMENTO FORZATO DEGLI SFONDI DELLE SELEZIONI -->
+    <!-- PRECARICAMENTO SFONDI -->
     <link rel="preload" as="image" href="assets/bkg1.png">
     <link rel="preload" as="image" href="assets/bkg2.png">
     <link rel="preload" as="image" href="assets/bkg3.png">
@@ -17,6 +17,7 @@
             background: #000; margin: 0; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; height: 100vh; overflow: hidden; 
             font-family: 'Press Start 2P', cursive; color: #fff; touch-action: none;
+            user-select: none;
         }
 
         #header-bar {
@@ -27,8 +28,9 @@
 
         .win-btn {
             background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff;
-            padding: 5px 10px; text-decoration: none; color: #000; font-size: 9px;
+            padding: 5px 10px; text-decoration: none; color: #000; font-size: 9px; cursor: pointer;
         }
+        .win-btn:active { border-color: #808080 #fff #fff #808080; background: #a0a0a0; }
 
         #game-container {
             position: relative; width: 100vw; height: calc(100vw * 9/16); 
@@ -36,9 +38,9 @@
             border: 4px solid #c0c0c0;
         }
 
-        canvas { width: 100%; height: 100%; image-rendering: pixelated; }
+        canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
 
-        /* SCHERMATE DI SELEZIONE MULTIPLE */
+        /* SCHERMATE DI SELEZIONE */
         #selection-screen {
             position: absolute; inset: 0; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -46,80 +48,91 @@
             transition: background-image 0.3s ease-in-out, background-color 0.3s;
         }
 
-        /* SFONDI PERSONALIZZATI - SINTASSI BLINDATA */
-        .bg-select-ch { 
-            background-color: #000080;
-            background-image: url('assets/bkg1.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        .bg-select-en { 
-            background-color: #500000;
-            background-image: url('assets/bkg2.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        .bg-select-am { 
-            background-color: #000000;
-            background-image: url('assets/bkg3.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
+        .bg-select-ch { background-color: #000080; background-image: url('assets/bkg1.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
+        .bg-select-en { background-color: #500000; background-image: url('assets/bkg2.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
+        .bg-select-am { background-color: #000000; background-image: url('assets/bkg3.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
 
-        /* GRIGLIA CENTRATA */
-        .grid { 
-            display: flex; flex-wrap: wrap; justify-content: center; 
-            gap: 10px; margin-top: 10px; max-width: 350px; 
-        }
-        
+        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; max-width: 350px; }
         .cell {
             width: 70px; height: 70px; background-color: #222; border: 3px solid #808080;
-            cursor: pointer; image-rendering: pixelated;
-            background-size: 500% 500%; 
-            background-position: 0% 0%;
-            transition: transform 0.1s;
+            cursor: pointer; image-rendering: pixelated; background-size: 500% 500%; background-position: 0% 0%; transition: transform 0.1s;
         }
         .cell:hover { border-color: #fff; transform: scale(1.05); }
+
+        /* OVERLAYS (PAUSA, VITTORIA, MESSAGGI ROUND) */
+        .overlay {
+            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 15; text-align: center; visibility: hidden;
+        }
+        .overlay h1 { color: #ffcc00; text-shadow: 3px 3px #000; margin-bottom: 20px; }
+        
+        #round-msg {
+            position: absolute; top: 40%; width: 100%; text-align: center;
+            font-size: 24px; color: #fff; text-shadow: 2px 2px #f00; z-index: 5;
+            visibility: hidden; font-weight: bold; pointer-events: none;
+        }
 
         /* CONTROLLI MOBILE */
         #controls {
             display: flex; justify-content: space-between; width: 100%; max-width: 800px;
-            padding: 20px; box-sizing: border-box; background: #000;
+            padding: 10px 20px; box-sizing: border-box; background: #000; gap: 5px;
         }
         .joy-btn {
-            width: 60px; height: 60px; background: #c0c0c0; border: 4px solid;
+            width: 55px; height: 55px; background: #c0c0c0; border: 4px solid;
             border-color: #fff #808080 #808080 #fff; display: flex; 
-            align-items: center; justify-content: center; color: #000;
+            align-items: center; justify-content: center; color: #000; font-size: 10px; cursor: pointer;
         }
         .joy-btn:active { background: #808080; border-color: #808080 #fff #fff #808080; }
+        .joy-btn.red { background: #d00; color: #fff; }
+        .joy-btn.blue { background: #00d; color: #fff; }
+        .joy-btn.small { height: 40px; width: 50px; font-size: 8px; }
     </style>
 </head>
 <body>
 
 <div id="header-bar">
-    <a href="index.html" class="win-btn">← DESKTOP</a>
+    <button class="win-btn" onclick="window.location.href='index.html'">← DESKTOP</button>
     <span id="top-msg">STUDIO MURENA: SELECT HERO</span>
+    <button class="win-btn" id="btn-pause" style="display: none;" onclick="togglePause()">II PAUSE</button>
 </div>
 
 <div id="game-container">
+    <!-- Selezione -->
     <div id="selection-screen" class="bg-select-ch">
         <div id="grid" class="grid"></div>
         <div id="char-name" style="margin-top: 20px; color: #ffcc00; text-shadow: 2px 2px #000;">SELECT HERO</div>
     </div>
+    
+    <!-- Testo dei Round -->
+    <div id="round-msg">ROUND 1</div>
+
+    <!-- Menù di Pausa -->
+    <div id="pause-screen" class="overlay">
+        <h1>PAUSED</h1>
+        <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="togglePause()">RESUME</button>
+        <button class="win-btn" style="font-size: 14px; padding: 10px; margin-top: 10px;" onclick="location.reload()">QUIT</button>
+    </div>
+
+    <!-- Schermata di Fine Partita -->
+    <div id="end-screen" class="overlay">
+        <h1 id="end-title">YOU WIN!</h1>
+        <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+    </div>
+
     <canvas id="gameCanvas" width="800" height="450"></canvas>
 </div>
 
+<!-- Controlli In-Game -->
 <div id="controls" style="visibility: hidden;">
-    <div style="display: flex; gap: 10px;">
+    <div style="display: flex; gap: 5px; align-items: flex-end;">
         <div class="joy-btn" id="btn-l">◀</div>
         <div class="joy-btn" id="btn-r">▶</div>
     </div>
-    <div style="display: flex; gap: 10px;">
+    <div style="display: flex; gap: 5px; align-items: flex-end;">
+        <div class="joy-btn blue" id="btn-d">DODGE</div>
         <div class="joy-btn" id="btn-j">JUMP</div>
-        <div class="joy-btn" id="btn-a" style="background: #f00; color: #fff;">ATK</div>
+        <div class="joy-btn red" id="btn-a">ATK</div>
     </div>
 </div>
 
@@ -127,22 +140,16 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // ----------------------------------------------------
-    // CACHE ENGINE PER LE SPRITES (Evita il lag in combattimento)
-    // ----------------------------------------------------
+    // CACHE ENGINE
     const imageCache = {};
     function getImage(src) {
         if (!imageCache[src]) {
-            const img = new Image();
-            img.src = src;
-            imageCache[src] = img;
+            const img = new Image(); img.src = src; imageCache[src] = img;
         }
         return imageCache[src];
     }
 
-    // ----------------------------------------------------
     // ASSETS
-    // ----------------------------------------------------
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA' },
         { spriteId: 'ferraz2', name: 'FERRAZ' },
@@ -160,186 +167,283 @@
         { spriteId: 'franken', name: 'FRANKEN' }
     ];
 
-    // SFONDI LIVELLI AGGIORNATI
     const stages = [
-        { name: 'MILANO', bg: 'assets/cielo1.png', pav: 'assets/pavimento-milano-baba.png' },
-        { name: 'BOSCO', bg: 'assets/cielo2.png', pav: 'assets/pavimento-boschetto.png' },
-        { name: 'METRO', bg: 'assets/cielometro.png', pav: 'assets/pavimento-metro.png' }
+        { name: 'BAR', bg: 'assets/bakg-bar.png' },
+        { name: 'METRO', bg: 'assets/bakg-metro.png' },
+        { name: 'GUERRIERI', bg: 'assets/bakg-guerrieri.png' }
     ];
 
-    // Variabili di Gioco
+    // VARIABILI GLOBALI E FISICA AUMENTATA
     let selectState = 0; 
-    let mode = "SELECT";
-    let p1Char = null;
-    let cpuChar = null;
-    let currentStage = null;
+    let mode = "SELECT"; // SELECT, FIGHT, PAUSE, ROUND_OVER, END
+    let p1Char = null; let cpuChar = null; let currentStage = null;
 
-    let p1 = { x: 100, y: 300, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0 };
-    let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, attackTimer: 0 };
+    // SISTEMA ROUND E TIMER
+    let matchTimer = 99;
+    let framesCounter = 0;
+    let currentRound = 1;
+    let p1Wins = 0;
+    let cpuWins = 0;
 
-    // ----------------------------------------------------
-    // LOGICA DI SELEZIONE
-    // ----------------------------------------------------
+    // Dimensione Sprite Renderizzata (ora gigantesca!)
+    const SPRITE_SIZE = 200;
+
+    // STATI GIOCATORI (hp: 100 max)
+    // x iniziale adattato per la nuova larghezza
+    let p1 = { x: 100, y: 350, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
+    let cpu = { x: 500, y: 350, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
+
+    // INPUT
+    const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
+    const setup = (id, k) => {
+        const b = document.getElementById(id);
+        b.ontouchstart = (e) => { e.preventDefault(); keys[k] = 1; };
+        b.ontouchend = (e) => { e.preventDefault(); keys[k] = 0; };
+        b.onmousedown = () => keys[k] = 1;
+        b.onmouseup = () => keys[k] = 0;
+    };
+    setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a'); setup('btn-d', 'd');
+
+    // TASTIERA PC
+    window.onkeydown = (e) => {
+        if(e.code === 'ArrowLeft') keys.l = 1; if(e.code === 'ArrowRight') keys.r = 1;
+        if(e.code === 'ArrowUp') keys.j = 1; if(e.code === 'Space') keys.a = 1;
+        if(e.code === 'ShiftLeft') keys.d = 1;
+        if(e.code === 'Escape' && mode.includes('FIGHT')) togglePause();
+    };
+    window.onkeyup = (e) => {
+        if(e.code === 'ArrowLeft') keys.l = 0; if(e.code === 'ArrowRight') keys.r = 0;
+        if(e.code === 'ArrowUp') keys.j = 0; if(e.code === 'Space') keys.a = 0;
+        if(e.code === 'ShiftLeft') keys.d = 0;
+    };
+
     function loadSelectionScreen() {
         const grid = document.getElementById('grid');
         const screen = document.getElementById('selection-screen');
         const title = document.getElementById('char-name');
-        const topMsg = document.getElementById('top-msg');
-        
         grid.innerHTML = '';
 
         if (selectState === 0) {
-            screen.className = 'bg-select-ch';
-            title.innerText = 'SELECT HERO';
-            title.style.color = '#ffcc00';
-            topMsg.innerText = 'STUDIO MURENA: SELECT HERO';
-
+            screen.className = 'bg-select-ch'; title.innerText = 'SELECT HERO';
             heroes.forEach(c => {
-                const d = document.createElement('div');
-                d.className = 'cell';
+                const d = document.createElement('div'); d.className = 'cell';
                 d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
                 d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
                 grid.appendChild(d);
             });
-        } 
-        else if (selectState === 1) {
-            screen.className = 'bg-select-en';
-            title.innerText = 'SELECT OPPONENT';
-            title.style.color = '#fff';
-            topMsg.innerText = 'STUDIO MURENA: SELECT OPPONENT';
-
+        } else if (selectState === 1) {
+            screen.className = 'bg-select-en'; title.innerText = 'SELECT OPPONENT'; title.style.color = '#fff';
             enemiesList.forEach(c => {
-                const d = document.createElement('div');
-                d.className = 'cell';
+                const d = document.createElement('div'); d.className = 'cell';
                 d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
                 d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
                 grid.appendChild(d);
             });
-        } 
-        else if (selectState === 2) {
-            screen.className = 'bg-select-am';
-            title.innerText = 'SELECT STAGE';
-            title.style.color = '#00ffff';
-            topMsg.innerText = 'STUDIO MURENA: SELECT STAGE';
-
+        } else if (selectState === 2) {
+            screen.className = 'bg-select-am'; title.innerText = 'SELECT STAGE'; title.style.color = '#00ffff';
             stages.forEach(s => {
-                const d = document.createElement('div');
-                d.className = 'cell';
-                d.style.backgroundImage = `url('${s.bg}')`;
-                d.style.backgroundSize = 'cover'; 
-                d.style.backgroundPosition = 'center';
-                d.style.borderColor = '#00ffff';
-                d.onclick = () => { currentStage = s; startFight(); };
+                const d = document.createElement('div'); d.className = 'cell';
+                d.style.backgroundImage = `url('${s.bg}')`; d.style.backgroundSize = 'cover';
+                d.onclick = () => { currentStage = s; startMatch(); };
                 grid.appendChild(d);
             });
         }
     }
 
-    loadSelectionScreen();
-
-    function startFight() {
-        mode = "FIGHT";
+    function startMatch() {
         document.getElementById('selection-screen').style.display = 'none';
         document.getElementById('controls').style.visibility = 'visible';
+        document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
+        p1Wins = 0; cpuWins = 0; currentRound = 1;
+        startRound();
     }
 
-    // ----------------------------------------------------
-    // INPUT E GIOCO
-    // ----------------------------------------------------
-    const keys = { l: 0, r: 0, j: 0, a: 0 };
-    const setup = (id, k) => {
-        const b = document.getElementById(id);
-        b.ontouchstart = (e) => { e.preventDefault(); keys[k] = 1; };
-        b.ontouchend = () => keys[k] = 0;
-        b.onmousedown = () => keys[k] = 1;
-        b.onmouseup = () => keys[k] = 0;
-    };
-    setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a');
+    function startRound() {
+        mode = "ROUND_OVER";
+        p1.hp = 100; p1.x = 100; p1.y = 350; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
+        cpu.hp = 100; cpu.x = 500; cpu.y = 350; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
+        matchTimer = 99; framesCounter = 0;
+        
+        const msg = document.getElementById('round-msg');
+        msg.innerText = `ROUND ${currentRound}`;
+        msg.style.visibility = 'visible';
+        
+        setTimeout(() => {
+            msg.innerText = "FIGHT!";
+            setTimeout(() => { msg.style.visibility = 'hidden'; mode = "FIGHT"; }, 1000);
+        }, 1500);
+    }
+
+    function togglePause() {
+        if(mode === "FIGHT") {
+            mode = "PAUSE";
+            document.getElementById('pause-screen').style.visibility = 'visible';
+        } else if (mode === "PAUSE") {
+            mode = "FIGHT";
+            document.getElementById('pause-screen').style.visibility = 'hidden';
+        }
+    }
 
     function drawFighter(f, spriteId) {
-        const img = getImage(`assets/${spriteId}-${f.state}.png`);
-        if (!img.complete || img.naturalWidth === 0) return;
+        let drawState = f.state === 'dodge' ? 'idle' : f.state;
+        const img = getImage(`assets/${spriteId}-${drawState}.png`);
+        
+        if (!img.complete || img.naturalWidth === 0) {
+            if (f.state === 'hurt') drawState = 'idle'; 
+        }
+        
+        const finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
+        if (!finalImg.complete || finalImg.naturalWidth === 0) return;
 
-        const frameW = img.width / 5;
-        const frameH = img.height / 5;
-        const sx = (f.frame % 5) * frameW;
-        const sy = Math.floor(f.frame / 5) * frameH;
+        const frameW = finalImg.width / 5; const frameH = finalImg.height / 5;
+        const sx = (f.frame % 5) * frameW; const sy = Math.floor(f.frame / 5) * frameH;
 
         ctx.save();
+        if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
+        if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
+
+        // Offset Y e Larghezza aggiornati per disegnare il lottatore a 200x200 pixel
         if (f.dir === -1) {
-            ctx.translate(f.x + 100, f.y);
-            ctx.scale(-1, 1);
-            ctx.drawImage(img, sx, sy, frameW, frameH, 0, 0, 100, 100);
+            ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
+            ctx.drawImage(finalImg, sx, sy, frameW, frameH, 0, -SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
         } else {
-            ctx.drawImage(img, sx, sy, frameW, frameH, f.x, f.y, 100, 100);
+            ctx.drawImage(finalImg, sx, sy, frameW, frameH, f.x, f.y - SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
         }
         ctx.restore();
 
-        if (Date.now() % 100 < 50) f.frame = (f.frame + 1) % 25;
+        if (Date.now() % 100 < 50 && f.state !== 'hurt' && f.state !== 'dodge') {
+            f.frame = (f.frame + 1) % 25;
+        }
+    }
+
+    function updateFighterParams(f, isPlayer) {
+        if (f.timer > 0) {
+            f.timer--;
+            if (f.timer <= 0) f.state = 'idle';
+        }
+
+        f.y += f.vy;
+        if (f.y < 350) f.vy += 1; else { f.y = 350; f.vy = 0; }
+
+        // Muri invalicabili calcolati sulla nuova stazza di 200px
+        if (f.x < 0) f.x = 0;
+        if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
+
+        if (f.state === 'hurt' || f.state === 'dodge' || f.state === 'attack') return;
+
+        if (isPlayer) {
+            if (keys.l) { f.x -= 5; f.state = 'run'; f.dir = -1; }
+            else if (keys.r) { f.x += 5; f.state = 'run'; f.dir = 1; }
+            else f.state = 'idle';
+
+            if (keys.j && f.y >= 350) f.vy = -15;
+            
+            if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; } 
+            else if (keys.a) { f.state = 'attack'; f.timer = 25; }
+        } else {
+            let dist = p1.x - f.x;
+            f.dir = dist > 0 ? 1 : -1;
+            
+            // L'IA ora sta più lontana prima di attaccare a causa delle proporzioni
+            if (Math.abs(dist) > 130) {
+                f.x += f.dir * 3; f.state = 'run';
+            } else {
+                f.state = 'idle';
+                let rand = Math.random();
+                if (rand < 0.04) { f.state = 'attack'; f.timer = 25; }
+                else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; }
+            }
+        }
+    }
+
+    function checkHitbox(attacker, defender) {
+        // Hitbox allargate in virtù dello zoom x2
+        if (attacker.state === 'attack' && attacker.timer === 15) { 
+            if (Math.abs(attacker.x - defender.x) < 140 && Math.abs(attacker.y - defender.y) < 100) {
+                if (defender.state !== 'dodge' && defender.state !== 'hurt') {
+                    defender.state = 'hurt';
+                    defender.timer = 20; 
+                    defender.hp -= 15; 
+                    defender.x -= attacker.dir * 20; // Doppio Knockback
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function checkRoundEnd() {
+        if (p1.hp <= 0 || cpu.hp <= 0 || matchTimer <= 0) {
+            mode = "ROUND_OVER";
+            let msg = "";
+            if (p1.hp > cpu.hp) { p1Wins++; msg = `${p1Char.name} WINS ROUND`; }
+            else if (cpu.hp > p1.hp) { cpuWins++; msg = `${cpuChar.name} WINS ROUND`; }
+            else { msg = "DRAW ROUND"; } 
+
+            document.getElementById('round-msg').innerText = msg;
+            document.getElementById('round-msg').style.visibility = 'visible';
+
+            setTimeout(() => {
+                document.getElementById('round-msg').style.visibility = 'hidden';
+                if (p1Wins >= 2 || cpuWins >= 2) {
+                    mode = "END";
+                    document.getElementById('end-title').innerText = p1Wins >= 2 ? "YOU WIN!" : "GAME OVER";
+                    document.getElementById('end-title').style.color = p1Wins >= 2 ? "#ffcc00" : "#ff0000";
+                    document.getElementById('end-screen').style.visibility = 'visible';
+                } else {
+                    currentRound++;
+                    startRound();
+                }
+            }, 3000);
+        }
     }
 
     function update() {
         if (mode !== "FIGHT") return;
 
-        if (keys.l) { p1.x -= 5; p1.state = 'run'; p1.dir = -1; }
-        else if (keys.r) { p1.x += 5; p1.state = 'run'; p1.dir = 1; }
-        else { p1.state = 'idle'; }
-
-        if (keys.j && p1.y >= 300) p1.vy = -15;
-        if (keys.a) p1.state = 'attack';
-
-        p1.y += p1.vy;
-        if (p1.y < 300) p1.vy += 1; else { p1.y = 300; p1.vy = 0; }
-
-        if (cpu.attackTimer > 0) {
-            cpu.attackTimer--;
-            cpu.state = 'attack';
-        } else {
-            let dist = p1.x - cpu.x;
-            if (Math.abs(dist) > 60) {
-                cpu.x += (dist > 0 ? 3 : -3);
-                cpu.state = 'run';
-                cpu.dir = (dist > 0 ? 1 : -1);
-            } else {
-                cpu.state = 'idle';
-                if (Math.random() < 0.05) {
-                    cpu.state = 'attack';
-                    cpu.attackTimer = 30;
-                }
-            }
+        framesCounter++;
+        if (framesCounter >= 60) {
+            matchTimer--; framesCounter = 0;
         }
-        
-        cpu.y += cpu.vy;
-        if (cpu.y < 300) cpu.vy += 1; else { cpu.y = 300; cpu.vy = 0; }
 
-        if (p1.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) cpu.hp -= 0.5;
-        if (cpu.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) p1.hp -= 0.3;
+        updateFighterParams(p1, true);
+        updateFighterParams(cpu, false);
 
-        if (p1.hp <= 0 || cpu.hp <= 0) {
-            alert(p1.hp <= 0 ? "GAME OVER" : "YOU WIN!");
-            location.reload();
-        }
+        checkHitbox(p1, cpu);
+        checkHitbox(cpu, p1);
+
+        checkRoundEnd();
     }
 
     function draw() {
         ctx.clearRect(0, 0, 800, 450);
 
-        if (mode === "FIGHT" && currentStage) {
+        if (mode !== "SELECT" && currentStage) {
             const bg = getImage(currentStage.bg);
-            const pav = getImage(currentStage.pav);
+            if (bg.complete && bg.naturalWidth !== 0) ctx.drawImage(bg, 0, 0, 800, 450);
+
+            // UI In-Game
+            ctx.fillStyle = "#444"; ctx.fillRect(45, 15, 310, 20); ctx.fillRect(445, 15, 310, 20);
+            ctx.fillStyle = "red"; ctx.fillRect(50, 17, 300, 16); ctx.fillRect(450, 17, 300, 16);
             
-            if (bg.complete && bg.naturalWidth !== 0) ctx.drawImage(bg, 0, 0, 800, 350);
-            if (pav.complete && pav.naturalWidth !== 0) ctx.drawImage(pav, 0, 350, 800, 100);
-
-            ctx.fillStyle = "red"; ctx.fillRect(50, 20, 300, 20); ctx.fillRect(450, 20, 300, 20);
             ctx.fillStyle = "yellow"; 
-            ctx.fillRect(50, 20, p1.hp * 3, 20); 
-            ctx.fillRect(450 + (300 - cpu.hp * 3), 20, cpu.hp * 3, 20);
+            let p1hp = Math.max(0, p1.hp); let cpuhp = Math.max(0, cpu.hp);
+            ctx.fillRect(50, 17, p1hp * 3, 16); 
+            ctx.fillRect(450 + (300 - cpuhp * 3), 17, cpuhp * 3, 16);
 
-            ctx.fillStyle = "#fff"; ctx.font = "10px 'Press Start 2P'";
-            ctx.fillText(p1Char.name, 50, 15);
-            ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 15);
+            ctx.fillStyle = "#fff"; ctx.font = "12px 'Press Start 2P'";
+            ctx.fillText(p1Char.name, 50, 48);
+            ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 48);
+
+            ctx.fillStyle = p1Wins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(55, 60, 5, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = p1Wins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(70, 60, 5, 0, Math.PI*2); ctx.fill();
+            
+            ctx.fillStyle = cpuWins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(745, 60, 5, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = cpuWins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(730, 60, 5, 0, Math.PI*2); ctx.fill();
+
+            ctx.fillStyle = "#fff"; ctx.font = "24px 'Press Start 2P'";
+            ctx.fillText(matchTimer, 400 - ctx.measureText(matchTimer).width/2, 35);
 
             drawFighter(p1, p1Char.spriteId);
             drawFighter(cpu, cpuChar.spriteId);
@@ -347,6 +451,7 @@
         requestAnimationFrame(draw);
     }
 
+    loadSelectionScreen();
     setInterval(update, 1000/60);
     draw();
 </script>
