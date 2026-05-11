@@ -40,26 +40,18 @@
             transition: background 0.3s;
         }
 
-        /* SFONDI PERSONALIZZATI FIXATI */
+        /* SFONDI PERSONALIZZATI */
+        /* Nota: Se non vedi lo sfondo, controlla che il file si chiami ESATTAMENTE "select-ch.png" (tutto minuscolo) e sia in "assets" */
         .bg-select-ch { 
-            background-image: url('assets/select-ch.png');
-            background-color: #000080;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: #000080 url('assets/select-ch.png') no-repeat center center;
             background-size: cover;
         }
         .bg-select-en { 
-            background-image: url('assets/select-en.png');
-            background-color: #500000;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: #500000 url('assets/select-en.png') no-repeat center center;
             background-size: cover;
         }
         .bg-select-am { 
-            background-image: url('assets/select-am.png');
-            background-color: #000;
-            background-position: center;
-            background-repeat: no-repeat;
+            background: #000000 url('assets/select-am.png') no-repeat center center;
             background-size: cover;
         }
 
@@ -122,6 +114,25 @@
     const ctx = canvas.getContext('2d');
     
     // ----------------------------------------------------
+    // SISTEMA DI CACHE IMMAGINI (Il Fix Definitivo per il Lag!)
+    // ----------------------------------------------------
+    const imageCache = {};
+    
+    function getImage(src) {
+        if (!imageCache[src]) {
+            const img = new Image();
+            img.src = src;
+            imageCache[src] = img;
+        }
+        return imageCache[src];
+    }
+
+    // Precarica gli sfondi dei menù per evitare schermi neri
+    getImage('assets/select-ch.png');
+    getImage('assets/select-en.png');
+    getImage('assets/select-am.png');
+
+    // ----------------------------------------------------
     // ASSETS
     // ----------------------------------------------------
     const heroes = [
@@ -169,7 +180,6 @@
         grid.innerHTML = '';
 
         if (selectState === 0) {
-            // STEP 1: EROE
             screen.className = 'bg-select-ch';
             title.innerText = 'SELECT HERO';
             title.style.color = '#ffcc00';
@@ -184,7 +194,6 @@
             });
         } 
         else if (selectState === 1) {
-            // STEP 2: AVVERSARIO
             screen.className = 'bg-select-en';
             title.innerText = 'SELECT OPPONENT';
             title.style.color = '#fff';
@@ -199,7 +208,6 @@
             });
         } 
         else if (selectState === 2) {
-            // STEP 3: STAGE
             screen.className = 'bg-select-am';
             title.innerText = 'SELECT STAGE';
             title.style.color = '#00ffff';
@@ -240,12 +248,11 @@
     };
     setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a');
 
-    // Rendering Sprite 5x5
     function drawFighter(f, spriteId) {
-        const img = new Image();
-        img.src = `assets/${spriteId}-${f.state}.png`;
+        // Ora preleva l'immagine dalla cache! Niente più lag!
+        const img = getImage(`assets/${spriteId}-${f.state}.png`);
         
-        if (!img.complete) return;
+        if (!img.complete || img.naturalWidth === 0) return;
 
         const frameW = img.width / 5;
         const frameH = img.height / 5;
@@ -315,12 +322,12 @@
         ctx.clearRect(0, 0, 800, 450);
 
         if (mode === "FIGHT" && currentStage) {
-            // Rendering Scenario Selezionato
-            const bg = new Image(); bg.src = currentStage.bg;
-            const pav = new Image(); pav.src = currentStage.pav;
+            // Usa la cache per gli sfondi del gioco!
+            const bg = getImage(currentStage.bg);
+            const pav = getImage(currentStage.pav);
             
-            if (bg.complete) ctx.drawImage(bg, 0, 0, 800, 350);
-            if (pav.complete) ctx.drawImage(pav, 0, 350, 800, 100);
+            if (bg.complete && bg.naturalWidth !== 0) ctx.drawImage(bg, 0, 0, 800, 350);
+            if (pav.complete && pav.naturalWidth !== 0) ctx.drawImage(pav, 0, 350, 800, 100);
 
             // Barre Vita
             ctx.fillStyle = "red"; ctx.fillRect(50, 20, 300, 20); ctx.fillRect(450, 20, 300, 20);
