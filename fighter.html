@@ -183,11 +183,11 @@
         return imageCache[src];
     }
 
-    // SISTEMA DI SALVATAGGIO PROGRESSI (LocalStorage)
-    let totalWins = parseInt(localStorage.getItem('murenaWins') || '0');
+    // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE (Si cancella uscendo dal sito)
+    let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
     let pendingUnlockMessage = ""; 
 
-    // ASSETS & PROGRESSIONE (req = Numero di vittorie necessarie)
+    // ASSETS & PROGRESSIONE
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA', req: 0 },
         { spriteId: 'ferraz2', name: 'FERRAZ', req: 0 },
@@ -255,9 +255,11 @@
     let currentRound = 1; let p1Wins = 0; let cpuWins = 0;
 
     const SPRITE_SIZE = 200;
+    const GROUND_Y = 395; // Linea di terra abbassata (1/8 dal fondo)
 
-    let p1 = { x: 100, y: 350, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
-    let cpu = { x: 500, y: 350, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
+    // Imposto Y inziale su GROUND_Y
+    let p1 = { x: 100, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
+    let cpu = { x: 500, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
 
     // INPUT
     const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
@@ -353,8 +355,8 @@
 
     function startRound() {
         mode = "ROUND_OVER";
-        p1.hp = 100; p1.x = 100; p1.y = 350; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
-        cpu.hp = 100; cpu.x = 500; cpu.y = 350; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
+        p1.hp = 100; p1.x = 100; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
+        cpu.hp = 100; cpu.x = 500; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
         matchTimer = 99; framesCounter = 0;
         
         const msg = document.getElementById('round-msg');
@@ -430,7 +432,10 @@
 
     function updateFighterParams(f, isPlayer) {
         if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
-        f.y += f.vy; if (f.y < 350) f.vy += 1; else { f.y = 350; f.vy = 0; }
+        
+        // La fisica ora controlla l'impatto con il nuovo pavimento (GROUND_Y)
+        f.y += f.vy; 
+        if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
@@ -443,7 +448,9 @@
             else if (keys.r) { f.x += 5; f.state = 'run'; f.dir = 1; }
             else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
 
-            if (keys.j && f.y >= 350) f.vy = -15;
+            // Salto permesso se tocca GROUND_Y
+            if (keys.j && f.y >= GROUND_Y) f.vy = -15;
+            
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; } 
             else if (keys.a) { f.state = 'attack'; f.timer = 25; }
         } else {
@@ -500,9 +507,8 @@
                     
                     if (wonMatch) {
                         totalWins++;
-                        localStorage.setItem('murenaWins', totalWins);
+                        sessionStorage.setItem('murenaWins', totalWins);
                         
-                        // Controlla se questa specifica vittoria attiva uno sblocco
                         if (totalWins === 1) pendingUnlockMessage = "HERO: LJS\nENEMY: MURENA";
                         else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
                         else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
@@ -536,7 +542,6 @@
     }
 
     function draw() {
-        // Ora il clearRect "buca" il canvas e mostra la GIF che si muove sullo sfondo!
         ctx.clearRect(0, 0, 800, 450);
 
         if (mode !== "SELECT" && currentStage) {
