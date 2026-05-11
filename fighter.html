@@ -213,7 +213,7 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I 29 BACKGROUND GIF/WEBP
+    // TUTTI I BACKGROUND
     const stages = [
         { name: 'NAPOLI', bg: 'assets/napoli.gif' },
         { name: 'METRO', bg: 'assets/metro.gif' },
@@ -246,7 +246,7 @@
         { name: 'INCA', bg: 'assets/inca.webp' }
     ];
 
-    // VARIABILI GLOBALI
+    // VARIABILI GLOBALI E FISICA SCALATA
     let selectState = 0; 
     let mode = "SELECT"; 
     let p1Char = null; let cpuChar = null; let currentStage = null;
@@ -254,12 +254,13 @@
     let matchTimer = 99; let framesCounter = 0;
     let currentRound = 1; let p1Wins = 0; let cpuWins = 0;
 
-    const SPRITE_SIZE = 200;
-    const GROUND_Y = 395; // Linea di terra abbassata (1/8 dal fondo)
+    // SCALA ANCORA PIU' GRANDE: +33%
+    const SPRITE_SIZE = 266; 
+    // LINEA DI TERRA ANCORA PIU' IN BASSO
+    const GROUND_Y = 425; 
 
-    // Imposto Y inziale su GROUND_Y
-    let p1 = { x: 100, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
-    let cpu = { x: 500, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
+    let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
+    let cpu = { x: 450, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
 
     // INPUT
     const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
@@ -355,8 +356,8 @@
 
     function startRound() {
         mode = "ROUND_OVER";
-        p1.hp = 100; p1.x = 100; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
-        cpu.hp = 100; cpu.x = 500; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
+        p1.hp = 100; p1.x = 80; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
+        cpu.hp = 100; cpu.x = 450; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
         matchTimer = 99; framesCounter = 0;
         
         const msg = document.getElementById('round-msg');
@@ -417,6 +418,7 @@
         if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
         if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
 
+        // Offset aggiornato per dimensione 266px
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
             ctx.drawImage(finalImg, sx, sy, frameW, frameH, 0, -SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
@@ -433,10 +435,11 @@
     function updateFighterParams(f, isPlayer) {
         if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
         
-        // La fisica ora controlla l'impatto con il nuovo pavimento (GROUND_Y)
+        // Gravità applicata al nuovo GROUND_Y
         f.y += f.vy; 
         if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
+        // Limiti Muro
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
 
@@ -444,26 +447,27 @@
 
         if (isPlayer) {
             let enemyDist = cpu.x - f.x;
-            if (keys.l) { f.x -= 5; f.state = 'run'; f.dir = -1; }
-            else if (keys.r) { f.x += 5; f.state = 'run'; f.dir = 1; }
+            if (keys.l) { f.x -= 6; f.state = 'run'; f.dir = -1; }
+            else if (keys.r) { f.x += 6; f.state = 'run'; f.dir = 1; }
             else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
 
-            // Salto permesso se tocca GROUND_Y
+            // Salto
             if (keys.j && f.y >= GROUND_Y) f.vy = -15;
             
-            if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; } 
+            if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
             else if (keys.a) { f.state = 'attack'; f.timer = 25; }
         } else {
             let dist = p1.x - f.x;
             f.dir = dist > 0 ? 1 : -1;
             
-            if (Math.abs(dist) > 130) {
+            // L'IA valuta la nuova distanza dovuta ai modelli più larghi
+            if (Math.abs(dist) > 170) {
                 f.x += f.dir * 3; f.state = 'run';
             } else {
                 f.state = 'idle';
                 let rand = Math.random();
                 if (rand < 0.04) { f.state = 'attack'; f.timer = 25; }
-                else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; }
+                else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; }
             }
         }
     }
@@ -471,12 +475,13 @@
     function checkHitbox(attacker, defender) {
         if (attacker.state === 'attack' && attacker.timer === 15) { 
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
-            if (relativeDist > -50 && relativeDist < 140 && Math.abs(attacker.y - defender.y) < 100) {
+            // Hitbox allungata per coprire la stazza maggiore (fino a 180px in avanti)
+            if (relativeDist > -50 && relativeDist < 180 && Math.abs(attacker.y - defender.y) < 130) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
                     defender.state = 'hurt';
                     defender.timer = 20; 
                     defender.hp -= 15; 
-                    defender.x += attacker.dir * 20; 
+                    defender.x += attacker.dir * 25; // Knockback aumentato
                     return true;
                 }
             }
@@ -542,6 +547,7 @@
     }
 
     function draw() {
+        // Pulisce il canvas mostrando la GIF che scorre dietro!
         ctx.clearRect(0, 0, 800, 450);
 
         if (mode !== "SELECT" && currentStage) {
@@ -569,7 +575,7 @@
             ctx.fillStyle = "#fff"; ctx.font = "24px 'Press Start 2P'";
             ctx.fillText(matchTimer, 400 - ctx.measureText(matchTimer).width/2, 35);
 
-            // Rendering Combattenti sopra lo sfondo trasparente
+            // Rendering Combattenti giganti
             drawFighter(p1, p1Char.spriteId);
             drawFighter(cpu, cpuChar.spriteId);
         }
