@@ -32,13 +32,42 @@
 
         canvas { width: 100%; height: 100%; image-rendering: pixelated; }
 
-        /* SELEZIONE EROI */
+        /* SCHERMATE DI SELEZIONE MULTIPLE */
         #selection-screen {
-            position: absolute; inset: 0; background: #000080; 
+            position: absolute; inset: 0; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10;
+            z-index: 10; text-align: center;
+            transition: background 0.3s;
         }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+
+        /* 1. Mappa Italia 8-Bit (Eroi) */
+        .bg-italy {
+            background-color: #000080;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='rgba(255,255,255,0.15)' d='M20,10 h20 v10 h5 v5 h10 v15 h5 v15 h5 v10 h-5 v10 h-10 v-5 h-10 v-5 h-5 v-10 h-5 v-10 h5 v-10 h-5 v-5 h-5 v-10 z M65,75 h10 v10 h-10 z'/%3E%3C/svg%3E");
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+        }
+
+        /* 2. Rosso Infuocato (Avversari) */
+        .bg-fire {
+            background: linear-gradient(to bottom, #500000 0%, #aa0000 40%, #ff4500 80%, #ffcc00 100%);
+        }
+
+        /* 3. Nero Stellato (Stage) */
+        .bg-stars {
+            background-color: #000;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 4px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px);
+            background-size: 50px 50px, 90px 90px, 130px 130px;
+            background-position: 0 0, 40px 60px, 100px 30px;
+        }
+
+        /* GRIGLIA CENTRATA */
+        .grid { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: 10px; margin-top: 10px; max-width: 350px; 
+        }
         
         .cell {
             width: 70px; height: 70px; background: #222; border: 3px solid #808080;
@@ -46,10 +75,9 @@
             /* FIX SPRITE SELECTION: mostriamo solo il primo frame della sheet 5x5 */
             background-size: 500% 500%; 
             background-position: 0% 0%;
+            transition: transform 0.1s;
         }
-        .cell.selected { border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00; }
-        .cell.locked { opacity: 0.4; pointer-events: none; }
-        .cell.locked::after { content: "🔒"; display: block; text-align: center; margin-top: 20px; }
+        .cell:hover { border-color: #fff; transform: scale(1.05); }
 
         /* CONTROLLI MOBILE */
         #controls {
@@ -68,13 +96,13 @@
 
 <div id="header-bar">
     <a href="index.html" class="win-btn">← DESKTOP</a>
-    <span id="top-msg">STUDIO MURENA: SELECT FIGHTER</span>
+    <span id="top-msg">STUDIO MURENA: SELECT HERO</span>
 </div>
 
 <div id="game-container">
-    <div id="selection-screen">
+    <div id="selection-screen" class="bg-italy">
         <div id="grid" class="grid"></div>
-        <div id="char-name" style="margin-top: 20px; color: #ffcc00;">SELECT HERO</div>
+        <div id="char-name" style="margin-top: 20px; color: #ffcc00; text-shadow: 2px 2px #000;">SELECT HERO</div>
     </div>
     <canvas id="gameCanvas" width="800" height="450"></canvas>
 </div>
@@ -94,56 +122,116 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // Configurazione Asset
-    const roster = [
-        { id: 'carma', name: 'CARMA', locked: false },
-        { id: 'ferraz', name: 'FERRAZ', locked: false },
-        { id: 'nan', name: 'NAN', locked: false },
-        { id: 'mauri', name: 'MAURI', locked: false },
-        { id: 'falcon', name: 'FALCON', locked: false },
-        { id: 'guest1', name: '???', locked: true },
-        { id: 'guest2', name: '???', locked: true },
-        { id: 'guest3', name: '???', locked: true }
+    // ----------------------------------------------------
+    // ASSETS REALI DAL REPOSITORY
+    // ----------------------------------------------------
+    const heroes = [
+        { spriteId: 'carma2', name: 'CARMA' },
+        { spriteId: 'ferraz2', name: 'FERRAZ' },
+        { spriteId: 'nan2', name: 'NAN' },
+        { spriteId: 'mauri2', name: 'MAURI' },
+        { spriteId: 'falcon2', name: 'FALCON' }
+    ];
+
+    const enemiesList = [
+        { spriteId: 'baba', name: 'BABA' },
+        { spriteId: 'beeman', name: 'BEEMAN' },
+        { spriteId: 'cop', name: 'COP' },
+        { spriteId: 'copzombie', name: 'ZOMBIE COP' },
+        { spriteId: 'drogato', name: 'DROGATO' },
+        { spriteId: 'franken', name: 'FRANKEN' }
     ];
 
     const stages = [
-        { bg: 'assets/skyline1.png', pav: 'assets/pavimento-milano-baba.png' },
-        { bg: 'assets/boschetto2.png', pav: 'assets/pavimento-boschetto.png' },
-        { bg: 'assets/metro-baba3.png', pav: 'assets/pavimento-metro.png' }
+        { name: 'MILANO', bg: 'assets/skyline1.png', pav: 'assets/pavimento-milano-baba.png' },
+        { name: 'BOSCO', bg: 'assets/boschetto2.png', pav: 'assets/pavimento-boschetto.png' },
+        { name: 'METRO', bg: 'assets/metro-baba3.png', pav: 'assets/pavimento-metro.png' }
     ];
 
-    const enemies = ['murena', 'baba', 'cop', 'copzombie'];
-
+    // Variabili di Gioco
+    let selectState = 0; // 0 = Eroi, 1 = Avversari, 2 = Stage
     let mode = "SELECT";
     let p1Char = null;
-    let currentStage = stages[0];
+    let cpuChar = null;
+    let currentStage = null;
+
     let p1 = { x: 100, y: 300, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0 };
     let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0 };
 
-    // Griglia Selezione
-    const grid = document.getElementById('grid');
-    roster.forEach((c, i) => {
-        const d = document.createElement('div');
-        d.className = `cell ${c.locked ? 'locked' : ''}`;
-        if(!c.locked) d.style.backgroundImage = `url('assets/${c.id}2-idle.png')`;
-        d.onclick = () => {
-            p1Char = c;
-            document.getElementById('char-name').innerText = c.name;
-            startFight();
-        };
-        grid.appendChild(d);
-    });
+    // ----------------------------------------------------
+    // LOGICA DI SELEZIONE MULTIPLA
+    // ----------------------------------------------------
+    function loadSelectionScreen() {
+        const grid = document.getElementById('grid');
+        const screen = document.getElementById('selection-screen');
+        const title = document.getElementById('char-name');
+        const topMsg = document.getElementById('top-msg');
+        
+        grid.innerHTML = '';
+
+        if (selectState === 0) {
+            // STEP 1: EROE (Mappa Italia 8-bit)
+            screen.className = 'bg-italy';
+            title.innerText = 'SELECT HERO';
+            title.style.color = '#ffcc00';
+            topMsg.innerText = 'STUDIO MURENA: SELECT HERO';
+
+            heroes.forEach(c => {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
+                d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
+                grid.appendChild(d);
+            });
+        } 
+        else if (selectState === 1) {
+            // STEP 2: AVVERSARIO (Rosso Fuoco)
+            screen.className = 'bg-fire';
+            title.innerText = 'SELECT OPPONENT';
+            title.style.color = '#fff';
+            topMsg.innerText = 'STUDIO MURENA: SELECT OPPONENT';
+
+            enemiesList.forEach(c => {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
+                d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
+                grid.appendChild(d);
+            });
+        } 
+        else if (selectState === 2) {
+            // STEP 3: STAGE (Cielo Stellato)
+            screen.className = 'bg-stars';
+            title.innerText = 'SELECT STAGE';
+            title.style.color = '#00ffff';
+            topMsg.innerText = 'STUDIO MURENA: SELECT STAGE';
+
+            stages.forEach(s => {
+                const d = document.createElement('div');
+                d.className = 'cell';
+                d.style.backgroundImage = `url('${s.bg}')`;
+                d.style.backgroundSize = 'cover'; // Rimuove il focus 500% tipico delle spritesheet
+                d.style.backgroundPosition = 'center';
+                d.style.borderColor = '#00ffff';
+                d.onclick = () => { currentStage = s; startFight(); };
+                grid.appendChild(d);
+            });
+        }
+    }
+
+    // Inizializza subito la prima schermata
+    loadSelectionScreen();
 
     function startFight() {
         mode = "FIGHT";
         document.getElementById('selection-screen').style.display = 'none';
         document.getElementById('controls').style.visibility = 'visible';
         document.getElementById('top-msg').innerText = "FIGHT!";
-        currentStage = stages[Math.floor(Math.random()*stages.length)];
-        cpu.id = enemies[Math.floor(Math.random()*enemies.length)];
     }
 
-    // Input
+    // ----------------------------------------------------
+    // INPUT E MOTORE DI GIOCO
+    // ----------------------------------------------------
     const keys = { l: 0, r: 0, j: 0, a: 0 };
     const setup = (id, k) => {
         const b = document.getElementById(id);
@@ -154,14 +242,13 @@
     };
     setup('btn-l', 'l'); setup('btn-r', 'r'); setup('btn-j', 'j'); setup('btn-a', 'a');
 
-    // Funzione Render Sprite (Taglia la sheet 5x5)
-    function drawFighter(f, charId) {
+    // Rendering Sprite 5x5
+    function drawFighter(f, spriteId) {
         const img = new Image();
-        img.src = `assets/${charId}2-${f.state}.png`;
+        img.src = `assets/${spriteId}-${f.state}.png`;
         
         if (!img.complete) return;
 
-        // Frame calculation per sheet 5x5
         const frameW = img.width / 5;
         const frameH = img.height / 5;
         const sx = (f.frame % 5) * frameW;
@@ -177,10 +264,7 @@
         }
         ctx.restore();
 
-        // Animazione
-        if (Date.now() % 100 < 50) { // velocità animazione
-             f.frame = (f.frame + 1) % 25;
-        }
+        if (Date.now() % 100 < 50) f.frame = (f.frame + 1) % 25;
     }
 
     function update() {
@@ -197,7 +281,7 @@
         p1.y += p1.vy;
         if (p1.y < 300) p1.vy += 1; else { p1.y = 300; p1.vy = 0; }
 
-        // CPU AI Logic (Ora si muove!)
+        // CPU AI Logic
         let dist = p1.x - cpu.x;
         if (Math.abs(dist) > 60) {
             cpu.x += (dist > 0 ? 3 : -3);
@@ -211,7 +295,7 @@
         cpu.y += cpu.vy;
         if (cpu.y < 300) cpu.vy += 1; else { cpu.y = 300; cpu.vy = 0; }
 
-        // Collisioni Danni
+        // Collisioni & Danni
         if (p1.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) cpu.hp -= 0.5;
         if (cpu.state === 'attack' && Math.abs(p1.x - cpu.x) < 70) p1.hp -= 0.3;
 
@@ -224,8 +308,8 @@
     function draw() {
         ctx.clearRect(0, 0, 800, 450);
 
-        if (mode === "FIGHT") {
-            // Background (No stretch)
+        if (mode === "FIGHT" && currentStage) {
+            // Rendering Scenario Selezionato
             const bg = new Image(); bg.src = currentStage.bg;
             const pav = new Image(); pav.src = currentStage.pav;
             
@@ -238,8 +322,14 @@
             ctx.fillRect(50, 20, p1.hp * 3, 20); 
             ctx.fillRect(450 + (300 - cpu.hp * 3), 20, cpu.hp * 3, 20);
 
-            drawFighter(p1, p1Char.id);
-            drawFighter(cpu, cpu.id);
+            // Nomi Sopra le Barre
+            ctx.fillStyle = "#fff"; ctx.font = "10px 'Press Start 2P'";
+            ctx.fillText(p1Char.name, 50, 15);
+            ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 15);
+
+            // Rendering Combattenti
+            drawFighter(p1, p1Char.spriteId);
+            drawFighter(cpu, cpuChar.spriteId);
         }
         requestAnimationFrame(draw);
     }
