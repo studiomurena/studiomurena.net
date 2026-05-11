@@ -52,20 +52,28 @@
         .bg-select-en { background-color: #500000; background-image: url('assets/bkg2.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
         .bg-select-am { background-color: #000000; background-image: url('assets/bkg3.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
 
-        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; max-width: 350px; }
+        /* GRIGLIA SELEZIONE */
+        .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; max-width: 400px; }
         .cell {
             width: 70px; height: 70px; background-color: #222; border: 3px solid #808080;
             cursor: pointer; image-rendering: pixelated; background-size: 500% 500%; background-position: 0% 0%; transition: transform 0.1s;
         }
-        .cell:hover { border-color: #fff; transform: scale(1.05); }
+        .cell:hover:not(.locked) { border-color: #fff; transform: scale(1.05); }
+        
+        /* CELLE BLOCCATE */
+        .cell.locked {
+            background-image: none !important; opacity: 0.6; cursor: not-allowed;
+            display: flex; align-items: center; justify-content: center; font-size: 30px;
+        }
+        .cell.locked::after { content: "🔒"; }
 
-        /* OVERLAYS (PAUSA, VITTORIA, MESSAGGI ROUND) */
+        /* OVERLAYS (PAUSA, VITTORIA, SBLOCCHI) */
         .overlay {
-            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.7);
+            position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 15; text-align: center; visibility: hidden;
         }
-        .overlay h1 { color: #ffcc00; text-shadow: 3px 3px #000; margin-bottom: 20px; }
+        .overlay h1 { color: #ffcc00; text-shadow: 3px 3px #000; margin-bottom: 20px; line-height: 1.5; }
         
         #round-msg {
             position: absolute; top: 40%; width: 100%; text-align: center;
@@ -107,12 +115,20 @@
     <div id="pause-screen" class="overlay">
         <h1>PAUSED</h1>
         <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="togglePause()">RESUME</button>
-        <button class="win-btn" style="font-size: 14px; padding: 10px; margin-top: 10px;" onclick="location.reload()">QUIT</button>
+        <button class="win-btn" style="font-size: 14px; padding: 10px; margin-top: 10px;" onclick="resetToMenu()">QUIT TO MENU</button>
     </div>
 
+    <!-- Schermata Fine Partita -->
     <div id="end-screen" class="overlay">
         <h1 id="end-title">YOU WIN!</h1>
-        <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="location.reload()">PLAY AGAIN</button>
+        <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="handleEndScreen()">CONTINUE</button>
+    </div>
+
+    <!-- Schermata di Sblocco -->
+    <div id="unlock-screen" class="overlay">
+        <h1>NEW CHALLENGER<br>UNLOCKED!</h1>
+        <p id="unlock-text" style="color: white; margin-bottom: 30px; font-size: 14px; text-shadow: 1px 1px #000;"></p>
+        <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="resetToMenu()">AWESOME!</button>
     </div>
 
     <canvas id="gameCanvas" width="800" height="450"></canvas>
@@ -143,25 +159,36 @@
         return imageCache[src];
     }
 
-    // ASSETS
+    // SISTEMA DI SALVATAGGIO PROGRESSI (LocalStorage)
+    let totalWins = parseInt(localStorage.getItem('murenaWins') || '0');
+    let pendingUnlockMessage = ""; // Messaggio temporaneo per i nuovi sblocchi
+
+    // ASSETS & PROGRESSIONE (req = Numero di vittorie necessarie)
     const heroes = [
-        { spriteId: 'carma2', name: 'CARMA' },
-        { spriteId: 'ferraz2', name: 'FERRAZ' },
-        { spriteId: 'nan2', name: 'NAN' },
-        { spriteId: 'mauri2', name: 'MAURI' },
-        { spriteId: 'falcon2', name: 'FALCON' }
+        { spriteId: 'carma2', name: 'CARMA', req: 0 },
+        { spriteId: 'ferraz2', name: 'FERRAZ', req: 0 },
+        { spriteId: 'nan2', name: 'NAN', req: 0 },
+        { spriteId: 'mauri2', name: 'MAURI', req: 0 },
+        { spriteId: 'falcon2', name: 'FALCON', req: 0 },
+        { spriteId: 'ljs', name: 'LJS', req: 1 },
+        { spriteId: 'mclovin', name: 'MCLOVIN', req: 2 },
+        { spriteId: 'britney', name: 'BRITNEY', req: 3 },
+        { spriteId: 'mfdoom', name: 'MF DOOM', req: 4 }
     ];
 
     const enemiesList = [
-        { spriteId: 'baba', name: 'BABA' },
-        { spriteId: 'beeman', name: 'BEEMAN' },
-        { spriteId: 'cop', name: 'COP' },
-        { spriteId: 'copzombie', name: 'ZOMBIE COP' },
-        { spriteId: 'drogato', name: 'DROGATO' },
-        { spriteId: 'franken', name: 'FRANKEN' }
+        { spriteId: 'baba', name: 'BABA', req: 0 },
+        { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
+        { spriteId: 'cop', name: 'COP', req: 0 },
+        { spriteId: 'copzombie', name: 'ZOMBIE COP', req: 0 },
+        { spriteId: 'drogato', name: 'DROGATO', req: 0 },
+        { spriteId: 'franken', name: 'FRANKEN', req: 0 },
+        { spriteId: 'murena', name: 'MURENA', req: 1 },
+        { spriteId: 'pigeon', name: 'PIGEON', req: 2 },
+        { spriteId: 'ornitorincoman', name: 'ORNITORINCO', req: 3 },
+        { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // NOMI CORRETTI CON LA "C"
     const stages = [
         { name: 'BAR', bg: 'assets/backg-bar.png' },
         { name: 'METRO', bg: 'assets/backg-metro.png' },
@@ -176,8 +203,7 @@
     let matchTimer = 99;
     let framesCounter = 0;
     let currentRound = 1;
-    let p1Wins = 0;
-    let cpuWins = 0;
+    let p1Wins = 0; let cpuWins = 0;
 
     const SPRITE_SIZE = 200;
 
@@ -217,16 +243,24 @@
             screen.className = 'bg-select-ch'; title.innerText = 'SELECT HERO';
             heroes.forEach(c => {
                 const d = document.createElement('div'); d.className = 'cell';
-                d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
+                if (totalWins >= c.req) {
+                    d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
+                    d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
+                } else {
+                    d.classList.add('locked');
+                }
                 grid.appendChild(d);
             });
         } else if (selectState === 1) {
             screen.className = 'bg-select-en'; title.innerText = 'SELECT OPPONENT'; title.style.color = '#fff';
             enemiesList.forEach(c => {
                 const d = document.createElement('div'); d.className = 'cell';
-                d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
+                if (totalWins >= c.req) {
+                    d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
+                    d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
+                } else {
+                    d.classList.add('locked');
+                }
                 grid.appendChild(d);
             });
         } else if (selectState === 2) {
@@ -267,21 +301,41 @@
 
     function togglePause() {
         if(mode === "FIGHT") {
-            mode = "PAUSE";
-            document.getElementById('pause-screen').style.visibility = 'visible';
+            mode = "PAUSE"; document.getElementById('pause-screen').style.visibility = 'visible';
         } else if (mode === "PAUSE") {
-            mode = "FIGHT";
-            document.getElementById('pause-screen').style.visibility = 'hidden';
+            mode = "FIGHT"; document.getElementById('pause-screen').style.visibility = 'hidden';
+        }
+    }
+
+    // GESTIONE DELLA FINE DELLA PARTITA E RITORNO AL MENU
+    function resetToMenu() {
+        document.getElementById('end-screen').style.visibility = 'hidden';
+        document.getElementById('unlock-screen').style.visibility = 'hidden';
+        document.getElementById('pause-screen').style.visibility = 'hidden';
+        document.getElementById('controls').style.visibility = 'hidden';
+        document.getElementById('btn-pause').style.display = 'none';
+        document.getElementById('selection-screen').style.display = 'flex';
+        
+        mode = "SELECT";
+        selectState = 0; p1Char = null; cpuChar = null; currentStage = null;
+        loadSelectionScreen();
+    }
+
+    function handleEndScreen() {
+        document.getElementById('end-screen').style.visibility = 'hidden';
+        if (pendingUnlockMessage !== "") {
+            document.getElementById('unlock-text').innerText = pendingUnlockMessage;
+            document.getElementById('unlock-screen').style.visibility = 'visible';
+            pendingUnlockMessage = ""; // Reset del messaggio
+        } else {
+            resetToMenu();
         }
     }
 
     function drawFighter(f, spriteId) {
         let drawState = f.state === 'dodge' ? 'idle' : f.state;
         const img = getImage(`assets/${spriteId}-${drawState}.png`);
-        
-        if (!img.complete || img.naturalWidth === 0) {
-            if (f.state === 'hurt') drawState = 'idle'; 
-        }
+        if (!img.complete || img.naturalWidth === 0) { if (f.state === 'hurt') drawState = 'idle'; }
         
         const finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
         if (!finalImg.complete || finalImg.naturalWidth === 0) return;
@@ -307,13 +361,8 @@
     }
 
     function updateFighterParams(f, isPlayer) {
-        if (f.timer > 0) {
-            f.timer--;
-            if (f.timer <= 0) f.state = 'idle';
-        }
-
-        f.y += f.vy;
-        if (f.y < 350) f.vy += 1; else { f.y = 350; f.vy = 0; }
+        if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
+        f.y += f.vy; if (f.y < 350) f.vy += 1; else { f.y = 350; f.vy = 0; }
 
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
@@ -322,17 +371,11 @@
 
         if (isPlayer) {
             let enemyDist = cpu.x - f.x;
-
             if (keys.l) { f.x -= 5; f.state = 'run'; f.dir = -1; }
             else if (keys.r) { f.x += 5; f.state = 'run'; f.dir = 1; }
-            else { 
-                f.state = 'idle'; 
-                // AUTO-TURN: Quando sei fermo, guardi sempre l'avversario
-                f.dir = enemyDist > 0 ? 1 : -1; 
-            }
+            else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
 
             if (keys.j && f.y >= 350) f.vy = -15;
-            
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 40; } 
             else if (keys.a) { f.state = 'attack'; f.timer = 25; }
         } else {
@@ -352,16 +395,12 @@
 
     function checkHitbox(attacker, defender) {
         if (attacker.state === 'attack' && attacker.timer === 15) { 
-            // Calcoliamo la posizione relativa in base alla direzione dell'attaccante
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
-
-            // Hitbox direzionale: colpisce solo in avanti (fino a 140px) e poco dietro (max 50px sovrapposti)
             if (relativeDist > -50 && relativeDist < 140 && Math.abs(attacker.y - defender.y) < 100) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
                     defender.state = 'hurt';
                     defender.timer = 20; 
                     defender.hp -= 15; 
-                    // Il difensore viene spinto VIA nella direzione dell'attacco
                     defender.x += attacker.dir * 20; 
                     return true;
                 }
@@ -384,9 +423,25 @@
             setTimeout(() => {
                 document.getElementById('round-msg').style.visibility = 'hidden';
                 if (p1Wins >= 2 || cpuWins >= 2) {
+                    
+                    // CONTROLLO VITTORIA ASSOLUTA
+                    let wonMatch = (p1Wins >= 2);
                     mode = "END";
-                    document.getElementById('end-title').innerText = p1Wins >= 2 ? "YOU WIN!" : "GAME OVER";
-                    document.getElementById('end-title').style.color = p1Wins >= 2 ? "#ffcc00" : "#ff0000";
+                    
+                    document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
+                    document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
+                    
+                    if (wonMatch) {
+                        totalWins++;
+                        localStorage.setItem('murenaWins', totalWins); // Salva il progresso
+                        
+                        // Sistema di notifica Sblocco
+                        if (totalWins === 1) pendingUnlockMessage = "HERO: LJS\nENEMY: MURENA";
+                        else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
+                        else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
+                        else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
+                    }
+
                     document.getElementById('end-screen').style.visibility = 'visible';
                 } else {
                     currentRound++;
