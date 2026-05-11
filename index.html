@@ -68,12 +68,15 @@
         .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
         .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
 
+        /* Nuova disposizione icone */
         #icon-internet { top: 20px; left: 20px; }
-        #icon-murena { top: 120px; left: 20px; }
-        #icon-jazzcore { top: 220px; left: 20px; }
-        #icon-cestino { top: 320px; left: 20px; }
-        #icon-game { top: 420px; left: 20px; } 
-        #icon-fighter { top: 20px; left: 120px; } /* NUOVA ICONA FIGHTER */
+        #icon-jazzcore { top: 120px; left: 20px; }
+        #icon-cestino { top: 220px; left: 20px; }
+        #icon-game { top: 320px; left: 20px; } 
+        
+        #icon-fighter { top: 20px; left: 120px; }
+        #icon-merch { top: 120px; left: 120px; }
+        #icon-tickets { top: 220px; left: 120px; }
 
         .title-bar {
             background: var(--win-blue); color: white; padding: 3px 8px;
@@ -89,6 +92,31 @@
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 200;
         }
         .dialup-content { padding: 15px; text-align: center; }
+
+        /* --- ANIMAZIONI JAZZCORE IMPAZZITE --- */
+        .jazzcore-crazy-img {
+            width: 140px; height: 140px; object-fit: cover; border-radius: 50%;
+            margin: 15px auto; display: block;
+            animation: spinCrazy 0.4s linear infinite, rgbGlitch 0.15s infinite alternate;
+            box-shadow: 0 0 15px red;
+        }
+        .jazzcore-warning {
+            color: #ff0000; font-size: 18px; font-weight: bold; text-align: center; margin: 10px 0;
+            animation: flashWarning 0.2s infinite alternate; text-shadow: 2px 2px #000;
+        }
+        @keyframes spinCrazy {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.4); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes rgbGlitch {
+            0% { filter: drop-shadow(6px 0px 0px cyan) drop-shadow(-6px 0px 0px red) hue-rotate(0deg); }
+            100% { filter: drop-shadow(-6px 6px 0px lime) drop-shadow(6px -6px 0px magenta) hue-rotate(90deg) invert(0.2); }
+        }
+        @keyframes flashWarning {
+            0% { opacity: 1; transform: scale(1); color: yellow; }
+            100% { opacity: 0.1; transform: scale(1.1); color: red; }
+        }
 
         /* --- BROWSER INTERNET --- */
         #browser-window {
@@ -256,10 +284,8 @@
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
-            <div class="desktop-icon" id="icon-murena" onclick="if(!isGlobalDragging) alert('Directory access denied.')">
-                <span class="icon-art">📁</span>MURENA
-            </div>
-            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) alert('Insert Disc 2')">
+            <!-- Rimossa icona Murena cartella -->
+            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) openJazzcoreWindow()">
                 <span class="icon-art">💿</span>JAZZCORE
             </div>
             <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) alert('Recycle Bin is empty.')">
@@ -271,12 +297,32 @@
             <div class="desktop-icon" id="icon-fighter" onclick="if(!isGlobalDragging) window.location.href='fighter.html'">
                 <span class="icon-art">🕹️</span>FIGHTER
             </div>
+            <!-- Nuove Icone -->
+            <div class="desktop-icon" id="icon-merch" onclick="if(!isGlobalDragging) window.open('https://www.nancymerch.it/studio-murena/', '_blank')">
+                <span class="icon-art">👕</span>MERCH
+            </div>
+            <div class="desktop-icon" id="icon-tickets" onclick="if(!isGlobalDragging) window.open('https://link.dice.fm/k2fa8c1a2c43?dice_id=k2fa8c1a2c43', '_blank')">
+                <span class="icon-art">🎟️</span>TICKETS
+            </div>
 
             <div id="dialup-window" class="win95-border popup" style="position:absolute;">
                 <div class="title-bar"><span>Connecting...</span></div>
                 <div class="dialup-content">
                     <div style="font-size: 32px; margin-bottom: 5px;">☎️ 💻</div>
                     <div id="dialup-text" style="font-size: 12px; font-weight: bold;">Dialing 555-MURENA...</div>
+                </div>
+            </div>
+
+            <!-- FINESTRA JAZZCORE (Nuova) -->
+            <div id="jazzcore-window" class="win95-border popup" style="display:none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 300;">
+                <div class="title-bar drag-handle">
+                    <span>JAZZCORE_ERR.exe</span>
+                    <span class="btn-close" onclick="closeWindow('jazzcore-window')">X</span>
+                </div>
+                <div class="game-content win95-border-inset" style="background-color: #000; overflow: hidden; padding: 20px;">
+                    <div class="jazzcore-warning">⚠ FATAL ERROR ⚠</div>
+                    <img src="jazzcoreIMG.jpg" class="jazzcore-crazy-img" alt="Jazzcore Glitch">
+                    <div class="jazzcore-warning">SYSTEM CORRUPTED</div>
                 </div>
             </div>
 
@@ -444,6 +490,12 @@
             bringToFront(document.getElementById('game-window'));
         }
 
+        // --- NUOVA FUNZIONE JAZZCORE ---
+        function openJazzcoreWindow() {
+            document.getElementById('jazzcore-window').style.display = 'block';
+            bringToFront(document.getElementById('jazzcore-window'));
+        }
+
         function startGame() {
             const emailInput = document.getElementById('player-email').value;
             if (!emailInput || !emailInput.includes('@')) {
@@ -573,11 +625,12 @@
         function bringToFront(element) { highestZIndex += 1; element.style.zIndex = highestZIndex; }
 
         makeDraggable(document.getElementById("icon-internet"), null);
-        makeDraggable(document.getElementById("icon-murena"), null);
         makeDraggable(document.getElementById("icon-jazzcore"), null);
         makeDraggable(document.getElementById("icon-cestino"), null);
         makeDraggable(document.getElementById("icon-game"), null);
         makeDraggable(document.getElementById("icon-fighter"), null); 
+        makeDraggable(document.getElementById("icon-merch"), null); 
+        makeDraggable(document.getElementById("icon-tickets"), null); 
 
         makeDraggable(document.getElementById("artists-window"), ".drag-handle");
         makeDraggable(document.getElementById("warning-window"), ".drag-handle");
@@ -585,6 +638,7 @@
         makeDraggable(document.getElementById("network-window"), ".drag-handle");
         makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
         makeDraggable(document.getElementById("game-window"), ".drag-handle");
+        makeDraggable(document.getElementById("jazzcore-window"), ".drag-handle"); // Reso trascinabile
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
