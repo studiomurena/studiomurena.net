@@ -40,18 +40,27 @@
             transition: background 0.3s;
         }
 
-        /* SFONDI PERSONALIZZATI */
+        /* SFONDI PERSONALIZZATI FIXATI */
         .bg-select-ch { 
-            background: url('assets/select-ch.png') no-repeat center center; 
-            background-size: cover; background-color: #000080;
+            background-image: url('assets/select-ch.png');
+            background-color: #000080;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
         .bg-select-en { 
-            background: url('assets/select-en.png') no-repeat center center; 
-            background-size: cover; background-color: #500000;
+            background-image: url('assets/select-en.png');
+            background-color: #500000;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
         .bg-select-am { 
-            background: url('assets/select-am.png') no-repeat center center; 
-            background-size: cover; background-color: #000;
+            background-image: url('assets/select-am.png');
+            background-color: #000;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
 
         /* GRIGLIA CENTRATA */
@@ -63,7 +72,6 @@
         .cell {
             width: 70px; height: 70px; background-color: #222; border: 3px solid #808080;
             cursor: pointer; image-rendering: pixelated;
-            /* FIX SPRITE SELECTION: mostriamo solo il primo frame della sheet 5x5 */
             background-size: 500% 500%; 
             background-position: 0% 0%;
             transition: transform 0.1s;
@@ -147,7 +155,6 @@
     let currentStage = null;
 
     let p1 = { x: 100, y: 300, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0 };
-    // Aggiunto attackTimer alla CPU per rallentare i suoi attacchi
     let cpu = { x: 600, y: 300, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, attackTimer: 0 };
 
     // ----------------------------------------------------
@@ -274,11 +281,9 @@
 
         // CPU AI Logic
         if (cpu.attackTimer > 0) {
-            // Se la CPU sta attaccando, mantieni lo stato per far vedere l'animazione
             cpu.attackTimer--;
             cpu.state = 'attack';
         } else {
-            // Logica di movimento standard
             let dist = p1.x - cpu.x;
             if (Math.abs(dist) > 60) {
                 cpu.x += (dist > 0 ? 3 : -3);
@@ -286,10 +291,9 @@
                 cpu.dir = (dist > 0 ? 1 : -1);
             } else {
                 cpu.state = 'idle';
-                // Decide di attaccare con una certa probabilità
                 if (Math.random() < 0.05) {
                     cpu.state = 'attack';
-                    cpu.attackTimer = 30; // Mantiene l'attacco per 30 frame (mezzo secondo)
+                    cpu.attackTimer = 30;
                 }
             }
         }
