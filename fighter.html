@@ -205,7 +205,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // CACHE ENGINE E MUSICA DEI MENU E STAGE
+    // CACHE ENGINE E AUDIO
     const imageCache = {};
     function getImage(src) {
         if (!imageCache[src]) {
@@ -215,12 +215,30 @@
     }
 
     const menuMusic = new Audio('assets/Jazzhighlanders_8bit_F.wav');
-    menuMusic.loop = true;
-    menuMusic.volume = 0.6;
+    menuMusic.loop = true; menuMusic.volume = 0.6;
 
     const stageMusic = new Audio();
-    stageMusic.loop = true;
-    stageMusic.volume = 0.5; 
+    stageMusic.loop = true; stageMusic.volume = 0.5; 
+
+    // SUONI DEL GIOCO (ROUND E ESITO PARTITA)
+    const sfx = {
+        r1: new Audio('assets/round-one-fight.mp3'),
+        r2: new Audio('assets/round-two-fight.mp3'),
+        r3: new Audio('assets/final-round-fight.mp3'),
+        win1: new Audio('assets/sound-win.mp3'),
+        win2: new Audio('assets/youwin.mp3'),
+        lose1: new Audio('assets/sound-loose.mp3'),
+        lose2: new Audio('assets/youloose.mp3')
+    };
+
+    function playSfx(audioObj) {
+        audioObj.currentTime = 0;
+        audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
+    }
+
+    // Quando finisce la musichetta di esito, fa parlare lo speaker "you win/lose"
+    sfx.win1.onended = () => playSfx(sfx.win2);
+    sfx.lose1.onended = () => playSfx(sfx.lose2);
 
     function playMenuMusic() {
         if (mode === "SELECT" && menuMusic.paused) {
@@ -250,6 +268,7 @@
         { spriteId: 'mfdoom', name: 'MF DOOM', req: 4 }
     ];
 
+    // FRANKEN RIMOSSO DEFINITIVAMENTE!
     const enemiesList = [
         { spriteId: 'baba', name: 'BABA', req: 0 },
         { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
@@ -409,8 +428,13 @@
         cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0; cpu.deadTimer = 0;
         matchTimer = 99; framesCounter = 0;
         
+        // Fai partire la voce audio del round appropriato
+        if (currentRound === 1) playSfx(sfx.r1);
+        else if (currentRound === 2) playSfx(sfx.r2);
+        else playSfx(sfx.r3);
+
         const msg = document.getElementById('round-msg');
-        msg.innerText = `ROUND ${currentRound}`;
+        msg.innerText = currentRound >= 3 ? "FINAL ROUND" : `ROUND ${currentRound}`;
         msg.style.visibility = 'visible';
         
         setTimeout(() => {
@@ -459,14 +483,13 @@
     }
 
     function drawFighter(f, spriteId) {
-        // Gestione Animazione Morte (Sparizione)
         if (f.state === 'dead') {
             f.deadTimer++;
-            if (f.deadTimer > 40) return; // Dopo 40 frame scompare completamente
+            if (f.deadTimer > 40) return; 
         }
 
         let drawState = f.state;
-        if (drawState === 'dodge' || drawState === 'dead') drawState = 'idle'; // Usa il frame base per schivata/morte
+        if (drawState === 'dodge' || drawState === 'dead') drawState = 'idle';
 
         let finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
         
@@ -482,21 +505,19 @@
 
         ctx.save();
         
-        // Tremolio casuale se morto
         let offsetX = 0; let offsetY = 0;
         if (f.state === 'dead') {
             offsetX = (Math.random() - 0.5) * 15;
             offsetY = (Math.random() - 0.5) * 15;
             ctx.translate(offsetX, offsetY);
             
-            ctx.globalAlpha = Math.max(0, 1 - (f.deadTimer / 40)); // Si dissolve
+            ctx.globalAlpha = Math.max(0, 1 - (f.deadTimer / 40)); 
             
-            // Lampeggio bianco folle
             if (f.deadTimer % 8 < 4) {
                 ctx.filter = "brightness(5) contrast(2) saturate(10)";
             }
         } else if (f.state === 'hurt') {
-            // Effetto flash standard per colpi subiti
+            // Effetto visivo oltre allo sprite per dare più impatto al colpo
             ctx.filter = "brightness(1.5) sepia(0.5) hue-rotate(-20deg) saturate(3)";
         } else if (f.state === 'dodge') {
             ctx.globalAlpha = 0.5; 
@@ -510,21 +531,18 @@
         }
         ctx.restore();
 
-        // Incremento frame animazione solo se non sei ferito/morto
         if (Date.now() % 100 < 50 && f.state !== 'hurt' && f.state !== 'dodge' && f.state !== 'dead') {
             f.frame = (f.frame + 1) % 25;
         }
     }
 
     function updateFighterParams(f, isPlayer) {
-        // Applica gravità sempre, anche da morti, così cadono a terra
         f.y += f.vy; 
         if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
 
-        // Se sei morto, ti fermi qui
         if (f.hp <= 0) {
             if (f.state !== 'dead') {
                 f.state = 'dead';
@@ -562,7 +580,7 @@
     }
 
     function checkHitbox(attacker, defender) {
-        if (defender.state === 'dead') return false; // Non puoi colpire i morti
+        if (defender.state === 'dead') return false; 
         
         if (attacker.state === 'attack' && attacker.timer === 15) { 
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
@@ -581,7 +599,6 @@
 
     function checkRoundEnd() {
         if (p1.hp <= 0 || cpu.hp <= 0 || matchTimer <= 0) {
-            // Avvia la fine round solo se non è già stata avviata
             if (mode === "FIGHT") {
                 mode = "ROUND_OVER";
                 let msg = "";
@@ -592,7 +609,6 @@
                 document.getElementById('round-msg').innerText = msg;
                 document.getElementById('round-msg').style.visibility = 'visible';
 
-                // Attendi 3 secondi mentre l'animazione della morte si esaurisce
                 setTimeout(() => {
                     document.getElementById('round-msg').style.visibility = 'hidden';
                     if (p1Wins >= 2 || cpuWins >= 2) {
@@ -600,6 +616,11 @@
                         let wonMatch = (p1Wins >= 2);
                         mode = "END";
                         
+                        // Ferma musica livello e fai partire le Fanfare/Voci Finali
+                        stageMusic.pause();
+                        if (wonMatch) playSfx(sfx.win1);
+                        else playSfx(sfx.lose1);
+
                         document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
                         document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
                         
