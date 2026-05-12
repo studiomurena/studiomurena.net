@@ -104,22 +104,23 @@
             visibility: hidden; font-weight: bold; pointer-events: none;
         }
 
-        /* NUOVI CONTROLLI STILE CABINATO ARCADE */
+        /* CONTROLLI MOBILE STILE CABINATO MIGLIORATI E DISTANZIATI */
         #controls {
             display: flex; justify-content: space-between; width: 100%; max-width: 800px;
-            padding: 20px 25px; box-sizing: border-box; background: #1a1a1a; 
+            padding: 15px 15px; box-sizing: border-box; background: #1a1a1a; 
             border-top: 4px solid #333; box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
             visibility: hidden;
         }
 
-        /* D-PAD (Sinistra) */
+        /* D-PAD (Spinto più a sinistra) */
         .d-pad {
-            display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px; gap: 5px;
+            display: grid; grid-template-columns: 55px 55px 55px; grid-template-rows: 55px 55px; gap: 5px;
+            margin-left: -5px; /* Spinge la croce più a bordo schermo */
         }
         .joy-btn {
             width: 100%; height: 100%; background: #333; border: 4px solid; 
             border-color: #555 #111 #111 #555; display: flex; align-items: center; 
-            justify-content: center; color: #aaa; font-size: 24px; cursor: pointer;
+            justify-content: center; color: #aaa; font-size: 22px; cursor: pointer;
             box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.5);
             border-radius: 8px; transition: background 0.1s, color 0.1s;
         }
@@ -130,14 +131,14 @@
         #btn-l { grid-column: 1; grid-row: 2; border-radius: 8px 4px 4px 8px; }
         #btn-r { grid-column: 3; grid-row: 2; border-radius: 4px 8px 8px 4px; }
 
-        /* PULSANTI AZIONE (Destra) */
+        /* PULSANTI AZIONE (Un po' più compatti per staccarsi dal D-PAD) */
         .action-buttons {
-            display: flex; gap: 20px; align-items: flex-end; padding-bottom: 5px; padding-right: 10px;
+            display: flex; gap: 15px; align-items: flex-end; padding-bottom: 5px; margin-right: -5px;
         }
         .action-btn {
-            width: 75px; height: 75px; border-radius: 50%;
+            width: 70px; height: 70px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 11px; cursor: pointer; font-family: 'Press Start 2P', cursive;
+            color: #fff; font-size: 10px; cursor: pointer; font-family: 'Press Start 2P', cursive;
             text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
             box-shadow: 0 6px 0 #0d0d0d, 0 8px 10px rgba(0,0,0,0.6), inset 0 5px 10px rgba(255,255,255,0.3);
             transition: transform 0.1s, box-shadow 0.1s; border: 2px solid #000;
@@ -201,8 +202,9 @@
     <!-- D-PAD STILE CABINATO -->
     <div class="d-pad">
         <div class="joy-btn" id="btn-j">▲</div>
-        <div class="joy-btn" id="btn-l">◀</div>
-        <div class="joy-btn" id="btn-r">▶</div>
+        <!-- Utilizzo dei caratteri geometrici veri per evitare la conversione in emoji -->
+        <div class="joy-btn" id="btn-l">◄</div>
+        <div class="joy-btn" id="btn-r">►</div>
     </div>
     
     <!-- PULSANTI AZIONE ARROTONDATI -->
@@ -248,7 +250,7 @@
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
     let pendingUnlockMessage = ""; 
 
-    // ASSETS & PROGRESSIONE (Modificati Nomi)
+    // ASSETS & PROGRESSIONE
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA', req: 0 },
         { spriteId: 'ferraz2', name: 'FERRAZ', req: 0 },
@@ -273,7 +275,7 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND (Pulizia Effettuata & Zoom per alcuni)
+    // TUTTI I BACKGROUND
     const stages = [
         { name: 'RUSTWATER', bg: 'assets/metro.gif', music: 'assets/rustwater.mp3' },
         { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif', music: 'assets/collapsepoint.mp3' },
@@ -303,9 +305,7 @@
     let matchTimer = 99; let framesCounter = 0;
     let currentRound = 1; let p1Wins = 0; let cpuWins = 0;
 
-    // SCALA ANCORA PIU' GRANDE
     const SPRITE_SIZE = 290; 
-    // LINEA DI TERRA A SFIORARE IL FONDO DELLO SCHERMO
     const GROUND_Y = 450; 
 
     let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
@@ -393,14 +393,12 @@
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
         
-        // Ferma la musica dei menù e avvia lo stage
         menuMusic.pause();
         menuMusic.currentTime = 0;
 
         stageMusic.src = currentStage.music;
         stageMusic.play().catch(e => console.log("Autoplay blocked for stage music."));
 
-        // Assegna lo sfondo GIF e il relativo Zoom (se presente)
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
         canvas.style.backgroundPosition = 'center';
         if (currentStage.zoom) {
@@ -409,7 +407,6 @@
             canvas.style.backgroundSize = 'cover';
         }
 
-        // PRECARICA in anticipo le animazioni per eliminare i flash d'invisibilità!
         const anims = ['idle', 'run', 'attack', 'dodge', 'hurt'];
         anims.forEach(st => {
             getImage(`assets/${p1Char.spriteId}-${st}.png`);
@@ -479,7 +476,6 @@
         let drawState = f.state === 'dodge' ? 'idle' : f.state;
         let finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
         
-        // FIX FLICKERING: Se il frame non è caricato o non esiste, fallo restare "idle" per non sparire nel vuoto!
         if (!finalImg.complete || finalImg.naturalWidth === 0) { 
             drawState = 'idle';
             finalImg = getImage(`assets/${spriteId}-idle.png`);
@@ -494,7 +490,6 @@
         if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
         if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
 
-        // Offset aggiornato per dimensione 290px
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
             ctx.drawImage(finalImg, sx, sy, frameW, frameH, 0, -SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
