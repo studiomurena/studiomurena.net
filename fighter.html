@@ -220,7 +220,7 @@
     const stageMusic = new Audio();
     stageMusic.loop = true; stageMusic.volume = 0.5; 
 
-    // SUONI DEL GIOCO (ROUND E ESITO PARTITA)
+    // SUONI DEL GIOCO E DEGLI ANNUNCI
     const sfx = {
         r1: new Audio('assets/round-one-fight.mp3'),
         r2: new Audio('assets/round-two-fight.mp3'),
@@ -231,25 +231,48 @@
         lose2: new Audio('assets/youloose.mp3')
     };
 
+    // Concatenazione perfetta di Win/Lose
+    sfx.win1.addEventListener('ended', () => playSfx(sfx.win2));
+    sfx.lose1.addEventListener('ended', () => playSfx(sfx.lose2));
+
+    let audioUnlocked = false;
+
+    // FIX AUTOPLAY POLICY: Sblocca tutti gli audio al primissimo tap utente (invisibile e silenzioso)
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        
+        // Sblocca la musica dei menù
+        if (mode === "SELECT") {
+            menuMusic.play().catch(e => console.log("Init menu err", e));
+        }
+
+        // Sblocca tutti gli SFX in anticipo mettendoli muti e avviandoli un istante
+        Object.values(sfx).forEach(audioObj => {
+            audioObj.volume = 0; 
+            let p = audioObj.play();
+            if (p !== undefined) {
+                p.then(() => {
+                    audioObj.pause();
+                    audioObj.currentTime = 0;
+                    audioObj.volume = 1; // Riporta il volume al 100% per quando serviranno
+                }).catch(e => console.log("Unlock err:", e));
+            }
+        });
+
+        audioUnlocked = true;
+    }
+
+    // Usiamo vari listener per beccare il primissimo input
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+    document.addEventListener('keydown', unlockAudio, { once: true });
+
     function playSfx(audioObj) {
+        if (!audioObj) return;
+        audioObj.volume = 1; // Assicura che sia alto
         audioObj.currentTime = 0;
         audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
     }
-
-    // Quando finisce la musichetta di esito, fa parlare lo speaker "you win/lose"
-    sfx.win1.onended = () => playSfx(sfx.win2);
-    sfx.lose1.onended = () => playSfx(sfx.lose2);
-
-    function playMenuMusic() {
-        if (mode === "SELECT" && menuMusic.paused) {
-            menuMusic.play().catch(e => {
-                console.log("Autoplay policy requires interaction first.");
-            });
-        }
-    }
-
-    document.addEventListener('click', playMenuMusic, { once: true });
-    document.addEventListener('touchstart', playMenuMusic, { once: true });
 
     // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
@@ -268,7 +291,6 @@
         { spriteId: 'mfdoom', name: 'MF DOOM', req: 4 }
     ];
 
-    // FRANKEN RIMOSSO DEFINITIVAMENTE!
     const enemiesList = [
         { spriteId: 'baba', name: 'BABA', req: 0 },
         { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
@@ -346,7 +368,10 @@
         grid.innerHTML = '';
         
         canvas.style.backgroundImage = 'none';
-        playMenuMusic();
+        
+        if (audioUnlocked && mode === "SELECT") {
+            menuMusic.play().catch(e => {});
+        }
 
         if (selectState === 0) {
             grid.className = 'grid'; 
@@ -355,7 +380,7 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { p1Char = c; selectState = 1; playMenuMusic(); loadSelectionScreen(); };
+                    d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
                 } else {
                     d.classList.add('locked');
                 }
@@ -368,7 +393,7 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { cpuChar = c; selectState = 2; playMenuMusic(); loadSelectionScreen(); };
+                    d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
                 } else {
                     d.classList.add('locked');
                 }
@@ -428,7 +453,7 @@
         cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0; cpu.deadTimer = 0;
         matchTimer = 99; framesCounter = 0;
         
-        // Fai partire la voce audio del round appropriato
+        // Sincronizzazione vocale in base al round!
         if (currentRound === 1) playSfx(sfx.r1);
         else if (currentRound === 2) playSfx(sfx.r2);
         else playSfx(sfx.r3);
@@ -517,7 +542,6 @@
                 ctx.filter = "brightness(5) contrast(2) saturate(10)";
             }
         } else if (f.state === 'hurt') {
-            // Effetto visivo oltre allo sprite per dare più impatto al colpo
             ctx.filter = "brightness(1.5) sepia(0.5) hue-rotate(-20deg) saturate(3)";
         } else if (f.state === 'dodge') {
             ctx.globalAlpha = 0.5; 
@@ -616,7 +640,7 @@
                         let wonMatch = (p1Wins >= 2);
                         mode = "END";
                         
-                        // Ferma musica livello e fai partire le Fanfare/Voci Finali
+                        // Ferma musica livello e fai partire le Fanfare/Voci Finali concatenate!
                         stageMusic.pause();
                         if (wonMatch) playSfx(sfx.win1);
                         else playSfx(sfx.lose1);
