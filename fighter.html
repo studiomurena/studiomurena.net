@@ -174,7 +174,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // CACHE ENGINE
+    // CACHE ENGINE E MUSICA DEI MENU
     const imageCache = {};
     function getImage(src) {
         if (!imageCache[src]) {
@@ -182,6 +182,23 @@
         }
         return imageCache[src];
     }
+
+    const menuMusic = new Audio('assets/Jazzhighlanders_8bit_F.wav');
+    menuMusic.loop = true;
+    menuMusic.volume = 0.6;
+
+    // Funzione per provare ad avviare la musica
+    function playMenuMusic() {
+        if (mode === "SELECT" && menuMusic.paused) {
+            menuMusic.play().catch(e => {
+                console.log("Il browser richiede un tap/click dell'utente prima di avviare la musica.");
+            });
+        }
+    }
+
+    // Aggiungiamo un listener per aggirare il blocco dell'autoplay del browser
+    document.addEventListener('click', playMenuMusic, { once: true });
+    document.addEventListener('touchstart', playMenuMusic, { once: true });
 
     // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
@@ -212,7 +229,7 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND (Sfoltiti e rinominati epicamente!)
+    // TUTTI I BACKGROUND
     const stages = [
         { name: 'RUSTWATER', bg: 'assets/metro.gif' },
         { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif' },
@@ -283,6 +300,9 @@
         grid.innerHTML = '';
         
         canvas.style.backgroundImage = 'none';
+        
+        // Cerca di far partire la musica (funzionerà se l'utente ha già fatto un click)
+        playMenuMusic();
 
         if (selectState === 0) {
             grid.className = 'grid'; 
@@ -291,7 +311,7 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
+                    d.onclick = () => { p1Char = c; selectState = 1; playMenuMusic(); loadSelectionScreen(); };
                 } else {
                     d.classList.add('locked');
                 }
@@ -304,7 +324,7 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
+                    d.onclick = () => { cpuChar = c; selectState = 2; playMenuMusic(); loadSelectionScreen(); };
                 } else {
                     d.classList.add('locked');
                 }
@@ -334,6 +354,10 @@
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
         
+        // Ferma la musica dei menù quando inizia il match!
+        menuMusic.pause();
+        menuMusic.currentTime = 0;
+
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
         canvas.style.backgroundSize = 'cover';
         canvas.style.backgroundPosition = 'center';
