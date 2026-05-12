@@ -56,7 +56,7 @@
         .bg-select-en { background-color: #500000; background-image: url('assets/bkg2.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
         .bg-select-am { background-color: #000000; background-image: url('assets/bkg3.png'); background-position: center; background-repeat: no-repeat; background-size: cover; }
 
-        /* GRIGLIA PERSONAGGI (Più piccoli: 50x50) */
+        /* GRIGLIA PERSONAGGI */
         .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; max-width: 500px; padding: 0 10px; }
         .cell {
             width: 50px; height: 50px; background-color: #222; border: 3px solid #808080;
@@ -189,13 +189,12 @@
 
     const stageMusic = new Audio();
     stageMusic.loop = true;
-    stageMusic.volume = 0.5; // Leggermente più bassa per i combattimenti
+    stageMusic.volume = 0.5; 
 
-    // Funzione per provare ad avviare la musica nei menù
     function playMenuMusic() {
         if (mode === "SELECT" && menuMusic.paused) {
             menuMusic.play().catch(e => {
-                console.log("Il browser richiede un tap/click dell'utente prima di avviare la musica.");
+                console.log("Autoplay policy requires interaction first.");
             });
         }
     }
@@ -207,14 +206,14 @@
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
     let pendingUnlockMessage = ""; 
 
-    // ASSETS & PROGRESSIONE
+    // ASSETS & PROGRESSIONE (Modificati Nomi)
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA', req: 0 },
         { spriteId: 'ferraz2', name: 'FERRAZ', req: 0 },
         { spriteId: 'nan2', name: 'NAN', req: 0 },
         { spriteId: 'mauri2', name: 'MAURI', req: 0 },
         { spriteId: 'falcon2', name: 'FALCON', req: 0 },
-        { spriteId: 'ljs', name: 'LJS', req: 1 },
+        { spriteId: 'ljs', name: 'LONG JOHN SILVER', req: 1 },
         { spriteId: 'mclovin', name: 'MCLOVIN', req: 2 },
         { spriteId: 'britney', name: 'BRITNEY', req: 3 },
         { spriteId: 'mfdoom', name: 'MF DOOM', req: 4 }
@@ -223,8 +222,8 @@
     const enemiesList = [
         { spriteId: 'baba', name: 'BABA', req: 0 },
         { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
-        { spriteId: 'copzombie', name: 'ZOMBIE COP', req: 0 },
-        { spriteId: 'drogato', name: 'DROGATO', req: 0 },
+        { spriteId: 'orologioman', name: 'CHRONOMUTANT', req: 0 },
+        { spriteId: 'radioman', name: 'FREQ-GHOUL', req: 0 },
         { spriteId: 'franken', name: 'FRANKEN', req: 0 },
         { spriteId: 'murena', name: 'MURENA', req: 1 },
         { spriteId: 'pigeon', name: 'PIGEON', req: 2 },
@@ -232,7 +231,7 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND CON LE LORO TRACCE MUSICALI
+    // TUTTI I BACKGROUND (Pulizia Effettuata & Zoom per alcuni)
     const stages = [
         { name: 'RUSTWATER', bg: 'assets/metro.gif', music: 'assets/rustwater.mp3' },
         { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif', music: 'assets/collapsepoint.mp3' },
@@ -244,16 +243,13 @@
         { name: 'JUNGLE CRASH', bg: 'assets/jungla.gif', music: 'assets/junglecrashland.mp3' },
         { name: 'SEA GLASS', bg: 'assets/acquario.gif', music: 'assets/seaglass.mp3' },
         { name: 'FISHING HARBOR', bg: 'assets/barchette.gif', music: 'assets/fishingharbor.mp3' },
-        { name: "DEADMAN'S PORT", bg: 'assets/pirati2.gif', music: 'assets/deadmansport.mp3' },
         { name: 'PLATFORM 7', bg: 'assets/treni.gif', music: 'assets/platform7.mp3' },
-        { name: 'INFERNO DISTRICT', bg: 'assets/cinafuoco.gif', music: 'assets/infernodistrict.mp3' },
-        { name: 'MONTANA ESTATE', bg: 'assets/villa.gif', music: 'assets/montanaestate.mp3' },
+        { name: 'INFERNO DISTRICT', bg: 'assets/cinafuoco.gif', music: 'assets/infernodistrict.mp3', zoom: 1.15 },
         { name: "FORTUNE'S END", bg: 'assets/maga.gif', music: 'assets/fortunesend.mp3' },
         { name: 'EASTBOUND', bg: 'assets/jazzclubtrain.gif', music: 'assets/eastbound.mp3' },
         { name: 'DEPARTURE GATE', bg: 'assets/airport.gif', music: 'assets/departuregate.mp3' },
-        { name: 'LIONGATE', bg: 'assets/china.gif', music: 'assets/lionsgate.mp3' },
+        { name: 'LIONGATE', bg: 'assets/china.gif', music: 'assets/lionsgate.mp3', zoom: 1.15 },
         { name: 'EMBER SEAS', bg: 'assets/pirati.gif', music: 'assets/emberseas.mp3' },
-        { name: 'SHADOWLAND', bg: 'assets/japan.webp', music: 'assets/shadowland.mp3' },
         { name: 'FIESTA', bg: 'assets/mexico.webp', music: 'assets/fiesta.mp3' }
     ];
 
@@ -267,8 +263,8 @@
 
     // SCALA ANCORA PIU' GRANDE
     const SPRITE_SIZE = 290; 
-    // LINEA DI TERRA ANCORA PIU' IN BASSO (Quasi a filo fondo schermo)
-    const GROUND_Y = 440; 
+    // LINEA DI TERRA A SFIORARE IL FONDO DELLO SCHERMO
+    const GROUND_Y = 450; 
 
     let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
     let cpu = { x: 430, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
@@ -303,8 +299,6 @@
         grid.innerHTML = '';
         
         canvas.style.backgroundImage = 'none';
-        
-        // Cerca di far partire la musica (funzionerà se l'utente ha già fatto un click)
         playMenuMusic();
 
         if (selectState === 0) {
@@ -357,18 +351,28 @@
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
         
-        // Ferma la musica dei menù
+        // Ferma la musica dei menù e avvia lo stage
         menuMusic.pause();
         menuMusic.currentTime = 0;
 
-        // Fai partire la musica dello stage
         stageMusic.src = currentStage.music;
-        stageMusic.play().catch(e => console.log("Musica dello stage bloccata dall'autoplay."));
+        stageMusic.play().catch(e => console.log("Autoplay blocked for stage music."));
 
-        // Assegna lo sfondo GIF
+        // Assegna lo sfondo GIF e il relativo Zoom (se presente)
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
-        canvas.style.backgroundSize = 'cover';
         canvas.style.backgroundPosition = 'center';
+        if (currentStage.zoom) {
+            canvas.style.backgroundSize = `${currentStage.zoom * 100}%`;
+        } else {
+            canvas.style.backgroundSize = 'cover';
+        }
+
+        // PRECARICA in anticipo le animazioni per eliminare i flash d'invisibilità!
+        const anims = ['idle', 'run', 'attack', 'dodge', 'hurt'];
+        anims.forEach(st => {
+            getImage(`assets/${p1Char.spriteId}-${st}.png`);
+            getImage(`assets/${cpuChar.spriteId}-${st}.png`);
+        });
 
         p1Wins = 0; cpuWins = 0; currentRound = 1;
         startRound();
@@ -393,17 +397,16 @@
     function togglePause() {
         if(mode === "FIGHT") {
             mode = "PAUSE"; 
-            stageMusic.pause(); // Metti in pausa la musica
+            stageMusic.pause(); 
             document.getElementById('pause-screen').style.visibility = 'visible';
         } else if (mode === "PAUSE") {
             mode = "FIGHT"; 
-            stageMusic.play(); // Riprendi la musica
+            stageMusic.play(); 
             document.getElementById('pause-screen').style.visibility = 'hidden';
         }
     }
 
     function resetToMenu() {
-        // Ferma la musica dello stage
         stageMusic.pause();
         stageMusic.currentTime = 0;
 
@@ -432,10 +435,14 @@
 
     function drawFighter(f, spriteId) {
         let drawState = f.state === 'dodge' ? 'idle' : f.state;
-        const img = getImage(`assets/${spriteId}-${drawState}.png`);
-        if (!img.complete || img.naturalWidth === 0) { if (f.state === 'hurt') drawState = 'idle'; }
+        let finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
         
-        const finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
+        // FIX FLICKERING: Se il frame non è caricato o non esiste, fallo restare "idle" per non sparire nel vuoto!
+        if (!finalImg.complete || finalImg.naturalWidth === 0) { 
+            drawState = 'idle';
+            finalImg = getImage(`assets/${spriteId}-idle.png`);
+        }
+        
         if (!finalImg.complete || finalImg.naturalWidth === 0) return;
 
         const frameW = finalImg.width / 5; const frameH = finalImg.height / 5;
@@ -476,7 +483,7 @@
             else if (keys.r) { f.x += 6; f.state = 'run'; f.dir = 1; }
             else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
 
-            if (keys.j && f.y >= GROUND_Y) f.vy = -16; // Salto calibrato per stazza
+            if (keys.j && f.y >= GROUND_Y) f.vy = -16; 
             
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
             else if (keys.a) { f.state = 'attack'; f.timer = 25; }
@@ -484,7 +491,6 @@
             let dist = p1.x - f.x;
             f.dir = dist > 0 ? 1 : -1;
             
-            // L'IA valuta la nuova distanza (i modelli sono più larghi)
             if (Math.abs(dist) > 190) {
                 f.x += f.dir * 3; f.state = 'run';
             } else {
@@ -499,13 +505,12 @@
     function checkHitbox(attacker, defender) {
         if (attacker.state === 'attack' && attacker.timer === 15) { 
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
-            // Hitbox allungata per coprire la nuova stazza (fino a 200px in avanti)
             if (relativeDist > -60 && relativeDist < 200 && Math.abs(attacker.y - defender.y) < 150) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
                     defender.state = 'hurt';
                     defender.timer = 20; 
                     defender.hp -= 15; 
-                    defender.x += attacker.dir * 30; // Knockback maggiorato
+                    defender.x += attacker.dir * 30; 
                     return true;
                 }
             }
@@ -538,7 +543,7 @@
                         totalWins++;
                         sessionStorage.setItem('murenaWins', totalWins);
                         
-                        if (totalWins === 1) pendingUnlockMessage = "HERO: LJS\nENEMY: MURENA";
+                        if (totalWins === 1) pendingUnlockMessage = "HERO: LONG JOHN SILVER\nENEMY: MURENA";
                         else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
                         else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
                         else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
