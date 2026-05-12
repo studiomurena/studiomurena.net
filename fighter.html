@@ -38,7 +38,6 @@
             border: 4px solid #c0c0c0;
         }
 
-        /* Il canvas ha sfondo trasparente, il background GIF sarà applicato direttamente a lui! */
         canvas { 
             width: 100%; height: 100%; image-rendering: pixelated; display: block; 
             background-color: transparent; 
@@ -105,19 +104,59 @@
             visibility: hidden; font-weight: bold; pointer-events: none;
         }
 
-        /* CONTROLLI MOBILE */
+        /* NUOVI CONTROLLI STILE CABINATO ARCADE */
         #controls {
             display: flex; justify-content: space-between; width: 100%; max-width: 800px;
-            padding: 10px 20px; box-sizing: border-box; background: #000; gap: 5px;
+            padding: 20px 25px; box-sizing: border-box; background: #1a1a1a; 
+            border-top: 4px solid #333; box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
+            visibility: hidden;
+        }
+
+        /* D-PAD (Sinistra) */
+        .d-pad {
+            display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px; gap: 5px;
         }
         .joy-btn {
-            width: 55px; height: 55px; background: #c0c0c0; border: 4px solid;
-            border-color: #fff #808080 #808080 #fff; display: flex; 
-            align-items: center; justify-content: center; color: #000; font-size: 10px; cursor: pointer;
+            width: 100%; height: 100%; background: #333; border: 4px solid; 
+            border-color: #555 #111 #111 #555; display: flex; align-items: center; 
+            justify-content: center; color: #aaa; font-size: 24px; cursor: pointer;
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1), inset -2px -2px 5px rgba(0,0,0,0.5);
+            border-radius: 8px; transition: background 0.1s, color 0.1s;
         }
-        .joy-btn:active { background: #808080; border-color: #808080 #fff #fff #808080; }
-        .joy-btn.red { background: #d00; color: #fff; }
-        .joy-btn.blue { background: #00d; color: #fff; }
+        .joy-btn:active {
+            border-color: #111 #555 #555 #111; background: #222; color: #fff;
+        }
+        #btn-j { grid-column: 2; grid-row: 1; border-radius: 8px 8px 4px 4px; }
+        #btn-l { grid-column: 1; grid-row: 2; border-radius: 8px 4px 4px 8px; }
+        #btn-r { grid-column: 3; grid-row: 2; border-radius: 4px 8px 8px 4px; }
+
+        /* PULSANTI AZIONE (Destra) */
+        .action-buttons {
+            display: flex; gap: 20px; align-items: flex-end; padding-bottom: 5px; padding-right: 10px;
+        }
+        .action-btn {
+            width: 75px; height: 75px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 11px; cursor: pointer; font-family: 'Press Start 2P', cursive;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            box-shadow: 0 6px 0 #0d0d0d, 0 8px 10px rgba(0,0,0,0.6), inset 0 5px 10px rgba(255,255,255,0.3);
+            transition: transform 0.1s, box-shadow 0.1s; border: 2px solid #000;
+            user-select: none;
+        }
+        .action-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #0d0d0d, 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        /* Tasto Schivata - Sfalsato in alto */
+        .action-btn.blue { 
+            background: radial-gradient(circle at 30% 30%, #3a7bd5, #001f4d); 
+            margin-bottom: 25px; 
+        }
+        /* Tasto Attacco */
+        .action-btn.red { 
+            background: radial-gradient(circle at 30% 30%, #ff4b4b, #660000); 
+        }
+
     </style>
 </head>
 <body>
@@ -158,15 +197,18 @@
     <canvas id="gameCanvas" width="800" height="450"></canvas>
 </div>
 
-<div id="controls" style="visibility: hidden;">
-    <div style="display: flex; gap: 5px; align-items: flex-end;">
+<div id="controls">
+    <!-- D-PAD STILE CABINATO -->
+    <div class="d-pad">
+        <div class="joy-btn" id="btn-j">▲</div>
         <div class="joy-btn" id="btn-l">◀</div>
         <div class="joy-btn" id="btn-r">▶</div>
     </div>
-    <div style="display: flex; gap: 5px; align-items: flex-end;">
-        <div class="joy-btn blue" id="btn-d">DODGE</div>
-        <div class="joy-btn" id="btn-j">JUMP</div>
-        <div class="joy-btn red" id="btn-a">ATK</div>
+    
+    <!-- PULSANTI AZIONE ARROTONDATI -->
+    <div class="action-buttons">
+        <div class="action-btn blue" id="btn-d">DODGE</div>
+        <div class="action-btn red" id="btn-a">ATK</div>
     </div>
 </div>
 
