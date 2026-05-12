@@ -237,7 +237,7 @@
 
     let audioUnlocked = false;
 
-    // Sblocca tutti gli audio al primissimo tap utente (invisibile e silenzioso)
+    // FIX DEFINITIVO AUTOPLAY POLICY PER MOBILE (MUTED INVECE DI VOLUME = 0)
     function unlockAudio() {
         if (audioUnlocked) return;
         
@@ -246,12 +246,13 @@
         }
 
         Object.values(sfx).forEach(audioObj => {
-            audioObj.volume = 0; 
+            audioObj.muted = true; // Il vero "muto" di sistema (i cellulari ignorano volume=0)
             let p = audioObj.play();
             if (p !== undefined) {
                 p.then(() => {
                     audioObj.pause();
                     audioObj.currentTime = 0;
+                    audioObj.muted = false; // Smutalo per quando servirà nel gioco!
                     audioObj.volume = 1; 
                 }).catch(e => console.log("Unlock err:", e));
             }
@@ -266,6 +267,7 @@
 
     function playSfx(audioObj) {
         if (!audioObj) return;
+        audioObj.muted = false; // Sicurezza extra
         audioObj.volume = 1;
         audioObj.currentTime = 0;
         audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
