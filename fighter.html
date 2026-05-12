@@ -237,16 +237,14 @@
 
     let audioUnlocked = false;
 
-    // FIX AUTOPLAY POLICY: Sblocca tutti gli audio al primissimo tap utente (invisibile e silenzioso)
+    // Sblocca tutti gli audio al primissimo tap utente (invisibile e silenzioso)
     function unlockAudio() {
         if (audioUnlocked) return;
         
-        // Sblocca la musica dei menù
         if (mode === "SELECT") {
             menuMusic.play().catch(e => console.log("Init menu err", e));
         }
 
-        // Sblocca tutti gli SFX in anticipo mettendoli muti e avviandoli un istante
         Object.values(sfx).forEach(audioObj => {
             audioObj.volume = 0; 
             let p = audioObj.play();
@@ -254,7 +252,7 @@
                 p.then(() => {
                     audioObj.pause();
                     audioObj.currentTime = 0;
-                    audioObj.volume = 1; // Riporta il volume al 100% per quando serviranno
+                    audioObj.volume = 1; 
                 }).catch(e => console.log("Unlock err:", e));
             }
         });
@@ -262,16 +260,34 @@
         audioUnlocked = true;
     }
 
-    // Usiamo vari listener per beccare il primissimo input
     document.addEventListener('click', unlockAudio, { once: true });
     document.addEventListener('touchstart', unlockAudio, { once: true });
     document.addEventListener('keydown', unlockAudio, { once: true });
 
     function playSfx(audioObj) {
         if (!audioObj) return;
-        audioObj.volume = 1; // Assicura che sia alto
+        audioObj.volume = 1;
         audioObj.currentTime = 0;
         audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
+    }
+
+    // NUOVA FUNZIONE PER I VERSI DEI PERSONAGGI
+    function playCharSfx(spriteId, action) {
+        let src = `assets/${spriteId}-${action}.mp3`;
+        
+        // Eccezione: Britney
+        if (spriteId === 'britney' && (action === 'select' || action === 'win')) {
+            src = 'assets/britney-bitch.mp3';
+        }
+        
+        // Eccezione: Nemico DOOM
+        if (spriteId === 'doom' && (action === 'select' || action === 'win')) {
+            src = 'assets/doom-not-surrender.mp3';
+        }
+
+        let audio = new Audio(src);
+        audio.volume = 0.9;
+        audio.play().catch(e => console.log(`Audio non trovato o bloccato: ${src}`));
     }
 
     // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
@@ -369,7 +385,7 @@
         
         canvas.style.backgroundImage = 'none';
         
-        if (audioUnlocked && mode === "SELECT") {
+        if (audioUnlocked && mode === "SELECT" && menuMusic.paused) {
             menuMusic.play().catch(e => {});
         }
 
@@ -380,7 +396,12 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { p1Char = c; selectState = 1; loadSelectionScreen(); };
+                    d.onclick = () => { 
+                        p1Char = c; 
+                        if(c.spriteId === 'britney' || c.spriteId === 'doom') playCharSfx(c.spriteId, 'select');
+                        selectState = 1; 
+                        loadSelectionScreen(); 
+                    };
                 } else {
                     d.classList.add('locked');
                 }
@@ -393,7 +414,12 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { cpuChar = c; selectState = 2; loadSelectionScreen(); };
+                    d.onclick = () => { 
+                        cpuChar = c; 
+                        if(c.spriteId === 'britney' || c.spriteId === 'doom') playCharSfx(c.spriteId, 'select');
+                        selectState = 2; 
+                        loadSelectionScreen(); 
+                    };
                 } else {
                     d.classList.add('locked');
                 }
@@ -453,7 +479,7 @@
         cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0; cpu.deadTimer = 0;
         matchTimer = 99; framesCounter = 0;
         
-        // Sincronizzazione vocale in base al round!
+        // Voci del Round
         if (currentRound === 1) playSfx(sfx.r1);
         else if (currentRound === 2) playSfx(sfx.r2);
         else playSfx(sfx.r3);
@@ -560,7 +586,7 @@
         }
     }
 
-    function updateFighterParams(f, isPlayer) {
+    function updateFighterParams(f, isPlayer, spriteId) {
         f.y += f.vy; 
         if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
@@ -571,6 +597,7 @@
             if (f.state !== 'dead') {
                 f.state = 'dead';
                 f.deadTimer = 0;
+                playCharSfx(spriteId, 'loose'); // Verso della sconfitta/morte
             }
             return;
         }
@@ -587,7 +614,10 @@
             if (keys.j && f.y >= GROUND_Y) f.vy = -16; 
             
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
-            else if (keys.a) { f.state = 'attack'; f.timer = 25; }
+            else if (keys.a) { 
+                f.state = 'attack'; f.timer = 25; 
+                playCharSfx(spriteId, 'attack'); // Verso dell'attacco 
+            }
         } else {
             let dist = p1.x - f.x;
             f.dir = dist > 0 ? 1 : -1;
@@ -597,13 +627,16 @@
             } else {
                 f.state = 'idle';
                 let rand = Math.random();
-                if (rand < 0.04) { f.state = 'attack'; f.timer = 25; }
+                if (rand < 0.04) { 
+                    f.state = 'attack'; f.timer = 25; 
+                    playCharSfx(spriteId, 'attack'); // Verso IA attacco
+                }
                 else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; }
             }
         }
     }
 
-    function checkHitbox(attacker, defender) {
+    function checkHitbox(attacker, defender, defSpriteId) {
         if (defender.state === 'dead') return false; 
         
         if (attacker.state === 'attack' && attacker.timer === 15) { 
@@ -614,6 +647,7 @@
                     defender.timer = 20; 
                     defender.hp -= 15; 
                     defender.x += attacker.dir * 30; 
+                    playCharSfx(defSpriteId, 'hurt'); // Verso del colpo subito
                     return true;
                 }
             }
@@ -640,10 +674,16 @@
                         let wonMatch = (p1Wins >= 2);
                         mode = "END";
                         
-                        // Ferma musica livello e fai partire le Fanfare/Voci Finali concatenate!
                         stageMusic.pause();
-                        if (wonMatch) playSfx(sfx.win1);
-                        else playSfx(sfx.lose1);
+                        
+                        // Effetti vittoria partita completi
+                        if (wonMatch) {
+                            playSfx(sfx.win1);
+                            playCharSfx(p1Char.spriteId, 'win');
+                        } else {
+                            playSfx(sfx.lose1);
+                            playCharSfx(cpuChar.spriteId, 'win'); // Il nemico esulta
+                        }
 
                         document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
                         document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
@@ -678,11 +718,11 @@
             }
         }
 
-        updateFighterParams(p1, true);
-        updateFighterParams(cpu, false);
+        updateFighterParams(p1, true, p1Char.spriteId);
+        updateFighterParams(cpu, false, cpuChar.spriteId);
 
-        checkHitbox(p1, cpu);
-        checkHitbox(cpu, p1);
+        checkHitbox(p1, cpu, cpuChar.spriteId);
+        checkHitbox(cpu, p1, p1Char.spriteId);
 
         checkRoundEnd();
     }
