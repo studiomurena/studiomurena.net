@@ -104,7 +104,7 @@
             visibility: hidden; font-weight: bold; pointer-events: none;
         }
 
-        /* CONTROLLI MOBILE STILE CABINATO MIGLIORATI E DISTANZIATI */
+        /* CONTROLLI MOBILE STILE CABINATO */
         #controls {
             display: flex; justify-content: space-between; width: 100%; max-width: 800px;
             padding: 15px 15px; box-sizing: border-box; background: #1a1a1a; 
@@ -112,10 +112,9 @@
             visibility: hidden;
         }
 
-        /* D-PAD (Spinto più a sinistra) */
         .d-pad {
             display: grid; grid-template-columns: 55px 55px 55px; grid-template-rows: 55px 55px; gap: 5px;
-            margin-left: -5px; /* Spinge la croce più a bordo schermo */
+            margin-left: -5px; 
         }
         .joy-btn {
             width: 100%; height: 100%; background: #333; border: 4px solid; 
@@ -131,7 +130,6 @@
         #btn-l { grid-column: 1; grid-row: 2; border-radius: 8px 4px 4px 8px; }
         #btn-r { grid-column: 3; grid-row: 2; border-radius: 4px 8px 8px 4px; }
 
-        /* PULSANTI AZIONE (Un po' più compatti per staccarsi dal D-PAD) */
         .action-buttons {
             display: flex; gap: 15px; align-items: flex-end; padding-bottom: 5px; margin-right: -5px;
         }
@@ -148,15 +146,8 @@
             transform: translateY(6px);
             box-shadow: 0 0px 0 #0d0d0d, 0 2px 4px rgba(0,0,0,0.6), inset 0 2px 5px rgba(0,0,0,0.5);
         }
-        /* Tasto Schivata - Sfalsato in alto */
-        .action-btn.blue { 
-            background: radial-gradient(circle at 30% 30%, #3a7bd5, #001f4d); 
-            margin-bottom: 25px; 
-        }
-        /* Tasto Attacco */
-        .action-btn.red { 
-            background: radial-gradient(circle at 30% 30%, #ff4b4b, #660000); 
-        }
+        .action-btn.blue { background: radial-gradient(circle at 30% 30%, #3a7bd5, #001f4d); margin-bottom: 25px; }
+        .action-btn.red { background: radial-gradient(circle at 30% 30%, #ff4b4b, #660000); }
 
     </style>
 </head>
@@ -199,15 +190,11 @@
 </div>
 
 <div id="controls">
-    <!-- D-PAD STILE CABINATO -->
     <div class="d-pad">
         <div class="joy-btn" id="btn-j">▲</div>
-        <!-- Utilizzo dei caratteri geometrici veri per evitare la conversione in emoji -->
         <div class="joy-btn" id="btn-l">◄</div>
         <div class="joy-btn" id="btn-r">►</div>
     </div>
-    
-    <!-- PULSANTI AZIONE ARROTONDATI -->
     <div class="action-buttons">
         <div class="action-btn blue" id="btn-d">DODGE</div>
         <div class="action-btn red" id="btn-a">ATK</div>
@@ -268,7 +255,6 @@
         { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
         { spriteId: 'orologioman', name: 'CHRONOMUTANT', req: 0 },
         { spriteId: 'radioman', name: 'FREQ-GHOUL', req: 0 },
-        { spriteId: 'franken', name: 'FRANKEN', req: 0 },
         { spriteId: 'murena', name: 'MURENA', req: 1 },
         { spriteId: 'pigeon', name: 'PIGEON', req: 2 },
         { spriteId: 'ornitorincoman', name: 'ORNITORINCO', req: 3 },
@@ -308,8 +294,8 @@
     const SPRITE_SIZE = 290; 
     const GROUND_Y = 450; 
 
-    let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
-    let cpu = { x: 430, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
+    let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0, deadTimer: 0 };
+    let cpu = { x: 430, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0, deadTimer: 0 };
 
     // INPUT
     const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
@@ -419,8 +405,8 @@
 
     function startRound() {
         mode = "ROUND_OVER";
-        p1.hp = 100; p1.x = 80; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
-        cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
+        p1.hp = 100; p1.x = 80; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0; p1.deadTimer = 0;
+        cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0; cpu.deadTimer = 0;
         matchTimer = 99; framesCounter = 0;
         
         const msg = document.getElementById('round-msg');
@@ -473,7 +459,15 @@
     }
 
     function drawFighter(f, spriteId) {
-        let drawState = f.state === 'dodge' ? 'idle' : f.state;
+        // Gestione Animazione Morte (Sparizione)
+        if (f.state === 'dead') {
+            f.deadTimer++;
+            if (f.deadTimer > 40) return; // Dopo 40 frame scompare completamente
+        }
+
+        let drawState = f.state;
+        if (drawState === 'dodge' || drawState === 'dead') drawState = 'idle'; // Usa il frame base per schivata/morte
+
         let finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
         
         if (!finalImg.complete || finalImg.naturalWidth === 0) { 
@@ -487,8 +481,26 @@
         const sx = (f.frame % 5) * frameW; const sy = Math.floor(f.frame / 5) * frameH;
 
         ctx.save();
-        if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
-        if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
+        
+        // Tremolio casuale se morto
+        let offsetX = 0; let offsetY = 0;
+        if (f.state === 'dead') {
+            offsetX = (Math.random() - 0.5) * 15;
+            offsetY = (Math.random() - 0.5) * 15;
+            ctx.translate(offsetX, offsetY);
+            
+            ctx.globalAlpha = Math.max(0, 1 - (f.deadTimer / 40)); // Si dissolve
+            
+            // Lampeggio bianco folle
+            if (f.deadTimer % 8 < 4) {
+                ctx.filter = "brightness(5) contrast(2) saturate(10)";
+            }
+        } else if (f.state === 'hurt') {
+            // Effetto flash standard per colpi subiti
+            ctx.filter = "brightness(1.5) sepia(0.5) hue-rotate(-20deg) saturate(3)";
+        } else if (f.state === 'dodge') {
+            ctx.globalAlpha = 0.5; 
+        }
 
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
@@ -498,20 +510,30 @@
         }
         ctx.restore();
 
-        if (Date.now() % 100 < 50 && f.state !== 'hurt' && f.state !== 'dodge') {
+        // Incremento frame animazione solo se non sei ferito/morto
+        if (Date.now() % 100 < 50 && f.state !== 'hurt' && f.state !== 'dodge' && f.state !== 'dead') {
             f.frame = (f.frame + 1) % 25;
         }
     }
 
     function updateFighterParams(f, isPlayer) {
-        if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
-        
+        // Applica gravità sempre, anche da morti, così cadono a terra
         f.y += f.vy; 
         if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
 
+        // Se sei morto, ti fermi qui
+        if (f.hp <= 0) {
+            if (f.state !== 'dead') {
+                f.state = 'dead';
+                f.deadTimer = 0;
+            }
+            return;
+        }
+
+        if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
         if (f.state === 'hurt' || f.state === 'dodge' || f.state === 'attack') return;
 
         if (isPlayer) {
@@ -540,6 +562,8 @@
     }
 
     function checkHitbox(attacker, defender) {
+        if (defender.state === 'dead') return false; // Non puoi colpire i morti
+        
         if (attacker.state === 'attack' && attacker.timer === 15) { 
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
             if (relativeDist > -60 && relativeDist < 200 && Math.abs(attacker.y - defender.y) < 150) {
@@ -557,50 +581,56 @@
 
     function checkRoundEnd() {
         if (p1.hp <= 0 || cpu.hp <= 0 || matchTimer <= 0) {
-            mode = "ROUND_OVER";
-            let msg = "";
-            if (p1.hp > cpu.hp) { p1Wins++; msg = `${p1Char.name} WINS ROUND`; }
-            else if (cpu.hp > p1.hp) { cpuWins++; msg = `${cpuChar.name} WINS ROUND`; }
-            else { msg = "DRAW ROUND"; } 
+            // Avvia la fine round solo se non è già stata avviata
+            if (mode === "FIGHT") {
+                mode = "ROUND_OVER";
+                let msg = "";
+                if (p1.hp > cpu.hp) { p1Wins++; msg = `${p1Char.name} WINS ROUND`; }
+                else if (cpu.hp > p1.hp) { cpuWins++; msg = `${cpuChar.name} WINS ROUND`; }
+                else { msg = "DRAW ROUND"; } 
 
-            document.getElementById('round-msg').innerText = msg;
-            document.getElementById('round-msg').style.visibility = 'visible';
+                document.getElementById('round-msg').innerText = msg;
+                document.getElementById('round-msg').style.visibility = 'visible';
 
-            setTimeout(() => {
-                document.getElementById('round-msg').style.visibility = 'hidden';
-                if (p1Wins >= 2 || cpuWins >= 2) {
-                    
-                    let wonMatch = (p1Wins >= 2);
-                    mode = "END";
-                    
-                    document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
-                    document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
-                    
-                    if (wonMatch) {
-                        totalWins++;
-                        sessionStorage.setItem('murenaWins', totalWins);
+                // Attendi 3 secondi mentre l'animazione della morte si esaurisce
+                setTimeout(() => {
+                    document.getElementById('round-msg').style.visibility = 'hidden';
+                    if (p1Wins >= 2 || cpuWins >= 2) {
                         
-                        if (totalWins === 1) pendingUnlockMessage = "HERO: LONG JOHN SILVER\nENEMY: MURENA";
-                        else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
-                        else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
-                        else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
-                    }
+                        let wonMatch = (p1Wins >= 2);
+                        mode = "END";
+                        
+                        document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
+                        document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
+                        
+                        if (wonMatch) {
+                            totalWins++;
+                            sessionStorage.setItem('murenaWins', totalWins);
+                            
+                            if (totalWins === 1) pendingUnlockMessage = "HERO: LONG JOHN SILVER\nENEMY: MURENA";
+                            else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
+                            else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
+                            else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
+                        }
 
-                    document.getElementById('end-screen').style.visibility = 'visible';
-                } else {
-                    currentRound++;
-                    startRound();
-                }
-            }, 3000);
+                        document.getElementById('end-screen').style.visibility = 'visible';
+                    } else {
+                        currentRound++;
+                        startRound();
+                    }
+                }, 3000);
+            }
         }
     }
 
     function update() {
-        if (mode !== "FIGHT") return;
+        if (mode !== "FIGHT" && mode !== "ROUND_OVER") return;
 
-        framesCounter++;
-        if (framesCounter >= 60) {
-            matchTimer--; framesCounter = 0;
+        if (mode === "FIGHT") {
+            framesCounter++;
+            if (framesCounter >= 60) {
+                matchTimer--; framesCounter = 0;
+            }
         }
 
         updateFighterParams(p1, true);
