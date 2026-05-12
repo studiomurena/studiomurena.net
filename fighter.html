@@ -183,7 +183,7 @@
         return imageCache[src];
     }
 
-    // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE (Si cancella uscendo dal sito)
+    // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
     let pendingUnlockMessage = ""; 
 
@@ -203,7 +203,6 @@
     const enemiesList = [
         { spriteId: 'baba', name: 'BABA', req: 0 },
         { spriteId: 'beeman', name: 'BEEMAN', req: 0 },
-        { spriteId: 'cop', name: 'COP', req: 0 },
         { spriteId: 'copzombie', name: 'ZOMBIE COP', req: 0 },
         { spriteId: 'drogato', name: 'DROGATO', req: 0 },
         { spriteId: 'franken', name: 'FRANKEN', req: 0 },
@@ -213,37 +212,29 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND
+    // TUTTI I BACKGROUND (Sfoltiti e rinominati epicamente!)
     const stages = [
-        { name: 'NAPOLI', bg: 'assets/napoli.gif' },
-        { name: 'METRO', bg: 'assets/metro.gif' },
-        { name: 'BUCO NERO', bg: 'assets/buconero.gif' },
+        { name: 'RUSTWATER', bg: 'assets/metro.gif' },
+        { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif' },
         { name: 'RAIN RED', bg: 'assets/rainred.gif' },
-        { name: 'ON FIRE', bg: 'assets/onfire.gif' },
-        { name: 'BELLA', bg: 'assets/bella.gif' },
-        { name: 'RAIN', bg: 'assets/rain.gif' },
-        { name: 'TRAFFIC', bg: 'assets/traffic.gif' },
-        { name: 'RAILWAY', bg: 'assets/railway.gif' },
-        { name: 'MAD MAX', bg: 'assets/madmax.gif' },
-        { name: 'JUNGLA', bg: 'assets/jungla.gif' },
-        { name: 'TEMPLIO', bg: 'assets/templio.gif' },
-        { name: 'ACQUARIO', bg: 'assets/acquario.gif' },
-        { name: 'BARCHETTE', bg: 'assets/barchette.gif' },
-        { name: 'PIRATI 2', bg: 'assets/pirati2.gif' },
-        { name: 'TRENI', bg: 'assets/treni.gif' },
-        { name: 'DRAGON', bg: 'assets/dragon.gif' },
-        { name: 'CINA FUOCO', bg: 'assets/cinafuoco.gif' },
-        { name: 'VILLA', bg: 'assets/villa.gif' },
-        { name: 'MAGA', bg: 'assets/maga.gif' },
-        { name: 'BAR', bg: 'assets/bar.gif' },
-        { name: 'JAZZ CLUB', bg: 'assets/jazzclubtrain.gif' },
-        { name: 'AIRPORT', bg: 'assets/airport.gif' },
-        { name: 'CHINA 2', bg: 'assets/china2.gif' },
-        { name: 'CHINA', bg: 'assets/china.gif' },
-        { name: 'PIRATI', bg: 'assets/pirati.gif' },
-        { name: 'JAPAN', bg: 'assets/japan.webp' },
-        { name: 'MEXICO', bg: 'assets/mexico.webp' },
-        { name: 'INCA', bg: 'assets/inca.webp' }
+        { name: 'FLAMES UPSTAIRS', bg: 'assets/onfire.gif' },
+        { name: 'EAST END RAIN', bg: 'assets/rain.gif' },
+        { name: 'EMPTY BARRIER', bg: 'assets/railway.gif' },
+        { name: 'BADLANDS', bg: 'assets/madmax.gif' },
+        { name: 'JUNGLE CRASH', bg: 'assets/jungla.gif' },
+        { name: 'SEA GLASS', bg: 'assets/acquario.gif' },
+        { name: 'FISHING HARBOR', bg: 'assets/barchette.gif' },
+        { name: "DEADMAN'S PORT", bg: 'assets/pirati2.gif' },
+        { name: 'PLATFORM 7', bg: 'assets/treni.gif' },
+        { name: 'INFERNO DISTRICT', bg: 'assets/cinafuoco.gif' },
+        { name: 'MONTANA ESTATE', bg: 'assets/villa.gif' },
+        { name: "FORTUNE'S END", bg: 'assets/maga.gif' },
+        { name: 'EASTBOUND', bg: 'assets/jazzclubtrain.gif' },
+        { name: 'DEPARTURE GATE', bg: 'assets/airport.gif' },
+        { name: 'LIONGATE', bg: 'assets/china.gif' },
+        { name: 'EMBER SEAS', bg: 'assets/pirati.gif' },
+        { name: 'SHADOWLAND', bg: 'assets/japan.webp' },
+        { name: 'FIESTA', bg: 'assets/mexico.webp' }
     ];
 
     // VARIABILI GLOBALI E FISICA SCALATA
@@ -254,13 +245,13 @@
     let matchTimer = 99; let framesCounter = 0;
     let currentRound = 1; let p1Wins = 0; let cpuWins = 0;
 
-    // SCALA ANCORA PIU' GRANDE: +33%
-    const SPRITE_SIZE = 266; 
-    // LINEA DI TERRA ANCORA PIU' IN BASSO
-    const GROUND_Y = 425; 
+    // SCALA ANCORA PIU' GRANDE
+    const SPRITE_SIZE = 290; 
+    // LINEA DI TERRA ANCORA PIU' IN BASSO (Quasi a filo fondo schermo)
+    const GROUND_Y = 440; 
 
     let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0 };
-    let cpu = { x: 450, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
+    let cpu = { x: 430, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0 };
 
     // INPUT
     const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
@@ -291,11 +282,10 @@
         const title = document.getElementById('char-name');
         grid.innerHTML = '';
         
-        // Reset sfondo canvas se c'era
         canvas.style.backgroundImage = 'none';
 
         if (selectState === 0) {
-            grid.className = 'grid'; // Stile cubetti eroi
+            grid.className = 'grid'; 
             screen.className = 'bg-select-ch'; title.innerText = 'SELECT HERO';
             heroes.forEach(c => {
                 const d = document.createElement('div'); d.className = 'cell';
@@ -308,7 +298,7 @@
                 grid.appendChild(d);
             });
         } else if (selectState === 1) {
-            grid.className = 'grid'; // Stile cubetti nemici
+            grid.className = 'grid'; 
             screen.className = 'bg-select-en'; title.innerText = 'SELECT OPPONENT'; title.style.color = '#fff';
             enemiesList.forEach(c => {
                 const d = document.createElement('div'); d.className = 'cell';
@@ -321,13 +311,12 @@
                 grid.appendChild(d);
             });
         } else if (selectState === 2) {
-            grid.className = 'scrolling-grid'; // Stile Scorrimento Orizzontale per gli Stages
+            grid.className = 'scrolling-grid'; 
             screen.className = 'bg-select-am'; title.innerText = 'SELECT STAGE'; title.style.color = '#00ffff';
             stages.forEach(s => {
                 const d = document.createElement('div'); d.className = 'stage-cell';
                 d.style.backgroundImage = `url('${s.bg}')`;
                 
-                // Etichetta del nome in basso
                 const label = document.createElement('div');
                 label.className = 'stage-name';
                 label.innerText = s.name;
@@ -345,7 +334,6 @@
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
         
-        // Assegna la GIF allo sfondo del canvas tramite CSS in modo che si animi fluidamente!
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
         canvas.style.backgroundSize = 'cover';
         canvas.style.backgroundPosition = 'center';
@@ -357,7 +345,7 @@
     function startRound() {
         mode = "ROUND_OVER";
         p1.hp = 100; p1.x = 80; p1.y = GROUND_Y; p1.state = 'idle'; p1.timer = 0; p1.vy = 0;
-        cpu.hp = 100; cpu.x = 450; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
+        cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0;
         matchTimer = 99; framesCounter = 0;
         
         const msg = document.getElementById('round-msg');
@@ -378,7 +366,6 @@
         }
     }
 
-    // GESTIONE DELLA FINE DELLA PARTITA E RITORNO AL MENU
     function resetToMenu() {
         document.getElementById('end-screen').style.visibility = 'hidden';
         document.getElementById('unlock-screen').style.visibility = 'hidden';
@@ -397,7 +384,7 @@
         if (pendingUnlockMessage !== "") {
             document.getElementById('unlock-text').innerText = pendingUnlockMessage;
             document.getElementById('unlock-screen').style.visibility = 'visible';
-            pendingUnlockMessage = ""; // Reset del messaggio
+            pendingUnlockMessage = ""; 
         } else {
             resetToMenu();
         }
@@ -418,7 +405,7 @@
         if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
         if (f.state === 'hurt') ctx.filter = "brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)";
 
-        // Offset aggiornato per dimensione 266px
+        // Offset aggiornato per dimensione 290px
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
             ctx.drawImage(finalImg, sx, sy, frameW, frameH, 0, -SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
@@ -435,11 +422,9 @@
     function updateFighterParams(f, isPlayer) {
         if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
         
-        // Gravità applicata al nuovo GROUND_Y
         f.y += f.vy; 
         if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
 
-        // Limiti Muro
         if (f.x < 0) f.x = 0;
         if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
 
@@ -451,8 +436,7 @@
             else if (keys.r) { f.x += 6; f.state = 'run'; f.dir = 1; }
             else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
 
-            // Salto
-            if (keys.j && f.y >= GROUND_Y) f.vy = -15;
+            if (keys.j && f.y >= GROUND_Y) f.vy = -16; // Salto calibrato per stazza
             
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
             else if (keys.a) { f.state = 'attack'; f.timer = 25; }
@@ -460,8 +444,8 @@
             let dist = p1.x - f.x;
             f.dir = dist > 0 ? 1 : -1;
             
-            // L'IA valuta la nuova distanza dovuta ai modelli più larghi
-            if (Math.abs(dist) > 170) {
+            // L'IA valuta la nuova distanza (i modelli sono più larghi)
+            if (Math.abs(dist) > 190) {
                 f.x += f.dir * 3; f.state = 'run';
             } else {
                 f.state = 'idle';
@@ -475,13 +459,13 @@
     function checkHitbox(attacker, defender) {
         if (attacker.state === 'attack' && attacker.timer === 15) { 
             let relativeDist = (defender.x - attacker.x) * attacker.dir;
-            // Hitbox allungata per coprire la stazza maggiore (fino a 180px in avanti)
-            if (relativeDist > -50 && relativeDist < 180 && Math.abs(attacker.y - defender.y) < 130) {
+            // Hitbox allungata per coprire la nuova stazza (fino a 200px in avanti)
+            if (relativeDist > -60 && relativeDist < 200 && Math.abs(attacker.y - defender.y) < 150) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
                     defender.state = 'hurt';
                     defender.timer = 20; 
                     defender.hp -= 15; 
-                    defender.x += attacker.dir * 25; // Knockback aumentato
+                    defender.x += attacker.dir * 30; // Knockback maggiorato
                     return true;
                 }
             }
@@ -547,11 +531,9 @@
     }
 
     function draw() {
-        // Pulisce il canvas mostrando la GIF che scorre dietro!
         ctx.clearRect(0, 0, 800, 450);
 
         if (mode !== "SELECT" && currentStage) {
-            // UI In-Game (Barre della vita)
             ctx.fillStyle = "#444"; ctx.fillRect(45, 15, 310, 20); ctx.fillRect(445, 15, 310, 20);
             ctx.fillStyle = "red"; ctx.fillRect(50, 17, 300, 16); ctx.fillRect(450, 17, 300, 16);
             
@@ -564,18 +546,15 @@
             ctx.fillText(p1Char.name, 50, 48);
             ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 48);
 
-            // Pallini round
             ctx.fillStyle = p1Wins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(55, 60, 5, 0, Math.PI*2); ctx.fill();
             ctx.fillStyle = p1Wins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(70, 60, 5, 0, Math.PI*2); ctx.fill();
             
             ctx.fillStyle = cpuWins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(745, 60, 5, 0, Math.PI*2); ctx.fill();
             ctx.fillStyle = cpuWins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(730, 60, 5, 0, Math.PI*2); ctx.fill();
 
-            // Timer Centrale
             ctx.fillStyle = "#fff"; ctx.font = "24px 'Press Start 2P'";
             ctx.fillText(matchTimer, 400 - ctx.measureText(matchTimer).width/2, 35);
 
-            // Rendering Combattenti giganti
             drawFighter(p1, p1Char.spriteId);
             drawFighter(cpu, cpuChar.spriteId);
         }
