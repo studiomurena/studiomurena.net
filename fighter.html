@@ -273,23 +273,50 @@
         audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
     }
 
-    // NUOVA FUNZIONE PER I VERSI DEI PERSONAGGI
+    // LISTA DI FILE AUDIO VALIDATI PER EVITARE 404 ERROR (Personaggi mancanti di audio)
+    const validCharSfxList = [
+        'baba-attack.mp3', 'baba-hurt.mp3', 'baba-loose.mp3', 'baba-win.mp3',
+        'beeman-attack.mp3', 'beeman-hurt.mp3', 'beeman-loose.mp3',
+        'britney-attack.mp3', 'britney-bitch.mp3', 'britney-hurt.mp3', 'britney-loose.mp3',
+        'chronomutant-attack.mp3', 'chronomutant-hurt.mp3', 'chronomutant-loose.mp3', 'chronomutant-win.mp3',
+        'doom-attack.mp3', 'doom-hurt.mp3', 'doom-loose.mp3', 'doom-not-surrender.mp3',
+        'falcon2-win.mp3',
+        'freq-ghoul-attack.mp3', 'freq-ghoul--hurt.mp3', 'freq-ghoul-loose.mp3', 'freq-ghoul-win.mp3',
+        'ljs-attack.mp3', 'ljs-hurt.mp3', 'ljs-loose.mp3', 'ljs-win.mp3',
+        'mclovin-attack.mp3', 'mclovin-hurt.mp3', 'mclovin-loose.mp3', 'mclovin-win.mp3',
+        'mfdoom-attack.mp3', 'mfdoom-hurt.mp3', 'mfdoom-loose.mp3', 'mfdoom-win.mp3',
+        'murena-attack.mp3', 'murena-hurt.mp3', 'murena-loose.mp3', 'murena-win.mp3',
+        'ornitorincoman-attack.mp3', 'ornitorincoman-hurt.mp3', 'ornitorincoman-loose.mp3', 'ornitorincoman-win.mp3',
+        'pigeon-attack.mp3', 'pigeon-hurt.mp3', 'pigeon-loose.mp3', 'pigeon-win.mp3'
+    ];
+
+    // FUNZIONE BLINDATA PER I VERSI DEI PERSONAGGI
     function playCharSfx(spriteId, action) {
-        let src = `assets/${spriteId}-${action}.mp3`;
-        
-        // Eccezione: Britney
-        if (spriteId === 'britney' && (action === 'select' || action === 'win')) {
-            src = 'assets/britney-bitch.mp3';
+        let audioName = `${spriteId}-${action}`;
+
+        // FIX nomi differenti tra spriteId e nomi dei file
+        if (spriteId === 'orologioman') audioName = `chronomutant-${action}`;
+        if (spriteId === 'radioman') {
+            if (action === 'hurt') audioName = 'freq-ghoul--hurt'; // FIX doppio trattino
+            else audioName = `freq-ghoul-${action}`;
         }
         
-        // Eccezione: Nemico DOOM
+        // Eccezioni speciali
+        if (spriteId === 'britney' && (action === 'select' || action === 'win')) {
+            audioName = 'britney-bitch';
+        }
         if (spriteId === 'doom' && (action === 'select' || action === 'win')) {
-            src = 'assets/doom-not-surrender.mp3';
+            audioName = 'doom-not-surrender';
         }
 
-        let audio = new Audio(src);
-        audio.volume = 0.9;
-        audio.play().catch(e => console.log(`Audio non trovato o bloccato: ${src}`));
+        let fileName = `${audioName}.mp3`;
+        
+        // Controlla se il file esiste davvero nella cartella per non causare errori 404
+        if (validCharSfxList.includes(fileName)) {
+            let audio = new Audio(`assets/${fileName}`);
+            audio.volume = 0.9;
+            audio.play().catch(e => console.log(`Audio non trovato o bloccato: assets/${fileName}`));
+        }
     }
 
     // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
@@ -400,7 +427,7 @@
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
                     d.onclick = () => { 
                         p1Char = c; 
-                        if(c.spriteId === 'britney' || c.spriteId === 'doom') playCharSfx(c.spriteId, 'select');
+                        playCharSfx(c.spriteId, 'select');
                         selectState = 1; 
                         loadSelectionScreen(); 
                     };
@@ -418,7 +445,7 @@
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
                     d.onclick = () => { 
                         cpuChar = c; 
-                        if(c.spriteId === 'britney' || c.spriteId === 'doom') playCharSfx(c.spriteId, 'select');
+                        playCharSfx(c.spriteId, 'select');
                         selectState = 2; 
                         loadSelectionScreen(); 
                     };
@@ -481,7 +508,6 @@
         cpu.hp = 100; cpu.x = 430; cpu.y = GROUND_Y; cpu.state = 'idle'; cpu.timer = 0; cpu.vy = 0; cpu.deadTimer = 0;
         matchTimer = 99; framesCounter = 0;
         
-        // Voci del Round
         if (currentRound === 1) playSfx(sfx.r1);
         else if (currentRound === 2) playSfx(sfx.r2);
         else playSfx(sfx.r3);
@@ -599,7 +625,7 @@
             if (f.state !== 'dead') {
                 f.state = 'dead';
                 f.deadTimer = 0;
-                playCharSfx(spriteId, 'loose'); // Verso della sconfitta/morte
+                playCharSfx(spriteId, 'loose'); 
             }
             return;
         }
@@ -618,7 +644,7 @@
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
             else if (keys.a) { 
                 f.state = 'attack'; f.timer = 25; 
-                playCharSfx(spriteId, 'attack'); // Verso dell'attacco 
+                playCharSfx(spriteId, 'attack'); 
             }
         } else {
             let dist = p1.x - f.x;
@@ -631,7 +657,7 @@
                 let rand = Math.random();
                 if (rand < 0.04) { 
                     f.state = 'attack'; f.timer = 25; 
-                    playCharSfx(spriteId, 'attack'); // Verso IA attacco
+                    playCharSfx(spriteId, 'attack'); 
                 }
                 else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; }
             }
@@ -649,7 +675,7 @@
                     defender.timer = 20; 
                     defender.hp -= 15; 
                     defender.x += attacker.dir * 30; 
-                    playCharSfx(defSpriteId, 'hurt'); // Verso del colpo subito
+                    playCharSfx(defSpriteId, 'hurt'); 
                     return true;
                 }
             }
@@ -678,13 +704,12 @@
                         
                         stageMusic.pause();
                         
-                        // Effetti vittoria partita completi
                         if (wonMatch) {
                             playSfx(sfx.win1);
                             playCharSfx(p1Char.spriteId, 'win');
                         } else {
                             playSfx(sfx.lose1);
-                            playCharSfx(cpuChar.spriteId, 'win'); // Il nemico esulta
+                            playCharSfx(cpuChar.spriteId, 'win'); 
                         }
 
                         document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
