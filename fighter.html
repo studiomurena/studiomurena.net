@@ -174,7 +174,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // CACHE ENGINE E MUSICA DEI MENU
+    // CACHE ENGINE E MUSICA DEI MENU E STAGE
     const imageCache = {};
     function getImage(src) {
         if (!imageCache[src]) {
@@ -187,7 +187,11 @@
     menuMusic.loop = true;
     menuMusic.volume = 0.6;
 
-    // Funzione per provare ad avviare la musica
+    const stageMusic = new Audio();
+    stageMusic.loop = true;
+    stageMusic.volume = 0.5; // Leggermente più bassa per i combattimenti
+
+    // Funzione per provare ad avviare la musica nei menù
     function playMenuMusic() {
         if (mode === "SELECT" && menuMusic.paused) {
             menuMusic.play().catch(e => {
@@ -196,7 +200,6 @@
         }
     }
 
-    // Aggiungiamo un listener per aggirare il blocco dell'autoplay del browser
     document.addEventListener('click', playMenuMusic, { once: true });
     document.addEventListener('touchstart', playMenuMusic, { once: true });
 
@@ -229,29 +232,29 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND
+    // TUTTI I BACKGROUND CON LE LORO TRACCE MUSICALI
     const stages = [
-        { name: 'RUSTWATER', bg: 'assets/metro.gif' },
-        { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif' },
-        { name: 'RAIN RED', bg: 'assets/rainred.gif' },
-        { name: 'FLAMES UPSTAIRS', bg: 'assets/onfire.gif' },
-        { name: 'EAST END RAIN', bg: 'assets/rain.gif' },
-        { name: 'EMPTY BARRIER', bg: 'assets/railway.gif' },
-        { name: 'BADLANDS', bg: 'assets/madmax.gif' },
-        { name: 'JUNGLE CRASH', bg: 'assets/jungla.gif' },
-        { name: 'SEA GLASS', bg: 'assets/acquario.gif' },
-        { name: 'FISHING HARBOR', bg: 'assets/barchette.gif' },
-        { name: "DEADMAN'S PORT", bg: 'assets/pirati2.gif' },
-        { name: 'PLATFORM 7', bg: 'assets/treni.gif' },
-        { name: 'INFERNO DISTRICT', bg: 'assets/cinafuoco.gif' },
-        { name: 'MONTANA ESTATE', bg: 'assets/villa.gif' },
-        { name: "FORTUNE'S END", bg: 'assets/maga.gif' },
-        { name: 'EASTBOUND', bg: 'assets/jazzclubtrain.gif' },
-        { name: 'DEPARTURE GATE', bg: 'assets/airport.gif' },
-        { name: 'LIONGATE', bg: 'assets/china.gif' },
-        { name: 'EMBER SEAS', bg: 'assets/pirati.gif' },
-        { name: 'SHADOWLAND', bg: 'assets/japan.webp' },
-        { name: 'FIESTA', bg: 'assets/mexico.webp' }
+        { name: 'RUSTWATER', bg: 'assets/metro.gif', music: 'assets/rustwater.mp3' },
+        { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif', music: 'assets/collapsepoint.mp3' },
+        { name: 'RAIN RED', bg: 'assets/rainred.gif', music: 'assets/rainred.mp3' },
+        { name: 'FLAMES UPSTAIRS', bg: 'assets/onfire.gif', music: 'assets/flamesupstairs.mp3' },
+        { name: 'EAST END RAIN', bg: 'assets/rain.gif', music: 'assets/eastendrain.mp3' },
+        { name: 'EMPTY BARRIER', bg: 'assets/railway.gif', music: 'assets/emptybarrier.mp3' },
+        { name: 'BADLANDS', bg: 'assets/madmax.gif', music: 'assets/badlands.mp3' },
+        { name: 'JUNGLE CRASH', bg: 'assets/jungla.gif', music: 'assets/junglecrashland.mp3' },
+        { name: 'SEA GLASS', bg: 'assets/acquario.gif', music: 'assets/seaglass.mp3' },
+        { name: 'FISHING HARBOR', bg: 'assets/barchette.gif', music: 'assets/fishingharbor.mp3' },
+        { name: "DEADMAN'S PORT", bg: 'assets/pirati2.gif', music: 'assets/deadmansport.mp3' },
+        { name: 'PLATFORM 7', bg: 'assets/treni.gif', music: 'assets/platform7.mp3' },
+        { name: 'INFERNO DISTRICT', bg: 'assets/cinafuoco.gif', music: 'assets/infernodistrict.mp3' },
+        { name: 'MONTANA ESTATE', bg: 'assets/villa.gif', music: 'assets/montanaestate.mp3' },
+        { name: "FORTUNE'S END", bg: 'assets/maga.gif', music: 'assets/fortunesend.mp3' },
+        { name: 'EASTBOUND', bg: 'assets/jazzclubtrain.gif', music: 'assets/eastbound.mp3' },
+        { name: 'DEPARTURE GATE', bg: 'assets/airport.gif', music: 'assets/departuregate.mp3' },
+        { name: 'LIONGATE', bg: 'assets/china.gif', music: 'assets/lionsgate.mp3' },
+        { name: 'EMBER SEAS', bg: 'assets/pirati.gif', music: 'assets/emberseas.mp3' },
+        { name: 'SHADOWLAND', bg: 'assets/japan.webp', music: 'assets/shadowland.mp3' },
+        { name: 'FIESTA', bg: 'assets/mexico.webp', music: 'assets/fiesta.mp3' }
     ];
 
     // VARIABILI GLOBALI E FISICA SCALATA
@@ -354,10 +357,15 @@
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
         
-        // Ferma la musica dei menù quando inizia il match!
+        // Ferma la musica dei menù
         menuMusic.pause();
         menuMusic.currentTime = 0;
 
+        // Fai partire la musica dello stage
+        stageMusic.src = currentStage.music;
+        stageMusic.play().catch(e => console.log("Musica dello stage bloccata dall'autoplay."));
+
+        // Assegna lo sfondo GIF
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
         canvas.style.backgroundSize = 'cover';
         canvas.style.backgroundPosition = 'center';
@@ -384,13 +392,21 @@
 
     function togglePause() {
         if(mode === "FIGHT") {
-            mode = "PAUSE"; document.getElementById('pause-screen').style.visibility = 'visible';
+            mode = "PAUSE"; 
+            stageMusic.pause(); // Metti in pausa la musica
+            document.getElementById('pause-screen').style.visibility = 'visible';
         } else if (mode === "PAUSE") {
-            mode = "FIGHT"; document.getElementById('pause-screen').style.visibility = 'hidden';
+            mode = "FIGHT"; 
+            stageMusic.play(); // Riprendi la musica
+            document.getElementById('pause-screen').style.visibility = 'hidden';
         }
     }
 
     function resetToMenu() {
+        // Ferma la musica dello stage
+        stageMusic.pause();
+        stageMusic.currentTime = 0;
+
         document.getElementById('end-screen').style.visibility = 'hidden';
         document.getElementById('unlock-screen').style.visibility = 'hidden';
         document.getElementById('pause-screen').style.visibility = 'hidden';
