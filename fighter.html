@@ -205,7 +205,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     
-    // CACHE ENGINE E AUDIO
+    // CACHE ENGINE
     const imageCache = {};
     function getImage(src) {
         if (!imageCache[src]) {
@@ -214,13 +214,16 @@
         return imageCache[src];
     }
 
+    // AUDIO DI SOTTOFONDO: Volumi Abbassati
     const menuMusic = new Audio('assets/Jazzhighlanders_8bit_F.wav');
-    menuMusic.loop = true; menuMusic.volume = 0.6;
+    menuMusic.loop = true; 
+    menuMusic.volume = 0.3; // Musica Menu Più Bassa
 
     const stageMusic = new Audio();
-    stageMusic.loop = true; stageMusic.volume = 0.5; 
+    stageMusic.loop = true; 
+    stageMusic.volume = 0.2; // Musica Stage Bassa, per dare spazio ai Sample!
 
-    // SUONI DEL GIOCO E DEGLI ANNUNCI
+    // SUONI SFX DI GIOCO: Volumi Alti
     const sfx = {
         r1: new Audio('assets/round-one-fight.mp3'),
         r2: new Audio('assets/round-two-fight.mp3'),
@@ -237,27 +240,13 @@
 
     let audioUnlocked = false;
 
-    // FIX DEFINITIVO AUTOPLAY POLICY PER MOBILE (MUTED INVECE DI VOLUME = 0)
+    // Sblocco Audio Silenzioso e pulito
     function unlockAudio() {
         if (audioUnlocked) return;
         
         if (mode === "SELECT") {
             menuMusic.play().catch(e => console.log("Init menu err", e));
         }
-
-        Object.values(sfx).forEach(audioObj => {
-            audioObj.muted = true; // Il vero "muto" di sistema (i cellulari ignorano volume=0)
-            let p = audioObj.play();
-            if (p !== undefined) {
-                p.then(() => {
-                    audioObj.pause();
-                    audioObj.currentTime = 0;
-                    audioObj.muted = false; // Smutalo per quando servirà nel gioco!
-                    audioObj.volume = 1; 
-                }).catch(e => console.log("Unlock err:", e));
-            }
-        });
-
         audioUnlocked = true;
     }
 
@@ -267,25 +256,28 @@
 
     function playSfx(audioObj) {
         if (!audioObj) return;
-        audioObj.muted = false; // Sicurezza extra
-        audioObj.volume = 1;
+        audioObj.volume = 1.0; // Volume sempre al massimo per gli SFX
         audioObj.currentTime = 0;
         audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
     }
 
-    // LISTA DI FILE AUDIO VALIDATI PER EVITARE 404 ERROR (Personaggi mancanti di audio)
+    // LA LISTA ESATTA DEGLI MP3 SU GITHUB PER IL CHECK
     const validCharSfxList = [
         'baba-attack.mp3', 'baba-hurt.mp3', 'baba-loose.mp3', 'baba-win.mp3',
         'beeman-attack.mp3', 'beeman-hurt.mp3', 'beeman-loose.mp3',
         'britney-attack.mp3', 'britney-bitch.mp3', 'britney-hurt.mp3', 'britney-loose.mp3',
+        'carma2-attack.mp3', 'carma2-hurt.mp3', 'carma2-loose.mp3', 'carma2-win.mp3',
         'chronomutant-attack.mp3', 'chronomutant-hurt.mp3', 'chronomutant-loose.mp3', 'chronomutant-win.mp3',
         'doom-attack.mp3', 'doom-hurt.mp3', 'doom-loose.mp3', 'doom-not-surrender.mp3',
-        'falcon2-win.mp3',
-        'freq-ghoul-attack.mp3', 'freq-ghoul--hurt.mp3', 'freq-ghoul-loose.mp3', 'freq-ghoul-win.mp3',
+        'falcon2-attack.mp3', 'falcon2-hurt.mp3', 'falcon2-loose.mp3', 'falcon2-win.mp3',
+        'ferraz2-attack.mp3', 'ferraz2-hurt.mp3', 'ferraz2-loose.mp3', 'ferraz2-win.mp3',
+        'freq-ghoul--hurt.mp3', 'freq-ghoul-attack.mp3', 'freq-ghoul-loose.mp3', 'freq-ghoul-win.mp3',
         'ljs-attack.mp3', 'ljs-hurt.mp3', 'ljs-loose.mp3', 'ljs-win.mp3',
+        'mauri2-attack.mp3', 'mauri2-hurt.mp3', 'mauri2-loose.mp3', 'mauri2-win.mp3',
         'mclovin-attack.mp3', 'mclovin-hurt.mp3', 'mclovin-loose.mp3', 'mclovin-win.mp3',
         'mfdoom-attack.mp3', 'mfdoom-hurt.mp3', 'mfdoom-loose.mp3', 'mfdoom-win.mp3',
         'murena-attack.mp3', 'murena-hurt.mp3', 'murena-loose.mp3', 'murena-win.mp3',
+        'nan2-attack.mp3', 'nan2-hurt.mp3', 'nan2-loose.mp3', 'nan2-win.mp3',
         'ornitorincoman-attack.mp3', 'ornitorincoman-hurt.mp3', 'ornitorincoman-loose.mp3', 'ornitorincoman-win.mp3',
         'pigeon-attack.mp3', 'pigeon-hurt.mp3', 'pigeon-loose.mp3', 'pigeon-win.mp3'
     ];
@@ -311,11 +303,11 @@
 
         let fileName = `${audioName}.mp3`;
         
-        // Controlla se il file esiste davvero nella cartella per non causare errori 404
+        // Controlla se il file esiste davvero per non causare errori 404 in console
         if (validCharSfxList.includes(fileName)) {
             let audio = new Audio(`assets/${fileName}`);
-            audio.volume = 0.9;
-            audio.play().catch(e => console.log(`Audio non trovato o bloccato: assets/${fileName}`));
+            audio.volume = 1.0; // Effetti al MASSIMO
+            audio.play().catch(e => console.log(`Audio bloccato dal browser: assets/${fileName}`));
         }
     }
 
