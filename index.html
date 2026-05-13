@@ -71,7 +71,7 @@
         #icon-internet { top: 20px; left: 20px; }
         #icon-jazzcore { top: 120px; left: 20px; }
         #icon-cestino { top: 220px; left: 20px; }
-        #icon-game { top: 320px; left: 20px; } /* Mantenuto top/left ma nascosto in linea */
+        #icon-game { top: 320px; left: 20px; } 
         
         #icon-fighter { top: 20px; left: 120px; }
         #icon-merch { top: 120px; left: 120px; }
@@ -112,7 +112,7 @@
             width: 100%; 
             display: flex; justify-content: center; align-items: center;
             font-family: 'Press Start 2P', monospace; 
-            font-size: 11vw; /* INGRANDITO ANCORA UN PO' */
+            font-size: 11vw; 
             text-transform: lowercase; 
             white-space: nowrap; 
             letter-spacing: -2px;
@@ -233,6 +233,23 @@
         .btn-game { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 14px; cursor: pointer; padding: 5px 15px; font-weight: bold; }
         .btn-game:active { border-color: #808080 #fff #fff #808080; }
 
+        /* --- EFFETTO GLITCH BUFFON --- */
+        .buffon-glitch {
+            animation: buffonFlash 0.15s infinite alternate, buffonShake 0.3s infinite;
+        }
+        @keyframes buffonFlash {
+            0% { filter: invert(0) drop-shadow(0 0 0 red); }
+            50% { filter: invert(0.8) drop-shadow(5px 5px 0 magenta) hue-rotate(180deg); }
+            100% { filter: invert(1) drop-shadow(-5px -5px 0 cyan) hue-rotate(90deg); }
+        }
+        @keyframes buffonShake {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(4px, -4px) scale(1.05); }
+            50% { transform: translate(-4px, 4px) scale(1.1); }
+            75% { transform: translate(-4px, -4px) scale(1.05); }
+            100% { transform: translate(4px, 4px) scale(1); }
+        }
+
         /* --- TASKBAR --- */
         .taskbar {
             height: 35px; background: var(--win-gray); border-top: 2px solid var(--win-light);
@@ -264,14 +281,12 @@
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span>Network
             </div>
-            <!-- Jazzcore ora apre link esterno -->
             <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) window.open('https://www.otrlive.it/tour-dates/jazzhighlanders-summer-2k26/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleARxDwtleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAafX1SSjT_MfaJBPd98myzzAB1MRVcPvZawMqJsaO94MxMH5Cpx7WV8WiSioMg_aem_mc4XD_F68LSVMjeSDHarcA', '_blank')">
                 <span class="icon-art">💿</span>JAZZCORE
             </div>
-            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) openTrashWindow()">
+            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) openTrashWindow(false)">
                 <span class="icon-art">🗑️</span>Recycle Bin
             </div>
-            <!-- La lotteria è nascosta ma pronta all'uso cambiando display: none -->
             <div class="desktop-icon" id="icon-game" style="display: none;" onclick="if(!isGlobalDragging) openGame()">
                 <span class="icon-art">🎰</span>MURENA_SLOT
             </div>
@@ -293,14 +308,13 @@
                 </div>
             </div>
 
-            <!-- FINESTRA RECYCLE BIN CON BUFFON -->
             <div id="trash-window" class="win95-border popup" style="display:none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 300;">
                 <div class="title-bar drag-handle">
                     <span>Recycle Bin</span>
                     <span class="btn-close" onclick="closeWindow('trash-window')">X</span>
                 </div>
-                <div class="game-content win95-border-inset" style="padding: 10px; background: #fff;">
-                    <img src="assets/buffon.png" alt="Buffon" style="width: 100%; height: auto; image-rendering: pixelated;">
+                <div class="game-content win95-border-inset" style="padding: 10px; background: #fff; overflow: hidden;">
+                    <img id="buffon-img" src="assets/buffon.png" alt="Buffon" style="width: 100%; height: auto; image-rendering: pixelated;">
                 </div>
             </div>
 
@@ -364,56 +378,60 @@
                             <div class="artist-grid win95-border-inset">
                                 
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/arya-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-arya.png');"></div>
                                     <div class="artist-name">USR_01.dat</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/carlocorallo-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-carlocorallo.png');"></div>
                                     <div class="artist-name">SYS_02.bin</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/daykoda-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-daykoda.png');"></div>
                                     <div class="artist-name">DRV_03.sys</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/dutchnazari-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-dutchnazari.png');"></div>
                                     <div class="artist-name">NET_04.dll</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/egreen-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-egreen.png');"></div>
                                     <div class="artist-name">CMD_05.exe</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/enricogabrielli-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-enricogabrielli.png');"></div>
                                     <div class="artist-name">CFG_06.ini</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/freshmula-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-freshmula.png');"></div>
                                     <div class="artist-name">LOG_07.txt</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/ghemon-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-ghemon.png');"></div>
                                     <div class="artist-name">TMP_08.var</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/jackthesmoker-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-jackthesmoker.png');"></div>
                                     <div class="artist-name">BOOT_9.sys</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/mezzosangue-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-mezzosangue.png');"></div>
                                     <div class="artist-name">ROOT_A.dir</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/riccardosala-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-riccardosala.png');"></div>
                                     <div class="artist-name">MEM_B.dmp</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/sickbudd-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-sickbudd.png');"></div>
                                     <div class="artist-name">ENC_C.key</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/williepeyote-sprite.png');"></div>
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-williepeyote.png');"></div>
                                     <div class="artist-name">RUN_D.bat</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-unknown.png');"></div>
+                                    <div class="artist-name">ERR_E.raw</div>
                                 </div>
 
                             </div>
@@ -424,7 +442,6 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/alert.png" class="custom-icon" alt="Warning">
                                 <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
-                                <!-- Tolto onclick: fa finta di essere rotto -->
                                 <button class="btn-mini">IGNORE</button>
                             </div>
                         </div>
@@ -434,7 +451,6 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/info.png" class="custom-icon" alt="Info">
                                 <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
-                                <!-- Tolto onclick: fa finta di essere rotto -->
                                 <button class="btn-mini">ACKNOWLEDGE</button>
                             </div>
                         </div>
@@ -444,7 +460,6 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
                                 <div class="mini-popup-text">Node: Magnolia.<br>Init seq?</div>
-                                <!-- Tolto onclick: fa finta di essere rotto -->
                                 <button class="btn-mini">EXECUTE</button>
                             </div>
                         </div>
@@ -464,7 +479,6 @@
         </div>
 
         <div class="taskbar">
-            <!-- Pulsante Start ora resetta il desktop -->
             <div class="start-btn" onclick="resetDesktop()">🪟 Start</div>
             <div class="task-slot" id="taskbar-item" style="display:none;"></div>
             <div class="clock" id="clock">18:06</div>
@@ -492,10 +506,17 @@
             bringToFront(document.getElementById('game-window'));
         }
 
-        // Funzione per il nuovo Cestino
-        function openTrashWindow() {
+        // Funzione per il cestino (apertura normale o glitchata in caso di collisione)
+        function openTrashWindow(isGlitch) {
             document.getElementById('trash-window').style.display = 'block';
             bringToFront(document.getElementById('trash-window'));
+            
+            const buffonImg = document.getElementById('buffon-img');
+            if (isGlitch) {
+                buffonImg.classList.add('buffon-glitch');
+            } else {
+                buffonImg.classList.remove('buffon-glitch');
+            }
         }
 
         function startGame() {
@@ -591,6 +612,26 @@
             });
         }, 120);
 
+        // Controllo collisione drag-and-drop sul cestino
+        function checkTrashDrop(draggedEl) {
+            const trashIcon = document.getElementById('icon-cestino');
+            
+            // Evitiamo che il cestino stesso o la finestra del cestino scatenino l'evento
+            if (draggedEl.id === 'icon-cestino' || draggedEl.id === 'trash-window') return;
+
+            const rect1 = draggedEl.getBoundingClientRect();
+            const rect2 = trashIcon.getBoundingClientRect();
+            
+            const overlap = !(rect1.right < rect2.left || 
+                              rect1.left > rect2.right || 
+                              rect1.bottom < rect2.top || 
+                              rect1.top > rect2.bottom);
+            
+            if (overlap) {
+                openTrashWindow(true);
+            }
+        }
+
         function makeDraggable(element, handleSelector) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             let handle = handleSelector ? element.querySelector(handleSelector) : element;
@@ -605,10 +646,15 @@
             function elementDrag(e) {
                 e = e || window.event; e.preventDefault(); isGlobalDragging = true;
                 pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY;
-                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
-                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
             }
-            function closeDragElement() { document.onmouseup = null; document.onmousemove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
+            function closeDragElement() { 
+                document.onmouseup = null; 
+                document.onmousemove = null; 
+                checkTrashDrop(element); // Controllo collisione al rilascio
+                setTimeout(() => { isGlobalDragging = false; }, 50); 
+            }
 
             function dragTouchStart(e) {
                 e = e || window.event; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
@@ -618,10 +664,15 @@
             function elementTouchDrag(e) {
                 e = e || window.event; if(e.cancelable) e.preventDefault(); isGlobalDragging = true;
                 pos1 = pos3 - e.touches[0].clientX; pos2 = pos4 - e.touches[0].clientY; pos3 = e.touches[0].clientX; pos4 = e.touches[0].clientY;
-                element.style.top = (parseFloat(element.style.top) || 0 - pos2) + "px";
-                element.style.left = (parseFloat(element.style.left) || 0 - pos1) + "px";
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
             }
-            function closeTouchDragElement() { document.ontouchend = null; document.ontouchmove = null; setTimeout(() => { isGlobalDragging = false; }, 50); }
+            function closeTouchDragElement() { 
+                document.ontouchend = null; 
+                document.ontouchmove = null; 
+                checkTrashDrop(element); // Controllo collisione al rilascio
+                setTimeout(() => { isGlobalDragging = false; }, 50); 
+            }
         }
 
         function bringToFront(element) { highestZIndex += 1; element.style.zIndex = highestZIndex; }
@@ -644,26 +695,20 @@
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Funzione Reset Desktop (il nuovo comportamento del tasto Start)
         function resetDesktop() {
-            // Chiudi tutte le finestre principali
             closeWindow('browser-window');
             closeWindow('dialup-window');
             closeWindow('game-window');
             closeWindow('trash-window');
             
-            // Nascondi eventuale taskbar item aperto
             document.getElementById('taskbar-item').style.display = 'none';
             
-            // Mostra di nuovo le icone (escludendo quella del gioco nascosta)
             document.querySelectorAll('.desktop-icon').forEach(icon => {
                 if(icon.id !== 'icon-game') {
                     icon.style.display = 'block';
                 }
             });
 
-            // Ripristiniamo la visualizzazione delle micro-finestre interne al browser,
-            // così se l'utente lo riapre, le ritrova tutte e 4 pronte al loro posto.
             document.getElementById('artists-window').style.display = 'flex';
             document.getElementById('warning-window').style.display = 'flex';
             document.getElementById('reveal-window').style.display = 'flex';
