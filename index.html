@@ -156,7 +156,7 @@
 
         .popup { position: relative; box-shadow: 3px 3px 0 rgba(0,0,0,0.6); display: flex; flex-direction: column; }
 
-        /* GRIGLIA ARTISTI */
+        /* GRIGLIA ARTISTI (Ora occupa tutta la larghezza in alto) */
         #artists-window { grid-column: 1 / -1; z-index: 105; }
         .artist-grid {
             background: var(--win-light); padding: 1px; flex-grow: 1;
@@ -169,33 +169,29 @@
         }
         .artist-item:active { border: 1px dotted #808080; background: #e0e0e0; }
 
-        /* Immagini ospite STATICHE */
         .static-face {
             width: 48px; height: 48px; margin-bottom: 1px; image-rendering: pixelated;
             background-color: transparent; background-size: contain; 
             background-position: center; background-repeat: no-repeat;
         }
-
-        /* Animazione SOLO per sprite-sheet vere (es. network.png) */
-        .sprite-25 {
-            width: 48px; height: 48px; margin-bottom: 1px; image-rendering: pixelated;
-            background-color: transparent; background-size: 500% 500%; 
-            background-position: 0% 0%; background-repeat: no-repeat;
-        }
-
-        /* CLASSE PER LE SAGOME NERE */
         .silhouette { filter: brightness(0); }
         .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
         .custom-icon { width: 28px; height: 28px; image-rendering: pixelated; object-fit: contain; margin-bottom: 1px; }
 
-        /* POP-UP PICCOLI */
+        /* POP-UP PICCOLI E NUOVO LAYOUT */
         .mini-popup-content {
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             padding: 2px; gap: 1px; flex-grow: 1; text-align: center;
         }
         .mini-popup-text { font-size: 9px; font-weight: bold; line-height: 1.1; }
 
+        /* FINESTRA LOADING: Ora a larghezza intera e si piazza sotto la griglia artisti */
+        #loading-window { grid-column: 1 / -1; z-index: 103; }
+        
+        /* WARNING e INFO: Ora affiancati in fondo */
         #warning-window { grid-column: 1; z-index: 102; animation: glitch 4s infinite; }
+        #reveal-window { grid-column: 2; z-index: 106; }
+
         .warning-text { color: #800000; }
         @keyframes glitch {
             0% { transform: scale(1); filter: none; } 95% { transform: scale(1); filter: none; }
@@ -204,11 +200,7 @@
             98% { transform: scale(1.02); filter: blur(1px); } 100% { transform: scale(1); filter: none; }
         }
 
-        #reveal-window { grid-column: 2; z-index: 106; }
-        #network-window { grid-column: 1; z-index: 104; }
-        #loading-window { grid-column: 2; z-index: 103; }
-
-        .progress-bar-container { width: 90%; height: 6px; margin: 2px 0; }
+        .progress-bar-container { width: 100%; height: 6px; margin: 2px 0; }
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
 
@@ -435,50 +427,47 @@
                                     <div class="artist-name">ENC_C.key</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-silentbob.png');"></div>
+                                    <div class="artist-name">PRC_E.lib</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
                                     <div class="static-face silhouette" style="background-image: url('assets/face-williepeyote.png');"></div>
-                                    <div class="artist-name">RUN_D.bat</div>
+                                    <div class="artist-name">RUN_F.bat</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
                                     <div class="static-face silhouette" style="background-image: url('assets/face-unknown.png');"></div>
-                                    <div class="artist-name">ERR_E.raw</div>
+                                    <div class="artist-name">ERR_G.raw</div>
                                 </div>
 
                             </div>
                         </div>
 
+                        <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
+                            <div class="title-bar drag-handle"><span>loading guest network...</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
+                            <div class="mini-popup-content win95-border-inset" style="flex-direction: row; padding: 4px 8px; justify-content: flex-start; gap: 10px;">
+                                <img src="assets/loading.gif" class="custom-icon" alt="Loading..." style="margin: 0; width: 24px; height: 24px;">
+                                <div style="display: flex; flex-direction: column; width: 100%; align-items: flex-start;">
+                                    <div class="mini-popup-text" style="margin-bottom: 4px; font-size: 10px;">Connecting to hidden channels...</div>
+                                    <div class="progress-bar-container win95-border-inset" style="margin: 0;"><div class="progress-bar-fill"></div></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>FATAL_ERR</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
+                            <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING: Hot_music.exe</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
                             <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/alert.png" class="custom-icon" alt="Warning">
-                                <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
+                                <div class="mini-popup-text warning-text">PREPARE FOR A<br>SICK LIVE SHOW.</div>
                                 <button class="btn-mini">IGNORE</button>
                             </div>
                         </div>
 
                         <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>Sys.Log</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
+                            <div class="title-bar drag-handle"><span>Info</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
                             <div class="mini-popup-content win95-border-inset">
-                                <img src="assets/info.png" class="custom-icon" alt="Info">
-                                <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
+                                <img src="assets/info.png" alt="Info" style="width: 16px; height: 16px; margin-bottom: 3px; image-rendering: pixelated;">
+                                <div class="mini-popup-text" style="font-size: 11px; margin-bottom: 2px;">Guests are still<br>hidden.</div>
                                 <button class="btn-mini">ACKNOWLEDGE</button>
-                            </div>
-                        </div>
-
-                        <div id="network-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>Network</span><span class="btn-close" onclick="closeWindow('network-window')">X</span></div>
-                            <div class="mini-popup-content win95-border-inset">
-                                <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
-                                <div class="mini-popup-text">Node: Magnolia.<br>Init seq?</div>
-                                <button class="btn-mini">EXECUTE</button>
-                            </div>
-                        </div>
-
-                        <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>Process</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
-                            <div class="mini-popup-content win95-border-inset">
-                                <img src="assets/loading.gif" class="custom-icon" alt="Loading...">
-                                <div class="mini-popup-text">Synching tempos...</div>
-                                <div class="progress-bar-container win95-border-inset"><div class="progress-bar-fill"></div></div>
                             </div>
                         </div>
 
@@ -617,19 +606,6 @@
             }, 6000);
         }
 
-        // --- SISTEMA INTERFACCIA WEB OS ---
-
-        setInterval(() => {
-            const sprites = document.querySelectorAll('.sprite-25');
-            sprites.forEach(sprite => {
-                let currentFrame = parseInt(sprite.getAttribute('data-frame')) || 0;
-                currentFrame = (currentFrame + 1) % 25; 
-                sprite.setAttribute('data-frame', currentFrame);
-                let col = currentFrame % 5; let row = Math.floor(currentFrame / 5);
-                sprite.style.backgroundPosition = `${col * 25}% ${row * 25}%`;
-            });
-        }, 120);
-
         // Controllo collisione drag-and-drop sul cestino
         function checkTrashDrop(draggedEl) {
             const trashIcon = document.getElementById('icon-cestino');
@@ -706,7 +682,6 @@
         makeDraggable(document.getElementById("artists-window"), ".drag-handle");
         makeDraggable(document.getElementById("warning-window"), ".drag-handle");
         makeDraggable(document.getElementById("loading-window"), ".drag-handle");
-        makeDraggable(document.getElementById("network-window"), ".drag-handle");
         makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
         makeDraggable(document.getElementById("game-window"), ".drag-handle");
         makeDraggable(document.getElementById("trash-window"), ".drag-handle"); 
@@ -728,10 +703,9 @@
             });
 
             document.getElementById('artists-window').style.display = 'flex';
+            document.getElementById('loading-window').style.display = 'flex';
             document.getElementById('warning-window').style.display = 'flex';
             document.getElementById('reveal-window').style.display = 'flex';
-            document.getElementById('network-window').style.display = 'flex';
-            document.getElementById('loading-window').style.display = 'flex';
         }
 
         function startDialUp() {
