@@ -71,7 +71,7 @@
         #icon-internet { top: 20px; left: 20px; }
         #icon-jazzcore { top: 120px; left: 20px; }
         #icon-cestino { top: 220px; left: 20px; }
-        #icon-game { top: 320px; left: 20px; } 
+        #icon-game { top: 320px; left: 20px; } /* Mantenuto top/left ma nascosto in linea */
         
         #icon-fighter { top: 20px; left: 120px; }
         #icon-merch { top: 120px; left: 120px; }
@@ -91,31 +91,6 @@
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 200;
         }
         .dialup-content { padding: 15px; text-align: center; }
-
-        /* --- ANIMAZIONI JAZZCORE IMPAZZITE --- */
-        .jazzcore-crazy-img {
-            width: 140px; height: 140px; object-fit: cover; border-radius: 50%;
-            margin: 15px auto; display: block;
-            animation: spinCrazy 0.4s linear infinite, rgbGlitch 0.15s infinite alternate;
-            box-shadow: 0 0 15px red;
-        }
-        .jazzcore-warning {
-            color: #ff0000; font-size: 18px; font-weight: bold; text-align: center; margin: 10px 0;
-            animation: flashWarning 0.2s infinite alternate; text-shadow: 2px 2px #000;
-        }
-        @keyframes spinCrazy {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.4); }
-            100% { transform: rotate(360deg) scale(1); }
-        }
-        @keyframes rgbGlitch {
-            0% { filter: drop-shadow(6px 0px 0px cyan) drop-shadow(-6px 0px 0px red) hue-rotate(0deg); }
-            100% { filter: drop-shadow(-6px 6px 0px lime) drop-shadow(6px -6px 0px magenta) hue-rotate(90deg) invert(0.2); }
-        }
-        @keyframes flashWarning {
-            0% { opacity: 1; transform: scale(1); color: yellow; }
-            100% { opacity: 0.1; transform: scale(1.1); color: red; }
-        }
 
         /* --- BROWSER INTERNET --- */
         #browser-window {
@@ -137,7 +112,7 @@
             width: 100%; 
             display: flex; justify-content: center; align-items: center;
             font-family: 'Press Start 2P', monospace; 
-            font-size: 9.5vw; /* AUMENTATO QUASI DEL DOPPIO */
+            font-size: 11vw; /* INGRANDITO ANCORA UN PO' */
             text-transform: lowercase; 
             white-space: nowrap; 
             letter-spacing: -2px;
@@ -157,7 +132,7 @@
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 12px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* NUOVA IMPAGINAZIONE BOX EVENTO */
+        /* IMPAGINAZIONE BOX EVENTO */
         .huge-event-box {
             flex-shrink: 0; background: #000; color: #fff; padding: 6px; margin-bottom: 4px; width: 100%;
             border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
@@ -186,7 +161,7 @@
         .artist-grid {
             background: var(--win-light); padding: 1px; flex-grow: 1;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-            overflow-y: auto; max-height: 250px; /* Aggiunto scorrimento se non ci stanno tutti */
+            overflow-y: auto; max-height: 250px;
         }
         .artist-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -200,12 +175,8 @@
             background-position: 0% 0%; background-repeat: no-repeat;
         }
         /* CLASSE PER LE SAGOME NERE */
-        .silhouette {
-            filter: brightness(0);
-        }
-
+        .silhouette { filter: brightness(0); }
         .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
-
         .custom-icon { width: 28px; height: 28px; image-rendering: pixelated; object-fit: contain; margin-bottom: 1px; }
 
         /* POP-UP PICCOLI */
@@ -291,15 +262,17 @@
         
         <div class="desktop" id="desktop-area">
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
-                <span class="icon-art">🌐</span><u>I</u>nternet
+                <span class="icon-art">🌐</span>Network
             </div>
-            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) openJazzcoreWindow()">
+            <!-- Jazzcore ora apre link esterno -->
+            <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) window.open('https://www.otrlive.it/tour-dates/jazzhighlanders-summer-2k26/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleARxDwtleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAafX1SSjT_MfaJBPd98myzzAB1MRVcPvZawMqJsaO94MxMH5Cpx7WV8WiSioMg_aem_mc4XD_F68LSVMjeSDHarcA', '_blank')">
                 <span class="icon-art">💿</span>JAZZCORE
             </div>
-            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) alert('Recycle Bin is empty.')">
-                <span class="icon-art">🗑️</span>CESTINO
+            <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) openTrashWindow()">
+                <span class="icon-art">🗑️</span>Recycle Bin
             </div>
-            <div class="desktop-icon" id="icon-game" onclick="if(!isGlobalDragging) openGame()">
+            <!-- La lotteria è nascosta ma pronta all'uso cambiando display: none -->
+            <div class="desktop-icon" id="icon-game" style="display: none;" onclick="if(!isGlobalDragging) openGame()">
                 <span class="icon-art">🎰</span>MURENA_SLOT
             </div>
             <div class="desktop-icon" id="icon-fighter" onclick="if(!isGlobalDragging) window.location.href='fighter.html'">
@@ -320,16 +293,14 @@
                 </div>
             </div>
 
-            <!-- FINESTRA JAZZCORE -->
-            <div id="jazzcore-window" class="win95-border popup" style="display:none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 300;">
+            <!-- FINESTRA RECYCLE BIN CON BUFFON -->
+            <div id="trash-window" class="win95-border popup" style="display:none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 300;">
                 <div class="title-bar drag-handle">
-                    <span>JAZZCORE_ERR.exe</span>
-                    <span class="btn-close" onclick="closeWindow('jazzcore-window')">X</span>
+                    <span>Recycle Bin</span>
+                    <span class="btn-close" onclick="closeWindow('trash-window')">X</span>
                 </div>
-                <div class="game-content win95-border-inset" style="background-color: #000; overflow: hidden; padding: 20px;">
-                    <div class="jazzcore-warning">⚠ FATAL ERROR ⚠</div>
-                    <img src="jazzcoreIMG.jpg" class="jazzcore-crazy-img" alt="Jazzcore Glitch">
-                    <div class="jazzcore-warning">SYSTEM CORRUPTED</div>
+                <div class="game-content win95-border-inset" style="padding: 10px; background: #fff;">
+                    <img src="assets/buffon.png" alt="Buffon" style="width: 100%; height: auto; image-rendering: pixelated;">
                 </div>
             </div>
 
@@ -453,7 +424,8 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/alert.png" class="custom-icon" alt="Warning">
                                 <div class="mini-popup-text warning-text">LIVE CONCERT<br>DETECTED.</div>
-                                <button class="btn-mini" onclick="closeWindow('warning-window')">IGNORE</button>
+                                <!-- Tolto onclick: fa finta di essere rotto -->
+                                <button class="btn-mini">IGNORE</button>
                             </div>
                         </div>
 
@@ -462,7 +434,8 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <img src="assets/info.png" class="custom-icon" alt="Info">
                                 <div class="mini-popup-text">Decrypting profiles...<br>ETA: SOON.</div>
-                                <button class="btn-mini" onclick="closeWindow('reveal-window')">ACKNOWLEDGE</button>
+                                <!-- Tolto onclick: fa finta di essere rotto -->
+                                <button class="btn-mini">ACKNOWLEDGE</button>
                             </div>
                         </div>
 
@@ -471,7 +444,8 @@
                             <div class="mini-popup-content win95-border-inset">
                                 <div class="sprite-25 custom-icon" style="background-image: url('assets/network.png'); margin-bottom: 0;"></div>
                                 <div class="mini-popup-text">Node: Magnolia.<br>Init seq?</div>
-                                <button class="btn-mini" onclick="alert('Welcome to the journey!'); closeWindow('network-window');">EXECUTE</button>
+                                <!-- Tolto onclick: fa finta di essere rotto -->
+                                <button class="btn-mini">EXECUTE</button>
                             </div>
                         </div>
 
@@ -490,7 +464,8 @@
         </div>
 
         <div class="taskbar">
-            <div class="start-btn" onclick="alert('STUDIO MURENA 2026 - All Rights Reserved')">🪟 Start</div>
+            <!-- Pulsante Start ora resetta il desktop -->
+            <div class="start-btn" onclick="resetDesktop()">🪟 Start</div>
             <div class="task-slot" id="taskbar-item" style="display:none;"></div>
             <div class="clock" id="clock">18:06</div>
         </div>
@@ -517,9 +492,10 @@
             bringToFront(document.getElementById('game-window'));
         }
 
-        function openJazzcoreWindow() {
-            document.getElementById('jazzcore-window').style.display = 'block';
-            bringToFront(document.getElementById('jazzcore-window'));
+        // Funzione per il nuovo Cestino
+        function openTrashWindow() {
+            document.getElementById('trash-window').style.display = 'block';
+            bringToFront(document.getElementById('trash-window'));
         }
 
         function startGame() {
@@ -664,9 +640,36 @@
         makeDraggable(document.getElementById("network-window"), ".drag-handle");
         makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
         makeDraggable(document.getElementById("game-window"), ".drag-handle");
-        makeDraggable(document.getElementById("jazzcore-window"), ".drag-handle"); 
+        makeDraggable(document.getElementById("trash-window"), ".drag-handle"); 
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Funzione Reset Desktop (il nuovo comportamento del tasto Start)
+        function resetDesktop() {
+            // Chiudi tutte le finestre principali
+            closeWindow('browser-window');
+            closeWindow('dialup-window');
+            closeWindow('game-window');
+            closeWindow('trash-window');
+            
+            // Nascondi eventuale taskbar item aperto
+            document.getElementById('taskbar-item').style.display = 'none';
+            
+            // Mostra di nuovo le icone (escludendo quella del gioco nascosta)
+            document.querySelectorAll('.desktop-icon').forEach(icon => {
+                if(icon.id !== 'icon-game') {
+                    icon.style.display = 'block';
+                }
+            });
+
+            // Ripristiniamo la visualizzazione delle micro-finestre interne al browser,
+            // così se l'utente lo riapre, le ritrova tutte e 4 pronte al loro posto.
+            document.getElementById('artists-window').style.display = 'flex';
+            document.getElementById('warning-window').style.display = 'flex';
+            document.getElementById('reveal-window').style.display = 'flex';
+            document.getElementById('network-window').style.display = 'flex';
+            document.getElementById('loading-window').style.display = 'flex';
+        }
 
         function startDialUp() {
             const dialupWindow = document.getElementById('dialup-window');
@@ -691,7 +694,11 @@
         function closeBrowser() {
             document.getElementById('browser-window').style.display = 'none';
             document.getElementById('taskbar-item').style.display = 'none';
-            document.querySelectorAll('.desktop-icon').forEach(icon => icon.style.display = 'block');
+            document.querySelectorAll('.desktop-icon').forEach(icon => {
+                if(icon.id !== 'icon-game') {
+                    icon.style.display = 'block';
+                }
+            });
         }
 
         function updateClock() {
