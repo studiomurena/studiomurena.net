@@ -498,6 +498,7 @@
     <script>
         let isGlobalDragging = false;
         let highestZIndex = 110;
+        let glitchTimeout; // Variabile per gestire il timer del glitch
 
         // --- MOTORE DEL GIOCO E COLLEGAMENTO GOOGLE WEB APP ---
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyPDTQQC8DRlmyy_D8ZYnA95ezto5V_6891Sp9RceoqaCXAYxUGBB0KYtWRk9qEhLkr/exec';
@@ -521,8 +522,16 @@
             bringToFront(document.getElementById('trash-window'));
             
             const buffonImg = document.getElementById('buffon-img');
+            
+            // Pulisce qualsiasi timer precedente per evitare conflitti se ci droppano sopra di continuo
+            clearTimeout(glitchTimeout);
+            
             if (isGlitch) {
                 buffonImg.classList.add('buffon-glitch');
+                // Toglie il glitch dopo esattamente 2 secondi
+                glitchTimeout = setTimeout(() => {
+                    buffonImg.classList.remove('buffon-glitch');
+                }, 2000);
             } else {
                 buffonImg.classList.remove('buffon-glitch');
             }
