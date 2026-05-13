@@ -68,7 +68,6 @@
         .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
         .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
 
-        /* Nuova disposizione icone */
         #icon-internet { top: 20px; left: 20px; }
         #icon-jazzcore { top: 120px; left: 20px; }
         #icon-cestino { top: 220px; left: 20px; }
@@ -134,14 +133,14 @@
         /* --- SEZIONE ALTA (HEADER) --- */
         .main-title {
             flex-shrink: 0; 
-            margin: 12px auto; 
+            margin: 10px auto; 
             width: 100%; 
             display: flex; justify-content: center; align-items: center;
             font-family: 'Press Start 2P', monospace; 
-            font-size: 5.6vw; 
+            font-size: 9.5vw; /* AUMENTATO QUASI DEL DOPPIO */
             text-transform: lowercase; 
             white-space: nowrap; 
-            letter-spacing: -1px;
+            letter-spacing: -2px;
             animation: colorCycleText 2s infinite alternate;
         }
 
@@ -158,12 +157,21 @@
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 10s linear infinite; font-size: 12px; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
+        /* NUOVA IMPAGINAZIONE BOX EVENTO */
         .huge-event-box {
-            flex-shrink: 0; background: #000; color: #fff; padding: 2px; margin-bottom: 4px; width: 100%;
-            text-align: center; border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
+            flex-shrink: 0; background: #000; color: #fff; padding: 6px; margin-bottom: 4px; width: 100%;
+            border: 4px solid #fff; box-shadow: 4px 4px 0 var(--win-blue);
+            display: flex; flex-direction: row; align-items: center; justify-content: space-evenly;
         }
-        .huge-event-box h2 { font-size: min(5vw, 18px); margin: 0; }
-        .huge-event-box h1 { font-size: min(8vw, 26px); margin: 0; color: #ffcc00; letter-spacing: -1px; }
+        .event-left {
+            font-size: min(5vw, 18px); color: #00ff00; letter-spacing: -1px; white-space: nowrap;
+        }
+        .event-divider {
+            width: 2px; height: 20px; background-color: #808080;
+        }
+        .event-right {
+            font-size: min(5.5vw, 20px); color: #ffcc00; letter-spacing: -1px; white-space: nowrap; font-weight: bold;
+        }
 
         /* --- WORKSPACE --- */
         .workspace {
@@ -178,6 +186,7 @@
         .artist-grid {
             background: var(--win-light); padding: 1px; flex-grow: 1;
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+            overflow-y: auto; max-height: 250px; /* Aggiunto scorrimento se non ci stanno tutti */
         }
         .artist-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -190,14 +199,14 @@
             background-color: transparent; background-size: 500% 500%; 
             background-position: 0% 0%; background-repeat: no-repeat;
         }
+        /* CLASSE PER LE SAGOME NERE */
+        .silhouette {
+            filter: brightness(0);
+        }
+
         .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
 
         .custom-icon { width: 28px; height: 28px; image-rendering: pixelated; object-fit: contain; margin-bottom: 1px; }
-        .fixed-artist-icon {
-            width: 48px; height: 48px; margin-bottom: 1px; border: 2px solid #000; background-color: #555;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .fixed-artist-icon img { width: 32px; height: 32px; image-rendering: pixelated; object-fit: contain; }
 
         /* POP-UP PICCOLI */
         .mini-popup-content {
@@ -284,7 +293,6 @@
             <div class="desktop-icon" id="icon-internet" onclick="if(!isGlobalDragging) startDialUp()">
                 <span class="icon-art">🌐</span><u>I</u>nternet
             </div>
-            <!-- Rimossa icona Murena cartella -->
             <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) openJazzcoreWindow()">
                 <span class="icon-art">💿</span>JAZZCORE
             </div>
@@ -297,7 +305,6 @@
             <div class="desktop-icon" id="icon-fighter" onclick="if(!isGlobalDragging) window.location.href='fighter.html'">
                 <span class="icon-art">🕹️</span>FIGHTER
             </div>
-            <!-- Nuove Icone -->
             <div class="desktop-icon" id="icon-merch" onclick="if(!isGlobalDragging) window.open('https://www.nancymerch.it/studio-murena/', '_blank')">
                 <span class="icon-art">👕</span>MERCH
             </div>
@@ -313,7 +320,7 @@
                 </div>
             </div>
 
-            <!-- FINESTRA JAZZCORE (Nuova) -->
+            <!-- FINESTRA JAZZCORE -->
             <div id="jazzcore-window" class="win95-border popup" style="display:none; position:absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; z-index: 300;">
                 <div class="title-bar drag-handle">
                     <span>JAZZCORE_ERR.exe</span>
@@ -372,9 +379,11 @@
                     <div class="main-title">studiomurena.net</div>
                     
                     <div class="marquee-box"><span class="marquee-text">A SPECIAL JOURNEY WITH FRIENDS &nbsp;&nbsp;&nbsp; /// &nbsp;&nbsp;&nbsp; MILANO MAGNOLIA 18.06.2026</span></div>
+                    
                     <div class="huge-event-box">
-                        <h2>CIRCOLO MAGNOLIA</h2>
-                        <h1>18 . 06 . 2026</h1>
+                        <div class="event-left">📅 18/06/2026</div>
+                        <div class="event-divider"></div>
+                        <div class="event-right">CIRCOLO MAGNOLIA</div>
                     </div>
 
                     <div class="workspace">
@@ -382,42 +391,60 @@
                         <div id="artists-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                             <div class="title-bar drag-handle"><span>Guest List Explorer</span><span class="btn-close" onclick="closeWindow('artists-window')">X</span></div>
                             <div class="artist-grid win95-border-inset">
-                                <div class="artist-item" onclick="alert('Arya module executed.')">
-                                    <div class="sprite-25" style="background-image: url('assets/arya-spritesheet.png');"></div>
-                                    <div class="artist-name">Arya.vars</div>
+                                
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/arya-sprite.png');"></div>
+                                    <div class="artist-name">USR_01.dat</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Fresh Mula stream connected.')">
-                                    <div class="sprite-25" style="background-image: url('assets/freshmula-spritesheet.png');"></div>
-                                    <div class="artist-name">FreshMula.flow</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/carlocorallo-sprite.png');"></div>
+                                    <div class="artist-name">SYS_02.bin</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Silent Bob protocol active.')">
-                                    <div class="sprite-25" style="background-image: url('assets/silentbob-spritesheet.png');"></div>
-                                    <div class="artist-name">SilentBob.dll</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/daykoda-sprite.png');"></div>
+                                    <div class="artist-name">DRV_03.sys</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Riccardo Sala waves loaded.')">
-                                    <div class="sprite-25" style="background-image: url('assets/riccardosala-spritesheet.png');"></div>
-                                    <div class="artist-name">RiccardoSala.jazz</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/dutchnazari-sprite.png');"></div>
+                                    <div class="artist-name">NET_04.dll</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Jack The Smoker disk mounted.')">
-                                    <div class="sprite-25" style="background-image: url('assets/jackthesmoker-spritesheet.png');"></div>
-                                    <div class="artist-name">JackSmoker.iso</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/egreen-sprite.png');"></div>
+                                    <div class="artist-name">CMD_05.exe</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Dutch Nazari script running.')">
-                                    <div class="sprite-25" style="background-image: url('assets/dutchnazari-spritesheet.png');"></div>
-                                    <div class="artist-name">DutchNazari.bat</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/enricogabrielli-sprite.png');"></div>
+                                    <div class="artist-name">CFG_06.ini</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Daykoda binary initialized.')">
-                                    <div class="sprite-25" style="background-image: url('assets/daykoda-spritesheet.png');"></div>
-                                    <div class="artist-name">Daykoda.bin</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/freshmula-sprite.png');"></div>
+                                    <div class="artist-name">LOG_07.txt</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Carlo Corallo system online.')">
-                                    <div class="sprite-25" style="background-image: url('assets/carlocorallo-spritesheet.png');"></div>
-                                    <div class="artist-name">CarloCorallo.sys</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/ghemon-sprite.png');"></div>
+                                    <div class="artist-name">TMP_08.var</div>
                                 </div>
-                                <div class="artist-item" style="background:#ddd;" onclick="alert('ERR_403: DECRYPTION FAILED.')">
-                                    <div class="fixed-artist-icon"><img src="assets/incognito.png" alt="Mystery"></div>
-                                    <div class="artist-name" style="color:red; text-decoration:none;">ENCRYPTED.raw</div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/jackthesmoker-sprite.png');"></div>
+                                    <div class="artist-name">BOOT_9.sys</div>
                                 </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/mezzosangue-sprite.png');"></div>
+                                    <div class="artist-name">ROOT_A.dir</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/riccardosala-sprite.png');"></div>
+                                    <div class="artist-name">MEM_B.dmp</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/sickbudd-sprite.png');"></div>
+                                    <div class="artist-name">ENC_C.key</div>
+                                </div>
+                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
+                                    <div class="sprite-25 silhouette" style="background-image: url('assets/williepeyote-sprite.png');"></div>
+                                    <div class="artist-name">RUN_D.bat</div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -490,7 +517,6 @@
             bringToFront(document.getElementById('game-window'));
         }
 
-        // --- NUOVA FUNZIONE JAZZCORE ---
         function openJazzcoreWindow() {
             document.getElementById('jazzcore-window').style.display = 'block';
             bringToFront(document.getElementById('jazzcore-window'));
@@ -638,7 +664,7 @@
         makeDraggable(document.getElementById("network-window"), ".drag-handle");
         makeDraggable(document.getElementById("reveal-window"), ".drag-handle");
         makeDraggable(document.getElementById("game-window"), ".drag-handle");
-        makeDraggable(document.getElementById("jazzcore-window"), ".drag-handle"); // Reso trascinabile
+        makeDraggable(document.getElementById("jazzcore-window"), ".drag-handle"); 
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -676,5 +702,3 @@
     </script>
 </body>
 </html>
-
-
