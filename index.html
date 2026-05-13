@@ -204,9 +204,6 @@
         .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
         @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
 
-        .btn-mini { border: 2px solid; border-color: #fff #808080 #808080 #fff; background: var(--win-light); font-family: inherit; font-size: 9px; cursor: pointer; padding: 1px 4px; margin-top: 1px; font-weight: bold; width: 85%; }
-        .btn-mini:active { border-color: #808080 #fff #fff #808080; }
-
         /* --- FINESTRA GIOCO (MURENA SLOT) --- */
         #game-window {
             display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -455,19 +452,17 @@
 
                         <div id="warning-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                             <div class="title-bar drag-handle" style="background: var(--win-blue);"><span>WARNING: Hot_music.exe</span><span class="btn-close" onclick="closeWindow('warning-window')">X</span></div>
-                            <div class="mini-popup-content win95-border-inset">
-                                <img src="assets/alert.png" class="custom-icon" alt="Warning">
-                                <div class="mini-popup-text warning-text">PREPARE FOR A<br>SICK LIVE SHOW.</div>
-                                <button class="btn-mini">IGNORE</button>
+                            <div class="mini-popup-content win95-border-inset" style="padding: 10px;">
+                                <img src="assets/alert.png" alt="Warning" style="width: 18px; height: 18px; margin-bottom: 6px;">
+                                <div class="mini-popup-text warning-text" style="font-size: 15px; line-height: 1.2;">PREPARE FOR A<br>SICK LIVE SHOW.</div>
                             </div>
                         </div>
 
                         <div id="reveal-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
                             <div class="title-bar drag-handle"><span>Info</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
-                            <div class="mini-popup-content win95-border-inset">
-                                <img src="assets/info.png" alt="Info" style="width: 16px; height: 16px; margin-bottom: 3px; image-rendering: pixelated;">
-                                <div class="mini-popup-text" style="font-size: 11px; margin-bottom: 2px;">Guests are still<br>hidden.</div>
-                                <button class="btn-mini">ACKNOWLEDGE</button>
+                            <div class="mini-popup-content win95-border-inset" style="padding: 10px;">
+                                <img src="assets/info.png" alt="Info" style="width: 18px; height: 18px; margin-bottom: 6px; image-rendering: pixelated;">
+                                <div class="mini-popup-text" style="font-size: 15px; line-height: 1.2;">Guests are still<br>hidden.</div>
                             </div>
                         </div>
 
