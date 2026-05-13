@@ -61,21 +61,24 @@
 
         /* --- DESKTOP --- */
         .desktop { flex-grow: 1; position: relative; z-index: 10; }
-        .desktop-icon {
-            position: absolute; width: 80px; text-align: center; color: white; font-size: 12px;
-            cursor: pointer; text-shadow: 1px 1px #000; padding: 5px; z-index: 20;
-        }
-        .desktop-icon:active { background: rgba(255,255,255,0.2); border: 1px dotted white; }
-        .icon-art { font-size: 36px; display: block; margin-bottom: 5px; pointer-events: none; }
-
-        #icon-internet { top: 20px; left: 20px; }
-        #icon-jazzcore { top: 120px; left: 20px; }
-        #icon-cestino { top: 220px; left: 20px; }
-        #icon-game { top: 320px; left: 20px; } 
         
-        #icon-fighter { top: 20px; left: 120px; }
-        #icon-merch { top: 120px; left: 120px; }
-        #icon-tickets { top: 220px; left: 120px; }
+        /* Modifica dimensioni icone x2 */
+        .desktop-icon {
+            position: absolute; width: 160px; text-align: center; color: white; font-size: 24px;
+            cursor: pointer; text-shadow: 2px 2px #000; padding: 10px; z-index: 20;
+        }
+        .desktop-icon:active { background: rgba(255,255,255,0.2); border: 2px dotted white; }
+        .icon-art { font-size: 72px; display: block; margin-bottom: 10px; pointer-events: none; }
+
+        /* Coordinate adattate per le nuove icone giganti */
+        #icon-internet { top: 20px; left: 20px; }
+        #icon-jazzcore { top: 160px; left: 20px; }
+        #icon-cestino { top: 300px; left: 20px; }
+        #icon-game { top: 440px; left: 20px; } 
+        
+        #icon-fighter { top: 20px; left: 200px; }
+        #icon-merch { top: 160px; left: 200px; }
+        #icon-tickets { top: 300px; left: 200px; }
 
         .title-bar {
             background: var(--win-blue); color: white; padding: 3px 8px;
@@ -280,22 +283,22 @@
                 <span class="icon-art">🌐</span>Network
             </div>
             <div class="desktop-icon" id="icon-jazzcore" onclick="if(!isGlobalDragging) window.open('https://www.otrlive.it/tour-dates/jazzhighlanders-summer-2k26/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAdGRleARxDwtleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAafX1SSjT_MfaJBPd98myzzAB1MRVcPvZawMqJsaO94MxMH5Cpx7WV8WiSioMg_aem_mc4XD_F68LSVMjeSDHarcA', '_blank')">
-                <span class="icon-art">💿</span>JAZZCORE
+                <span class="icon-art">💿</span>Jazzcore
             </div>
             <div class="desktop-icon" id="icon-cestino" onclick="if(!isGlobalDragging) openTrashWindow(false)">
                 <span class="icon-art">🗑️</span>Recycle Bin
             </div>
             <div class="desktop-icon" id="icon-game" style="display: none;" onclick="if(!isGlobalDragging) openGame()">
-                <span class="icon-art">🎰</span>MURENA_SLOT
+                <span class="icon-art">🎰</span>Murena Slot
             </div>
             <div class="desktop-icon" id="icon-fighter" onclick="if(!isGlobalDragging) window.location.href='fighter.html'">
-                <span class="icon-art">🕹️</span>FIGHTER
+                <span class="icon-art">🕹️</span>Fighter
             </div>
             <div class="desktop-icon" id="icon-merch" onclick="if(!isGlobalDragging) window.open('https://www.nancymerch.it/studio-murena/', '_blank')">
-                <span class="icon-art">👕</span>MERCH
+                <span class="icon-art">👕</span>Merch
             </div>
             <div class="desktop-icon" id="icon-tickets" onclick="if(!isGlobalDragging) window.open('https://link.dice.fm/k2fa8c1a2c43?dice_id=k2fa8c1a2c43', '_blank')">
-                <span class="icon-art">🎟️</span>TICKETS
+                <span class="icon-art">🎟️</span>Tickets
             </div>
 
             <div id="dialup-window" class="win95-border popup" style="position:absolute;">
