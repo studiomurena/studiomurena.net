@@ -169,11 +169,20 @@
         }
         .artist-item:active { border: 1px dotted #808080; background: #e0e0e0; }
 
+        /* Immagini ospite STATICHE */
+        .static-face {
+            width: 48px; height: 48px; margin-bottom: 1px; image-rendering: pixelated;
+            background-color: transparent; background-size: contain; 
+            background-position: center; background-repeat: no-repeat;
+        }
+
+        /* Animazione SOLO per sprite-sheet vere (es. network.png) */
         .sprite-25 {
             width: 48px; height: 48px; margin-bottom: 1px; image-rendering: pixelated;
             background-color: transparent; background-size: 500% 500%; 
             background-position: 0% 0%; background-repeat: no-repeat;
         }
+
         /* CLASSE PER LE SAGOME NERE */
         .silhouette { filter: brightness(0); }
         .artist-name { color: var(--win-blue); text-decoration: underline; font-size: 10px; font-weight: bold; line-height: 1; }
@@ -378,59 +387,59 @@
                             <div class="artist-grid win95-border-inset">
                                 
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-arya.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-arya.png');"></div>
                                     <div class="artist-name">USR_01.dat</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-carlocorallo.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-carlocorallo.png');"></div>
                                     <div class="artist-name">SYS_02.bin</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-daykoda.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-daykoda.png');"></div>
                                     <div class="artist-name">DRV_03.sys</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-dutchnazari.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-dutchnazari.png');"></div>
                                     <div class="artist-name">NET_04.dll</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-egreen.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-egreen.png');"></div>
                                     <div class="artist-name">CMD_05.exe</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-enricogabrielli.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-enricogabrielli.png');"></div>
                                     <div class="artist-name">CFG_06.ini</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-freshmula.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-freshmula.png');"></div>
                                     <div class="artist-name">LOG_07.txt</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-ghemon.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-ghemon.png');"></div>
                                     <div class="artist-name">TMP_08.var</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-jackthesmoker.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-jackthesmoker.png');"></div>
                                     <div class="artist-name">BOOT_9.sys</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-mezzosangue.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-mezzosangue.png');"></div>
                                     <div class="artist-name">ROOT_A.dir</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-riccardosala.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-riccardosala.png');"></div>
                                     <div class="artist-name">MEM_B.dmp</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-sickbudd.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-sickbudd.png');"></div>
                                     <div class="artist-name">ENC_C.key</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-williepeyote.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-williepeyote.png');"></div>
                                     <div class="artist-name">RUN_D.bat</div>
                                 </div>
                                 <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="sprite-25 silhouette" style="background-image: url('assets/face-unknown.png');"></div>
+                                    <div class="static-face silhouette" style="background-image: url('assets/face-unknown.png');"></div>
                                     <div class="artist-name">ERR_E.raw</div>
                                 </div>
 
