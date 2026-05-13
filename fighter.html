@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Musical Fighters - Murena Edition</title>
     
-    <!-- PRECARICAMENTO SFONDI SELEZIONI -->
     <link rel="preload" as="image" href="assets/bkg1.png">
     <link rel="preload" as="image" href="assets/bkg2.png">
     <link rel="preload" as="image" href="assets/bkg3.png">
@@ -173,13 +172,11 @@
         <button class="win-btn" style="font-size: 14px; padding: 10px; margin-top: 10px;" onclick="resetToMenu()">QUIT TO MENU</button>
     </div>
 
-    <!-- Schermata Fine Partita -->
     <div id="end-screen" class="overlay">
         <h1 id="end-title">YOU WIN!</h1>
         <button class="win-btn" style="font-size: 14px; padding: 10px;" onclick="handleEndScreen()">CONTINUE</button>
     </div>
 
-    <!-- Schermata di Sblocco -->
     <div id="unlock-screen" class="overlay">
         <h1>NEW CHALLENGER<br>UNLOCKED!</h1>
         <p id="unlock-text" style="color: white; margin-bottom: 30px; font-size: 14px; text-shadow: 1px 1px #000;"></p>
@@ -214,16 +211,16 @@
         return imageCache[src];
     }
 
-    // AUDIO DI SOTTOFONDO: Volumi Abbassati
+    // AUDIO DI SOTTOFONDO
     const menuMusic = new Audio('assets/Jazzhighlanders_8bit_F.wav');
     menuMusic.loop = true; 
-    menuMusic.volume = 0.3; // Musica Menu Più Bassa
+    menuMusic.volume = 0.3; 
 
     const stageMusic = new Audio();
     stageMusic.loop = true; 
-    stageMusic.volume = 0.2; // Musica Stage Bassa, per dare spazio ai Sample!
+    stageMusic.volume = 0.2; 
 
-    // SUONI SFX DI GIOCO: Volumi Alti
+    // SUONI SFX DI GIOCO
     const sfx = {
         r1: new Audio('assets/round-one-fight.mp3'),
         r2: new Audio('assets/round-two-fight.mp3'),
@@ -234,12 +231,11 @@
 
     let audioUnlocked = false;
 
-    // Sblocco Audio Silenzioso e pulito
+    // Sblocco Audio
     function unlockAudio() {
         if (audioUnlocked) return;
-        
         if (mode === "SELECT") {
-            menuMusic.play().catch(e => console.log("Init menu err", e));
+            menuMusic.play().catch(e => {});
         }
         audioUnlocked = true;
     }
@@ -250,12 +246,12 @@
 
     function playSfx(audioObj) {
         if (!audioObj) return;
-        audioObj.volume = 1.0; // Volume sempre al massimo per gli SFX
+        audioObj.volume = 1.0; 
         audioObj.currentTime = 0;
-        audioObj.play().catch(e => console.log("Audio SFX blocked:", e));
+        audioObj.play().catch(e => {});
     }
 
-    // LA LISTA ESATTA DEGLI MP3 SU GITHUB PER IL CHECK
+    // LISTA MP3
     const validCharSfxList = [
         'baba-attack.mp3', 'baba-hurt.mp3', 'baba-loose.mp3', 'baba-win.mp3',
         'beeman-attack.mp3', 'beeman-hurt.mp3', 'beeman-loose.mp3',
@@ -276,40 +272,27 @@
         'pigeon-attack.mp3', 'pigeon-hurt.mp3', 'pigeon-loose.mp3', 'pigeon-win.mp3'
     ];
 
-    // FUNZIONE BLINDATA PER I VERSI DEI PERSONAGGI
     function playCharSfx(spriteId, action) {
         let audioName = `${spriteId}-${action}`;
-
-        // FIX nomi differenti tra spriteId e nomi dei file
         if (spriteId === 'orologioman') audioName = `chronomutant-${action}`;
         if (spriteId === 'radioman') {
-            if (action === 'hurt') audioName = 'freq-ghoul--hurt'; // FIX doppio trattino
+            if (action === 'hurt') audioName = 'freq-ghoul--hurt';
             else audioName = `freq-ghoul-${action}`;
         }
-        
-        // Eccezioni speciali
-        if (spriteId === 'britney' && (action === 'select' || action === 'win')) {
-            audioName = 'britney-bitch';
-        }
-        if (spriteId === 'doom' && (action === 'select' || action === 'win')) {
-            audioName = 'doom-not-surrender';
-        }
+        if (spriteId === 'britney' && (action === 'select' || action === 'win')) audioName = 'britney-bitch';
+        if (spriteId === 'doom' && (action === 'select' || action === 'win')) audioName = 'doom-not-surrender';
 
         let fileName = `${audioName}.mp3`;
-        
-        // Controlla se il file esiste davvero per non causare errori 404 in console
         if (validCharSfxList.includes(fileName)) {
             let audio = new Audio(`assets/${fileName}`);
-            audio.volume = 1.0; // Effetti al MASSIMO
-            audio.play().catch(e => console.log(`Audio bloccato dal browser: assets/${fileName}`));
+            audio.volume = 1.0; 
+            audio.play().catch(e => {});
         }
     }
 
-    // SISTEMA DI SALVATAGGIO PROGRESSI DI SESSIONE
     let totalWins = parseInt(sessionStorage.getItem('murenaWins') || '0');
     let pendingUnlockMessage = ""; 
 
-    // ASSETS & PROGRESSIONE
     const heroes = [
         { spriteId: 'carma2', name: 'CARMA', req: 0 },
         { spriteId: 'ferraz2', name: 'FERRAZ', req: 0 },
@@ -333,7 +316,6 @@
         { spriteId: 'doom', name: 'DOOM', req: 4 }
     ];
 
-    // TUTTI I BACKGROUND
     const stages = [
         { name: 'RUSTWATER', bg: 'assets/metro.gif', music: 'assets/rustwater.mp3' },
         { name: 'COLLAPSE POINT', bg: 'assets/buconero.gif', music: 'assets/collapsepoint.mp3' },
@@ -353,11 +335,9 @@
         { name: 'FIESTA', bg: 'assets/mexico.webp', music: 'assets/fiesta.mp3' }
     ];
 
-    // VARIABILI GLOBALI E FISICA SCALATA
     let selectState = 0; 
     let mode = "SELECT"; 
     let p1Char = null; let cpuChar = null; let currentStage = null;
-
     let matchTimer = 99; let framesCounter = 0;
     let currentRound = 1; let p1Wins = 0; let cpuWins = 0;
 
@@ -367,7 +347,6 @@
     let p1 = { x: 80, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: 1, vy: 0, timer: 0, deadTimer: 0 };
     let cpu = { x: 430, y: GROUND_Y, hp: 100, state: 'idle', frame: 0, dir: -1, vy: 0, timer: 0, deadTimer: 0 };
 
-    // INPUT
     const keys = { l: 0, r: 0, j: 0, a: 0, d: 0 };
     const setup = (id, k) => {
         const b = document.getElementById(id);
@@ -395,12 +374,9 @@
         const screen = document.getElementById('selection-screen');
         const title = document.getElementById('char-name');
         grid.innerHTML = '';
-        
         canvas.style.backgroundImage = 'none';
         
-        if (audioUnlocked && mode === "SELECT" && menuMusic.paused) {
-            menuMusic.play().catch(e => {});
-        }
+        if (audioUnlocked && mode === "SELECT" && menuMusic.paused) menuMusic.play().catch(e => {});
 
         if (selectState === 0) {
             grid.className = 'grid'; 
@@ -409,47 +385,29 @@
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { 
-                        p1Char = c; 
-                        playCharSfx(c.spriteId, 'select');
-                        selectState = 1; 
-                        loadSelectionScreen(); 
-                    };
-                } else {
-                    d.classList.add('locked');
-                }
+                    d.onclick = () => { p1Char = c; playCharSfx(c.spriteId, 'select'); selectState = 1; loadSelectionScreen(); };
+                } else d.classList.add('locked');
                 grid.appendChild(d);
             });
         } else if (selectState === 1) {
             grid.className = 'grid'; 
-            screen.className = 'bg-select-en'; title.innerText = 'SELECT OPPONENT'; title.style.color = '#fff';
+            screen.className = 'bg-select-en'; title.innerText = 'SELECT OPPONENT';
             enemiesList.forEach(c => {
                 const d = document.createElement('div'); d.className = 'cell';
                 if (totalWins >= c.req) {
                     d.style.backgroundImage = `url('assets/${c.spriteId}-idle.png')`;
-                    d.onclick = () => { 
-                        cpuChar = c; 
-                        playCharSfx(c.spriteId, 'select');
-                        selectState = 2; 
-                        loadSelectionScreen(); 
-                    };
-                } else {
-                    d.classList.add('locked');
-                }
+                    d.onclick = () => { cpuChar = c; playCharSfx(c.spriteId, 'select'); selectState = 2; loadSelectionScreen(); };
+                } else d.classList.add('locked');
                 grid.appendChild(d);
             });
         } else if (selectState === 2) {
             grid.className = 'scrolling-grid'; 
-            screen.className = 'bg-select-am'; title.innerText = 'SELECT STAGE'; title.style.color = '#00ffff';
+            screen.className = 'bg-select-am'; title.innerText = 'SELECT STAGE';
             stages.forEach(s => {
                 const d = document.createElement('div'); d.className = 'stage-cell';
                 d.style.backgroundImage = `url('${s.bg}')`;
-                
-                const label = document.createElement('div');
-                label.className = 'stage-name';
-                label.innerText = s.name;
+                const label = document.createElement('div'); label.className = 'stage-name'; label.innerText = s.name;
                 d.appendChild(label);
-
                 d.onclick = () => { currentStage = s; startMatch(); };
                 grid.appendChild(d);
             });
@@ -461,26 +419,11 @@
         document.getElementById('controls').style.visibility = 'visible';
         document.getElementById('btn-pause').style.display = 'block';
         document.getElementById('top-msg').innerText = "FIGHT!";
-        
-        menuMusic.pause();
-        menuMusic.currentTime = 0;
-
-        stageMusic.src = currentStage.music;
-        stageMusic.play().catch(e => console.log("Autoplay blocked for stage music."));
-
+        menuMusic.pause(); menuMusic.currentTime = 0;
+        stageMusic.src = currentStage.music; stageMusic.play().catch(e => {});
         canvas.style.backgroundImage = `url('${currentStage.bg}')`;
         canvas.style.backgroundPosition = 'center';
-        if (currentStage.zoom) {
-            canvas.style.backgroundSize = `${currentStage.zoom * 100}%`;
-        } else {
-            canvas.style.backgroundSize = 'cover';
-        }
-
-        const anims = ['idle', 'run', 'attack', 'dodge', 'hurt'];
-        anims.forEach(st => {
-            getImage(`assets/${p1Char.spriteId}-${st}.png`);
-            getImage(`assets/${cpuChar.spriteId}-${st}.png`);
-        });
+        canvas.style.backgroundSize = currentStage.zoom ? `${currentStage.zoom * 100}%` : 'cover';
 
         p1Wins = 0; cpuWins = 0; currentRound = 1;
         startRound();
@@ -499,7 +442,6 @@
         const msg = document.getElementById('round-msg');
         msg.innerText = currentRound >= 3 ? "FINAL ROUND" : `ROUND ${currentRound}`;
         msg.style.visibility = 'visible';
-        
         setTimeout(() => {
             msg.innerText = "FIGHT!";
             setTimeout(() => { msg.style.visibility = 'hidden'; mode = "FIGHT"; }, 1000);
@@ -507,30 +449,19 @@
     }
 
     function togglePause() {
-        if(mode === "FIGHT") {
-            mode = "PAUSE"; 
-            stageMusic.pause(); 
-            document.getElementById('pause-screen').style.visibility = 'visible';
-        } else if (mode === "PAUSE") {
-            mode = "FIGHT"; 
-            stageMusic.play(); 
-            document.getElementById('pause-screen').style.visibility = 'hidden';
-        }
+        if(mode === "FIGHT") { mode = "PAUSE"; stageMusic.pause(); document.getElementById('pause-screen').style.visibility = 'visible'; }
+        else if (mode === "PAUSE") { mode = "FIGHT"; stageMusic.play(); document.getElementById('pause-screen').style.visibility = 'hidden'; }
     }
 
     function resetToMenu() {
-        stageMusic.pause();
-        stageMusic.currentTime = 0;
-
+        stageMusic.pause(); stageMusic.currentTime = 0;
         document.getElementById('end-screen').style.visibility = 'hidden';
         document.getElementById('unlock-screen').style.visibility = 'hidden';
         document.getElementById('pause-screen').style.visibility = 'hidden';
         document.getElementById('controls').style.visibility = 'hidden';
         document.getElementById('btn-pause').style.display = 'none';
         document.getElementById('selection-screen').style.display = 'flex';
-        
-        mode = "SELECT";
-        selectState = 0; p1Char = null; cpuChar = null; currentStage = null;
+        mode = "SELECT"; selectState = 0; p1Char = null; cpuChar = null; currentStage = null;
         loadSelectionScreen();
     }
 
@@ -540,50 +471,26 @@
             document.getElementById('unlock-text').innerText = pendingUnlockMessage;
             document.getElementById('unlock-screen').style.visibility = 'visible';
             pendingUnlockMessage = ""; 
-        } else {
-            resetToMenu();
-        }
+        } else resetToMenu();
     }
 
     function drawFighter(f, spriteId) {
-        if (f.state === 'dead') {
-            f.deadTimer++;
-            if (f.deadTimer > 40) return; 
-        }
-
-        let drawState = f.state;
-        if (drawState === 'dodge' || drawState === 'dead') drawState = 'idle';
-
+        if (f.state === 'dead') { f.deadTimer++; if (f.deadTimer > 40) return; }
+        let drawState = (f.state === 'dodge' || f.state === 'dead') ? 'idle' : f.state;
         let finalImg = getImage(`assets/${spriteId}-${drawState}.png`);
-        
-        if (!finalImg.complete || finalImg.naturalWidth === 0) { 
-            drawState = 'idle';
-            finalImg = getImage(`assets/${spriteId}-idle.png`);
-        }
-        
+        if (!finalImg.complete || finalImg.naturalWidth === 0) finalImg = getImage(`assets/${spriteId}-idle.png`);
         if (!finalImg.complete || finalImg.naturalWidth === 0) return;
 
         const frameW = finalImg.width / 5; const frameH = finalImg.height / 5;
         const sx = (f.frame % 5) * frameW; const sy = Math.floor(f.frame / 5) * frameH;
 
         ctx.save();
-        
-        let offsetX = 0; let offsetY = 0;
         if (f.state === 'dead') {
-            offsetX = (Math.random() - 0.5) * 15;
-            offsetY = (Math.random() - 0.5) * 15;
-            ctx.translate(offsetX, offsetY);
-            
+            ctx.translate((Math.random()-0.5)*15, (Math.random()-0.5)*15);
             ctx.globalAlpha = Math.max(0, 1 - (f.deadTimer / 40)); 
-            
-            if (f.deadTimer % 8 < 4) {
-                ctx.filter = "brightness(5) contrast(2) saturate(10)";
-            }
-        } else if (f.state === 'hurt') {
-            ctx.filter = "brightness(1.5) sepia(0.5) hue-rotate(-20deg) saturate(3)";
-        } else if (f.state === 'dodge') {
-            ctx.globalAlpha = 0.5; 
-        }
+            if (f.deadTimer % 8 < 4) ctx.filter = "brightness(5)";
+        } else if (f.state === 'hurt') ctx.filter = "brightness(1.5) saturate(3)";
+        else if (f.state === 'dodge') ctx.globalAlpha = 0.5; 
 
         if (f.dir === -1) {
             ctx.translate(f.x + SPRITE_SIZE, f.y); ctx.scale(-1, 1);
@@ -592,57 +499,29 @@
             ctx.drawImage(finalImg, sx, sy, frameW, frameH, f.x, f.y - SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
         }
         ctx.restore();
-
-        if (Date.now() % 100 < 50 && f.state !== 'hurt' && f.state !== 'dodge' && f.state !== 'dead') {
-            f.frame = (f.frame + 1) % 25;
-        }
+        if (Date.now() % 100 < 50 && !['hurt','dodge','dead'].includes(f.state)) f.frame = (f.frame + 1) % 25;
     }
 
     function updateFighterParams(f, isPlayer, spriteId) {
-        f.y += f.vy; 
-        if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
-
-        if (f.x < 0) f.x = 0;
-        if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
-
-        if (f.hp <= 0) {
-            if (f.state !== 'dead') {
-                f.state = 'dead';
-                f.deadTimer = 0;
-                playCharSfx(spriteId, 'loose'); 
-            }
-            return;
-        }
-
+        f.y += f.vy; if (f.y < GROUND_Y) f.vy += 1; else { f.y = GROUND_Y; f.vy = 0; }
+        if (f.x < 0) f.x = 0; if (f.x > 800 - SPRITE_SIZE) f.x = 800 - SPRITE_SIZE;
+        if (f.hp <= 0) { if (f.state !== 'dead') { f.state = 'dead'; f.deadTimer = 0; playCharSfx(spriteId, 'loose'); } return; }
         if (f.timer > 0) { f.timer--; if (f.timer <= 0) f.state = 'idle'; }
-        if (f.state === 'hurt' || f.state === 'dodge' || f.state === 'attack') return;
+        if (['hurt','dodge','attack'].includes(f.state)) return;
 
         if (isPlayer) {
-            let enemyDist = cpu.x - f.x;
             if (keys.l) { f.x -= 6; f.state = 'run'; f.dir = -1; }
             else if (keys.r) { f.x += 6; f.state = 'run'; f.dir = 1; }
-            else { f.state = 'idle'; f.dir = enemyDist > 0 ? 1 : -1; }
-
+            else { f.state = 'idle'; f.dir = (cpu.x - f.x) > 0 ? 1 : -1; }
             if (keys.j && f.y >= GROUND_Y) f.vy = -16; 
-            
             if (keys.d) { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; } 
-            else if (keys.a) { 
-                f.state = 'attack'; f.timer = 25; 
-                playCharSfx(spriteId, 'attack'); 
-            }
+            else if (keys.a) { f.state = 'attack'; f.timer = 25; playCharSfx(spriteId, 'attack'); }
         } else {
-            let dist = p1.x - f.x;
-            f.dir = dist > 0 ? 1 : -1;
-            
-            if (Math.abs(dist) > 190) {
-                f.x += f.dir * 3; f.state = 'run';
-            } else {
-                f.state = 'idle';
-                let rand = Math.random();
-                if (rand < 0.04) { 
-                    f.state = 'attack'; f.timer = 25; 
-                    playCharSfx(spriteId, 'attack'); 
-                }
+            let dist = p1.x - f.x; f.dir = dist > 0 ? 1 : -1;
+            if (Math.abs(dist) > 190) { f.x += f.dir * 3; f.state = 'run'; }
+            else {
+                f.state = 'idle'; let rand = Math.random();
+                if (rand < 0.04) { f.state = 'attack'; f.timer = 25; playCharSfx(spriteId, 'attack'); }
                 else if (rand > 0.98 && p1.state === 'attack') { f.state = 'dodge'; f.timer = 20; f.x -= f.dir * 50; }
             }
         }
@@ -650,17 +529,12 @@
 
     function checkHitbox(attacker, defender, defSpriteId) {
         if (defender.state === 'dead') return false; 
-        
         if (attacker.state === 'attack' && attacker.timer === 15) { 
-            let relativeDist = (defender.x - attacker.x) * attacker.dir;
-            if (relativeDist > -60 && relativeDist < 200 && Math.abs(attacker.y - defender.y) < 150) {
+            let rel = (defender.x - attacker.x) * attacker.dir;
+            if (rel > -60 && rel < 200 && Math.abs(attacker.y - defender.y) < 150) {
                 if (defender.state !== 'dodge' && defender.state !== 'hurt') {
-                    defender.state = 'hurt';
-                    defender.timer = 20; 
-                    defender.hp -= 15; 
-                    defender.x += attacker.dir * 30; 
-                    playCharSfx(defSpriteId, 'hurt'); 
-                    return true;
+                    defender.state = 'hurt'; defender.timer = 20; defender.hp -= 15; defender.x += attacker.dir * 30; 
+                    playCharSfx(defSpriteId, 'hurt'); return true;
                 }
             }
         }
@@ -668,103 +542,66 @@
     }
 
     function checkRoundEnd() {
-        if (p1.hp <= 0 || cpu.hp <= 0 || matchTimer <= 0) {
-            if (mode === "FIGHT") {
-                mode = "ROUND_OVER";
-                let msg = "";
-                if (p1.hp > cpu.hp) { p1Wins++; msg = `${p1Char.name} WINS ROUND`; }
-                else if (cpu.hp > p1.hp) { cpuWins++; msg = `${cpuChar.name} WINS ROUND`; }
-                else { msg = "DRAW ROUND"; } 
+        if ((p1.hp <= 0 || cpu.hp <= 0 || matchTimer <= 0) && mode === "FIGHT") {
+            mode = "ROUND_OVER";
+            let msg = (p1.hp > cpu.hp) ? `${p1Char.name} WINS ROUND` : (cpu.hp > p1.hp ? `${cpuChar.name} WINS ROUND` : "DRAW ROUND");
+            if (p1.hp > cpu.hp) p1Wins++; else if (cpu.hp > p1.hp) cpuWins++;
+            document.getElementById('round-msg').innerText = msg;
+            document.getElementById('round-msg').style.visibility = 'visible';
 
-                document.getElementById('round-msg').innerText = msg;
-                document.getElementById('round-msg').style.visibility = 'visible';
-
-                setTimeout(() => {
-                    document.getElementById('round-msg').style.visibility = 'hidden';
-                    if (p1Wins >= 2 || cpuWins >= 2) {
-                        
-                        let wonMatch = (p1Wins >= 2);
-                        mode = "END";
-                        
-                        stageMusic.pause();
-                        
-                        if (wonMatch) {
-                            playSfx(sfx.win);
-                            playCharSfx(p1Char.spriteId, 'win');
-                        } else {
-                            playSfx(sfx.lose);
-                            playCharSfx(cpuChar.spriteId, 'win'); 
-                        }
-
-                        document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
-                        document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
-                        
-                        if (wonMatch) {
-                            totalWins++;
-                            sessionStorage.setItem('murenaWins', totalWins);
-                            
-                            if (totalWins === 1) pendingUnlockMessage = "HERO: LONG JOHN SILVER\nENEMY: MURENA";
-                            else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
-                            else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
-                            else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
-                        }
-
-                        document.getElementById('end-screen').style.visibility = 'visible';
+            setTimeout(() => {
+                document.getElementById('round-msg').style.visibility = 'hidden';
+                if (p1Wins >= 2 || cpuWins >= 2) {
+                    let wonMatch = (p1Wins >= 2); mode = "END"; stageMusic.pause();
+                    
+                    // SFX DI VITTORIA CON RITARDO SULL'ESULTANZA
+                    if (wonMatch) {
+                        playSfx(sfx.win);
+                        setTimeout(() => playCharSfx(p1Char.spriteId, 'win'), 800);
                     } else {
-                        currentRound++;
-                        startRound();
+                        playSfx(sfx.lose);
+                        setTimeout(() => playCharSfx(cpuChar.spriteId, 'win'), 800);
                     }
-                }, 3000);
-            }
+
+                    document.getElementById('end-title').innerText = wonMatch ? "YOU WIN!" : "GAME OVER";
+                    document.getElementById('end-title').style.color = wonMatch ? "#ffcc00" : "#ff0000";
+                    if (wonMatch) {
+                        totalWins++; sessionStorage.setItem('murenaWins', totalWins);
+                        if (totalWins === 1) pendingUnlockMessage = "HERO: LONG JOHN SILVER\nENEMY: MURENA";
+                        else if (totalWins === 2) pendingUnlockMessage = "HERO: MCLOVIN\nENEMY: PIGEON";
+                        else if (totalWins === 3) pendingUnlockMessage = "HERO: BRITNEY\nENEMY: ORNITORINCO";
+                        else if (totalWins === 4) pendingUnlockMessage = "HERO: MF DOOM\nENEMY: DOOM";
+                    }
+                    document.getElementById('end-screen').style.visibility = 'visible';
+                } else { currentRound++; startRound(); }
+            }, 3000);
         }
     }
 
     function update() {
-        if (mode !== "FIGHT" && mode !== "ROUND_OVER") return;
-
-        if (mode === "FIGHT") {
-            framesCounter++;
-            if (framesCounter >= 60) {
-                matchTimer--; framesCounter = 0;
-            }
-        }
-
-        updateFighterParams(p1, true, p1Char.spriteId);
-        updateFighterParams(cpu, false, cpuChar.spriteId);
-
-        checkHitbox(p1, cpu, cpuChar.spriteId);
-        checkHitbox(cpu, p1, p1Char.spriteId);
-
+        if (!["FIGHT","ROUND_OVER"].includes(mode)) return;
+        if (mode === "FIGHT") { framesCounter++; if (framesCounter >= 60) { matchTimer--; framesCounter = 0; } }
+        updateFighterParams(p1, true, p1Char.spriteId); updateFighterParams(cpu, false, cpuChar.spriteId);
+        checkHitbox(p1, cpu, cpuChar.spriteId); checkHitbox(cpu, p1, p1Char.spriteId);
         checkRoundEnd();
     }
 
     function draw() {
         ctx.clearRect(0, 0, 800, 450);
-
         if (mode !== "SELECT" && currentStage) {
             ctx.fillStyle = "#444"; ctx.fillRect(45, 15, 310, 20); ctx.fillRect(445, 15, 310, 20);
             ctx.fillStyle = "red"; ctx.fillRect(50, 17, 300, 16); ctx.fillRect(450, 17, 300, 16);
-            
-            ctx.fillStyle = "yellow"; 
-            let p1hp = Math.max(0, p1.hp); let cpuhp = Math.max(0, cpu.hp);
-            ctx.fillRect(50, 17, p1hp * 3, 16); 
-            ctx.fillRect(450 + (300 - cpuhp * 3), 17, cpuhp * 3, 16);
-
+            ctx.fillStyle = "yellow"; ctx.fillRect(50, 17, Math.max(0,p1.hp)*3, 16); 
+            ctx.fillRect(450 + (300 - Math.max(0,cpu.hp)*3), 17, Math.max(0,cpu.hp)*3, 16);
             ctx.fillStyle = "#fff"; ctx.font = "12px 'Press Start 2P'";
-            ctx.fillText(p1Char.name, 50, 48);
-            ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 48);
-
+            ctx.fillText(p1Char.name, 50, 48); ctx.fillText(cpuChar.name, 750 - ctx.measureText(cpuChar.name).width, 48);
             ctx.fillStyle = p1Wins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(55, 60, 5, 0, Math.PI*2); ctx.fill();
             ctx.fillStyle = p1Wins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(70, 60, 5, 0, Math.PI*2); ctx.fill();
-            
             ctx.fillStyle = cpuWins >= 1 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(745, 60, 5, 0, Math.PI*2); ctx.fill();
             ctx.fillStyle = cpuWins >= 2 ? "#ffcc00" : "#444"; ctx.beginPath(); ctx.arc(730, 60, 5, 0, Math.PI*2); ctx.fill();
-
             ctx.fillStyle = "#fff"; ctx.font = "24px 'Press Start 2P'";
             ctx.fillText(matchTimer, 400 - ctx.measureText(matchTimer).width/2, 35);
-
-            drawFighter(p1, p1Char.spriteId);
-            drawFighter(cpu, cpuChar.spriteId);
+            drawFighter(p1, p1Char.spriteId); drawFighter(cpu, cpuChar.spriteId);
         }
         requestAnimationFrame(draw);
     }
