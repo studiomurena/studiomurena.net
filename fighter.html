@@ -228,15 +228,9 @@
         r1: new Audio('assets/round-one-fight.mp3'),
         r2: new Audio('assets/round-two-fight.mp3'),
         r3: new Audio('assets/final-round-fight.mp3'),
-        win1: new Audio('assets/sound-win.mp3'),
-        win2: new Audio('assets/youwin.mp3'),
-        lose1: new Audio('assets/sound-loose.mp3'),
-        lose2: new Audio('assets/youloose.mp3')
+        win: new Audio('assets/youwin.mp3'),
+        lose: new Audio('assets/youloose.mp3')
     };
-
-    // Concatenazione perfetta di Win/Lose
-    sfx.win1.addEventListener('ended', () => playSfx(sfx.win2));
-    sfx.lose1.addEventListener('ended', () => playSfx(sfx.lose2));
 
     let audioUnlocked = false;
 
@@ -695,10 +689,10 @@
                         stageMusic.pause();
                         
                         if (wonMatch) {
-                            playSfx(sfx.win1);
+                            playSfx(sfx.win);
                             playCharSfx(p1Char.spriteId, 'win');
                         } else {
-                            playSfx(sfx.lose1);
+                            playSfx(sfx.lose);
                             playCharSfx(cpuChar.spriteId, 'win'); 
                         }
 
