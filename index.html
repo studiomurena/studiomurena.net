@@ -204,8 +204,8 @@
         }
 
         .progress-bar-container { width: 100%; height: 6px; margin: 2px 0; }
-        .progress-bar-fill { height: 100%; background: var(--win-blue); width: 0%; animation: loading 4s infinite; }
-        @keyframes loading { 0% { width: 0%; } 50% { width: 45%; } 100% { width: 45%; } }
+        /* Barra di caricamento fissa al 100% */
+        .progress-bar-fill { height: 100%; background: var(--win-blue); width: 100%; }
 
         /* --- FINESTRA GIOCO (MURENA SLOT) --- */
         #game-window {
@@ -410,32 +410,28 @@
                                     <div class="static-face" style="background-image: url('assets/face-riccardosala.png');"></div>
                                     <div class="artist-name">Riccardo Sala</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="static-face silhouette" style="background-image: url('assets/face-sickbudd.png');"></div>
-                                    <div class="artist-name">ENC_C.key</div>
+                                <div class="artist-item">
+                                    <div class="static-face" style="background-image: url('assets/face-sickbudd.png');"></div>
+                                    <div class="artist-name">Sick Budd</div>
                                 </div>
                                 <div class="artist-item">
                                     <div class="static-face" style="background-image: url('assets/face-silentbob.png');"></div>
                                     <div class="artist-name">Silent Bob</div>
                                 </div>
-                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="static-face silhouette" style="background-image: url('assets/face-unknown.png');"></div>
-                                    <div class="artist-name">ERR_G.raw</div>
-                                </div>
-                                <div class="artist-item" onclick="alert('Access Denied: Decryption pending.')">
-                                    <div class="static-face silhouette" style="background-image: url('assets/face-lauryyn.png');"></div>
-                                    <div class="artist-name">ENC_D.bin</div>
+                                <div class="artist-item">
+                                    <div class="static-face" style="background-image: url('assets/face-lauryyn.png');"></div>
+                                    <div class="artist-name">Lauryyn</div>
                                 </div>
 
                             </div>
                         </div>
 
                         <div id="loading-window" class="win95-border popup" onmousedown="bringToFront(this)" ontouchstart="bringToFront(this)">
-                            <div class="title-bar drag-handle"><span>loading guest network...</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
+                            <div class="title-bar drag-handle"><span>guest network loaded</span><span class="btn-close" onclick="closeWindow('loading-window')">X</span></div>
                             <div class="mini-popup-content win95-border-inset" style="flex-direction: row; padding: 4px 8px; justify-content: flex-start; gap: 10px;">
                                 <img src="assets/loading.gif" class="custom-icon" alt="Loading..." style="margin: 0; width: 24px; height: 24px;">
                                 <div style="display: flex; flex-direction: column; width: 100%; align-items: flex-start;">
-                                    <div class="mini-popup-text" style="margin-bottom: 4px; font-size: 10px;">Connecting to hidden channels...</div>
+                                    <div class="mini-popup-text" style="margin-bottom: 4px; font-size: 10px;">Network loaded.</div>
                                     <div class="progress-bar-container win95-border-inset" style="margin: 0;"><div class="progress-bar-fill"></div></div>
                                 </div>
                             </div>
@@ -453,7 +449,7 @@
                             <div class="title-bar drag-handle"><span>Info</span><span class="btn-close" onclick="closeWindow('reveal-window')">X</span></div>
                             <div class="mini-popup-content win95-border-inset" style="padding: 10px;">
                                 <img src="assets/info.png" alt="Info" style="width: 18px; height: 18px; margin-bottom: 6px; image-rendering: pixelated;">
-                                <div class="mini-popup-text" style="font-size: 15px; line-height: 1.2;">Guests are still<br>hidden.</div>
+                                <div class="mini-popup-text" style="font-size: 15px; line-height: 1.2;">All guests<br>revealed!</div>
                             </div>
                         </div>
 
